@@ -1,0 +1,61 @@
+.dialog-management-custom .p-dialog-close-button {
+    display: none !important;
+}
+
+.custom-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.custom-form-column {
+    flex: 1;
+    min-width: 200px;
+}
+
+.inputtext-custom {
+    width: 100%;
+}
+
+.p-error {
+    color: red;
+    font-size: 0.75em;
+    display: block;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.size-tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.size-tag {
+    padding: 8px !important;
+    margin: 3px;
+}
+
+.swal2-container {
+    z-index: 9999 !important;
+}
+
+.dialog-management-custom .p-dialog-close-button {
+    display: none !important;
+}
+
+.custom-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.custom-form-column {
+    flex: 1;
+    min-width: 200px;
+}
