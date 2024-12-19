@@ -22,15 +22,15 @@ class CoreMasterComboIncidentTypeSeeder extends Seeder
                 'status' => true,
                 'childrens' => [
                     [
-                        'name' => 'eléctrico',
+                        'name' => 'electric', //electrico
                         'orden' => 0,
                     ],
                     [
-                        'name' => 'plomería',
+                        'name' => 'plumbing', //plomeria
                         'orden' => 1,
                     ],
                     [
-                        'name' => 'estructural',
+                        'name' => 'structural', //estructural
                         'orden' => 2,
                     ]
                 ],

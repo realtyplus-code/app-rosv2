@@ -22,15 +22,15 @@ class CoreMasterComboPayerSeeder extends Seeder
                 'status' => true,
                 'childrens' => [
                     [
-                        'name' => 'propietario',
+                        'name' => 'owner', //propietario
                         'orden' => 0,
                     ],
                     [
-                        'name' => 'inquilino',
+                        'name' => 'tenant', //inquilino
                         'orden' => 1,
                     ],
                     [
-                        'name' => 'compañía de seguros',
+                        'name' => 'insurance company', //compañia de seguros
                         'orden' => 2,
                     ]
                 ],

@@ -22,15 +22,15 @@ class CoreMasterComboIncidentSeeder extends Seeder
                 'status' => true,
                 'childrens' => [
                     [
-                        'name' => 'abierta',
+                        'name' => 'opened', //abierta
                         'orden' => 0,
                     ],
                     [
-                        'name' => 'en proceso',
+                        'name' => 'in progress', //en proceso
                         'orden' => 1,
                     ],
                     [
-                        'name' => 'cerrada',
+                        'name' => 'closed', //cerrada
                         'orden' => 2,
                     ]
                 ],

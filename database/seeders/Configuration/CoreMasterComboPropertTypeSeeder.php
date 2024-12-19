@@ -22,15 +22,15 @@ class CoreMasterComboPropertTypeSeeder extends Seeder
                 'status' => true,
                 'childrens' => [
                     [
-                        'name' => 'departamento',
+                        'name' => 'department', //departamento
                         'orden' => 0,
                     ],
                     [
-                        'name' => 'casa',
+                        'name' => 'home', //casa
                         'orden' => 1,
                     ],
                     [
-                        'name' => 'local',
+                        'name' => 'premises', //local
                         'orden' => 2,
                     ]
                 ],

@@ -22,10 +22,10 @@ export default {
         return {
             menuItems: [
                 {
-                    label: "Home",
+                    label: "Property",
                     icon: "pi pi-home",
                 },
-                {
+                /* {
                     label: "Features",
                     icon: "pi pi-star",
                 },
@@ -64,7 +64,7 @@ export default {
                 {
                     label: "Contact",
                     icon: "pi pi-envelope",
-                },
+                }, */
                 {
                     label: "Logout",
                     icon: "pi pi-sign-out",
@@ -84,12 +84,12 @@ export default {
         async logout() {
             try {
                 const result = await this.$swal.fire({
-                    title: "¿Estás seguro?",
-                    text: "Tu sesión será cerrada.",
+                    title: "You're sure?",
+                    text: "Your session will be closed.",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonText: "Sí, cerrar sesión",
-                    cancelButtonText: "Cancelar",
+                    confirmButtonText: "Yes, log out",
+                    cancelButtonText: "Cancel",
                 });
                 if (result.isConfirmed) {
                     await this.$axios.post("/logout");
