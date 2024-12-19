@@ -22,15 +22,15 @@ class CoreMasterComboPrioritySeeder extends Seeder
                 'status' => true,
                 'childrens' => [
                     [
-                        'name' => 'alta',
+                        'name' => 'high', //alta
                         'orden' => 0,
                     ],
                     [
-                        'name' => 'media',
+                        'name' => 'average', //media
                         'orden' => 1,
                     ],
                     [
-                        'name' => 'baja',
+                        'name' => 'low', //baja
                         'orden' => 2,
                     ]
                 ],

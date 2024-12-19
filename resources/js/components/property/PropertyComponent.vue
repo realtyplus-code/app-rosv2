@@ -388,8 +388,8 @@ export default {
         },
         async deleteProperty(aliadoId) {
             const result = await this.$swal.fire({
-                title: "Are you sure?",
-                text: "You are about to delete this ally. Are you sure you want to continue?",
+                title: "You're sure?",
+                text: "You are about to delete this property. Are you sure you want to continue?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -494,6 +494,10 @@ h3 {
 }
 
 .p-datatable-filter-buttonbar>.p-datatable-filter-clear-button {
+    display: none;
+}
+
+.p-fileupload-header>.p-fileupload-upload-button {
     display: none;
 }
 

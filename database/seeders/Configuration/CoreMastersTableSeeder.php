@@ -16,7 +16,7 @@ class CoreMastersTableSeeder extends Seeder
         EnumOption::create(
             [ #Maestro ID: 1
                 'parent_id' => 1, #1
-                'name' => 'master padre',
+                'name' => 'master father', //master padre
                 'description' => 'Maestro de Maestros'
             ]
         );
