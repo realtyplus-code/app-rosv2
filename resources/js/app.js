@@ -16,6 +16,10 @@ app.component('navbar-component', NavBarComponent);
 import PropertyComponent from './components/property/PropertyComponent.vue';
 app.component('property-component', PropertyComponent);
 
+//importacion de user
+import UserComponent from './components/user/UserComponent.vue';
+app.component('user-component', UserComponent);
+
 import Aura from "@primevue/themes/aura";
 import "primeicons/primeicons.css";
 

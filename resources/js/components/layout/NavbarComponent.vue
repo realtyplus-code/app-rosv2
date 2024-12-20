@@ -26,11 +26,11 @@ export default {
                     label: "Property",
                     icon: "pi pi-home",
                 },
-                /* {
-                    label: "Features",
-                    icon: "pi pi-star",
-                },
                 {
+                    label: "User",
+                    icon: "pi pi-user",
+                },
+                /* {
                     label: "Projects",
                     icon: "pi pi-search",
                     items: [
