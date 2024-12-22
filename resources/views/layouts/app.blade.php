@@ -23,7 +23,7 @@
         @if (Auth::check())
             @include('layouts.navbar')
         @endif
-        <main class="py-4">
+        <main class="">
             @yield('content')
         </main>
     </div>
