@@ -3,6 +3,7 @@
 /public/hot
 /public/storage
 /public/storage_property
+/public/storage_user
 /storage/*.key
 /storage/pail
 /vendor
