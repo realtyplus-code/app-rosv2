@@ -4,11 +4,9 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Services\User\UserService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\StoreUserRequest;
-use App\Http\Requests\User\UpdateUserRequest;
-use App\Http\Requests\User\UpdateUserEmailRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class UserController extends Controller
@@ -20,6 +18,10 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
+    public function view(){
+        return view('users.user');
+    }
+
     public function index(Request $request)
     {
         try {
@@ -28,10 +30,16 @@ class UserController extends Controller
             return renderDataTable(
                 $query,
                 $request,
-                [],
+                ['roles'],
                 [
                     'users.id',
-                    'users.name'
+                    'users.name',
+                    'users.phone',
+                    'users.code_number',
+                    'users.code_country',
+                    'users.email',
+                    'users.photo',
+                    DB::raw('GROUP_CONCAT(CONCAT(p.id, ":", p.name) ORDER BY p.name ASC SEPARATOR ";") as property_name'),
                 ]
             );
         } catch (\Exception $ex) {
@@ -45,6 +53,9 @@ class UserController extends Controller
     {
         try {
             $user = $this->userService->storeUser($request->all());
+            if($user == 'FALSE EMAIL'){
+                return Response::sendError('FALSE EMAIL', 500);
+            }
             return Response::sendResponse($user, 'Registro creado con exito.');
         } catch (\Exception $ex) {
             return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
@@ -75,6 +86,28 @@ class UserController extends Controller
     {
         try {
             $this->userService->deleteUser($id);
+            return Response::sendResponse(true, 'Registro eliminado con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function addPhoto(Request $request)
+    {
+        try {
+            $photo = $this->userService->addPhotoUser($request->all());
+            return Response::sendResponse($photo, 'Registro eliminado con exito.');
+        } catch (\Exception $ex) {
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function destroyPhoto(Request $request)
+    {
+        try {
+            $this->userService->deletePhotoUser($request->all());
             return Response::sendResponse(true, 'Registro eliminado con exito.');
         } catch (\Exception $ex) {
             return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);

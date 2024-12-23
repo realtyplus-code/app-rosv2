@@ -15,6 +15,18 @@ export default {
                     return selector;
             }
         },
+        $relationTableUser(selector) {
+            switch (selector) {
+                case "name":
+                    return "users.name";
+                case "email":
+                    return "users.email";
+                case "phone":
+                    return "users.phone";
+                default:
+                    return selector;
+            }
+        },
     },
 };
 </script>

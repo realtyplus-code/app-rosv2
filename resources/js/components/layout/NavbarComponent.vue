@@ -25,10 +25,16 @@ export default {
                 {
                     label: "Property",
                     icon: "pi pi-home",
+                    command: () => {
+                        this.route("home");
+                    },
                 },
                 {
                     label: "User",
                     icon: "pi pi-user",
+                    command: () => {
+                        this.route("user");
+                    },
                 },
                 /* {
                     label: "Projects",
@@ -98,6 +104,19 @@ export default {
                 }
             } catch (error) {
                 this.$readStatusHttp(error);
+            }
+        },
+        route(key) {
+            switch (key) {
+                case "user":
+                    window.location.href = "/users";
+                    break;
+                case "home":
+                window.location.href = "/home";
+                    break;
+
+                default:
+                    break;
             }
         },
     },

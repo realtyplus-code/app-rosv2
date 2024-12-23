@@ -125,14 +125,21 @@ class PropertyService
 
     public function deleteProperty($id)
     {
-        DB::beginTransaction();
         try {
+            $currentProperty = Property::find($id);
+            for ($i = 0; $i <= 5; $i++) {
+                $photoField = $i === 0 ? 'photo' : "photo{$i}";
+                if (!empty($currentProperty->$photoField)) {
+                    $this->fileService->deleteFile(
+                        cleanStorageUrl($currentProperty->$photoField, '/storage_property/'),
+                        'disk_property'
+                    );
+                }
+            }
             $this->userPropertyRepository->deleteByProperty($id);
             $this->propertyRepository->delete($id);
-            DB::commit();
             return true;
         } catch (\Exception $ex) {
-            DB::rollBack();
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
             throw $ex;

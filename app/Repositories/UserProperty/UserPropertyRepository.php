@@ -40,6 +40,13 @@ class UserPropertyRepository implements UserPropertyRepositoryInterface
         ])->delete();
     }
 
+    public function findByUser($id)
+    {
+        return $this->model->where([
+            'user_id' => $id
+        ])->get();
+    }
+
     public function findById($id)
     {
         return $this->model->findOrFail($id);

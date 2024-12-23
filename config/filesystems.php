@@ -64,6 +64,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'disk_user' => [
+            'driver' => 'local',
+            'root' => storage_path('app/storage_user'),
+            'url' => env('APP_URL') . '/storage_user',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*
@@ -80,6 +87,7 @@ return [
     'links' => [
         public_path('storage') => storage_path('app/public'),
         public_path('storage_property') => storage_path('app/storage_property'),
+        public_path('storage_user') => storage_path('app/storage_user'),
     ],
 
 ];

@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Role\RoleRepository;
 use App\Repositories\User\UserRepository;
+use App\Interfaces\Role\RoleRepositoryInterface;
 use App\Interfaces\User\UserRepositoryInterface;
 use App\Repositories\Property\PropertyRepository;
 use App\Repositories\Provider\ProviderRepository;
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(InsuranceRepositoryInterface::class, InsuranceRepository::class);
         $this->app->bind(IncidentActionRepositoryInterface::class, IncidentActionRepository::class);
         $this->app->bind(EnumOptionRepositoryInterface::class, EnumOptionRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
     }
 
     /**

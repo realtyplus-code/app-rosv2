@@ -9,6 +9,7 @@ interface UserPropertyRepositoryInterface
     public function delete($id);
     public function deleteByProperty($id);
     public function findById($id);
+    public function findByUser($id);
     public function findAll();
     public function all();
 }

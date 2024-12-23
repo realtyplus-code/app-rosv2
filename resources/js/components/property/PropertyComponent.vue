@@ -239,7 +239,7 @@ export default {
     data() {
         return {
             users: [],
-            perPage: 5,
+            perPage: 10,
             totalRecords: 0,
             page: 1,
             sortField: "",
