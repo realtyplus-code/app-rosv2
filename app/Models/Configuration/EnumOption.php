@@ -25,4 +25,9 @@ class EnumOption extends Model
     {
         return $this->belongsTo(EnumOption::class, 'parent_id');
     }
+
+    public function brother_relation()
+    {
+        return $this->belongsTo(EnumOption::class, 'brother_relation_id');
+    }
 }

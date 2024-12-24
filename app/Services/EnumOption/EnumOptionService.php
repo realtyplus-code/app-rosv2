@@ -21,7 +21,6 @@ class EnumOptionService
     {
         return EnumOption::query()
             ->where('is_father', '!=', true)
-            ->where('status', '=', true)
             ->where('name', '!=', 'master padre')
             ->whereHas('parent', function ($query) {
                 $query->where('status', true);
@@ -82,14 +81,7 @@ class EnumOptionService
     {
         DB::beginTransaction();
         try {
-            $enum = [
-                'parent_id' => $data['parent_id'],
-                'brother_relation_id' => $data['brother_relation_id'] ?? NULL,
-                'name' => $data['name'],
-                'status' => true,
-                'value1' => $value1 ?? NULL,
-            ];
-            $enum = $this->enumRepository->update($id, $enum);
+            $enum = $this->enumRepository->update($id, $data);
             DB::commit();
             return $enum;
         } catch (\Exception $ex) {

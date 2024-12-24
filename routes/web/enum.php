@@ -11,4 +11,5 @@ Route::prefix('enums')->middleware(['auth'])->group(function () {
     Route::get('/fathers', [EnumOptionController::class, 'listFathers'])->name('enum.fathers');
     Route::delete('/{id}', [EnumOptionController::class, 'destroy'])->name('enum.destroy');
     Route::get('/option/{name}', [EnumOptionController::class, 'listChildrens'])->name('enum.option');
+    Route::get('/get-id/{id}', [EnumOptionController::class, 'getOptionById'])->name('enum.get');
 });

@@ -19,7 +19,7 @@ class EnumOptionController extends Controller
 
     public function view()
     {
-        return view('admin.enum');
+        return view('enum.enum');
     }
 
     public function index(Request $request)

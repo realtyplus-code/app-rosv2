@@ -24,8 +24,10 @@ export default {
         },
         $formatStatus(type) {
             switch (type) {
+                case 1:
                 case "1":
                     return "Active";
+                case 2:
                 case "2":
                     return "Inactive";
                 default:

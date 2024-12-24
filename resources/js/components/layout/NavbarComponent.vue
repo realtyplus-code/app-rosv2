@@ -36,6 +36,13 @@ export default {
                         this.route("user");
                     },
                 },
+                {
+                    label: "Enum",
+                    icon: "pi pi-cog",
+                    command: () => {
+                        this.route("enum");
+                    },
+                },
                 /* {
                     label: "Projects",
                     icon: "pi pi-search",
@@ -112,9 +119,11 @@ export default {
                     window.location.href = "/users";
                     break;
                 case "home":
-                window.location.href = "/home";
+                    window.location.href = "/home";
                     break;
-
+                case "enum":
+                    window.location.href = "/enums";
+                    break;
                 default:
                     break;
             }

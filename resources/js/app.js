@@ -20,6 +20,10 @@ app.component('property-component', PropertyComponent);
 import UserComponent from './components/user/UserComponent.vue';
 app.component('user-component', UserComponent);
 
+//importacion de enums
+import EnumComponent from './components/enum/EnumComponent.vue';
+app.component('enum-component', EnumComponent);
+
 import Aura from "@primevue/themes/aura";
 import "primeicons/primeicons.css";
 

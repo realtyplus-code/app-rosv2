@@ -27,6 +27,12 @@ export default {
                     return selector;
             }
         },
+        $relationTableEnumOption(selector) {
+            switch (selector) {
+                default:
+                    return selector;
+            }
+        },
     },
 };
 </script>
