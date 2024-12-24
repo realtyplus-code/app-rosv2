@@ -1,7 +1,13 @@
 <template>
     <Menubar class="custom-menubar">
         <template #start>
-            <img :src="logoPath" alt="Logo" class="navbar-logo" style="max-width: 150px !important;" />
+            <img
+                :src="logoPath"
+                alt="Logo"
+                class="navbar-logo"
+                style="max-width: 150px !important"
+            />
+            <p class="custom-message">{{ rolMessage }}</p>
         </template>
         <template #end>
             <div class="menu-items">
@@ -9,7 +15,7 @@
             </div>
         </template>
     </Menubar>
-    <br><br>
+    <br /><br />
 </template>
 
 <script>
@@ -18,9 +24,11 @@
 import Menubar from "primevue/menubar";
 
 export default {
-    props: [],
+    props: ["rol"],
     data() {
         return {
+            rolName: null,
+            rolMessage: null,
             logoPath: `${window.location.origin}/img/logo.jpg`,
             menuItems: [
                 {
@@ -60,25 +68,7 @@ export default {
                             label: "UI Kit",
                             icon: "pi pi-pencil",
                         },
-                        {
-                            label: "Templates",
-                            icon: "pi pi-palette",
-                            items: [
-                                {
-                                    label: "Apollo",
-                                    icon: "pi pi-palette",
-                                },
-                                {
-                                    label: "Ultima",
-                                    icon: "pi pi-palette",
-                                },
-                            ],
-                        },
                     ],
-                },
-                {
-                    label: "Contact",
-                    icon: "pi pi-envelope",
                 }, */
                 {
                     label: "Logout",
@@ -93,7 +83,12 @@ export default {
     components: {
         Menubar,
     },
-    created() {},
+    created() {
+        if (Array.isArray(this.rol) && this.rol.length > 0) {
+            this.rolName = this.rol[0];
+            this.rolMessage = this.getWelcomeMessage(this.rolName);
+        }
+    },
     mounted() {},
     methods: {
         async logout() {
@@ -128,6 +123,27 @@ export default {
                 default:
                     break;
             }
+        },
+        getWelcomeMessage(userRole) {
+            let message;
+            switch (userRole) {
+                case "owner":
+                    message = "Welcome back, Property Owner!";
+                    break;
+                case "tenant":
+                    message = "Hello, Tenant! Welcome to your dashboard.";
+                    break;
+                case "admin":
+                    message = "Welcome, Admin! You have full access.";
+                    break;
+                case "providers":
+                    message = "Hello, Provider! Welcome to your dashboard.";
+                    break;
+                default:
+                    message = "Welcome! Please check your profile.";
+                    break;
+            }
+            return message;
         },
     },
 };

@@ -245,6 +245,7 @@
                                 class="p-button-rounded p-button-warn"
                                 style="margin: 5px"
                                 @click="viewInsurance(slotProps.data.id)"
+                                title="Insurances"
                             />
                         </div>
                     </template>
