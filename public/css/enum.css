@@ -1,81 +1,7 @@
-.dialog-management-custom .p-dialog-close-button {
-    display: none !important;
-}
-
-.custom-form {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-.custom-form-column {
-    flex: 1;
-    min-width: 200px;
-}
-
-.inputtext-custom {
-    width: 100%;
-}
-
-.swal2-confirm {
-    background-color: #F76F31;
-}
-
-.swal2-cancel {
-    background-color: #db6464;
-}
-
-.p-error {
-    color: red;
-    font-size: 0.75em;
-    display: block;
-}
-
-.header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.size-tags {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.size-tag {
-    padding: 8px !important;
-    margin: 3px;
-}
-
-.size-insurances{
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.size-insurance {
-    padding: 8px !important;
-    margin: 3px;
-}
-
-.swal2-container {
-    z-index: 9999 !important;
-}
-
-.dialog-management-custom .p-dialog-close-button {
-    display: none !important;
-}
-
-.custom-form {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-.custom-form-column {
-    flex: 1;
-    min-width: 200px;
+.custom-message{
+    font-size: 18px;
+    margin-left: 20px;
+    font-weight: bold;
 }
 
 .custom-message{
@@ -107,6 +33,7 @@ span {
 }
 
 .p-card-title {
+    color: #666666;
     font-weight: bold !important;
     font-size: 1.75rem !important;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -118,15 +45,15 @@ span {
 }
 
 svg {
-    color: #f76f31 !important;
+    color: #F76F31 !important;
 }
 
 .p-menubar-item-icon {
-    color: #f76f31 !important;
+    color: #F76F31 !important;
 }
 
 .p-button-rounded {
-    background-color: #f76f31;
+    background-color: #F76F31;
 }
 
 .p-datatable-filter-apply-button {
@@ -170,7 +97,13 @@ h3 {
 }
 
 .p-fileupload-header > .p-fileupload-choose-button {
-    background-color: #f76f31;
+    background-color: #F76F31;
+    border-color: #F76F31;
+}
+
+.p-fileupload-header > .p-fileupload-choose-button:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }
 
 .p-fileupload-header > .p-fileupload-choose-button > span {
@@ -182,7 +115,13 @@ h3 {
 }
 
 .text-center > .p-button-success {
-    background-color: #f76f31;
+    background-color: #F76F31;
+    border-color: #F76F31;
+}
+
+.text-center > .p-button-success:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }
 
 .text-center > .p-button-success > span {
@@ -198,35 +137,26 @@ h3 {
     color: #ffff;
 }
 
-.p-inputtext {
-    border-color: #cbd5e1 !important;
-    border-left-color: #cbd5e1 !important;
-    border-right-color: #cbd5e1 !important;
+.p-dialog {
+    background-color: #E5E5E5 !important;
 }
 
-.p-multiselect {
-    border-color: #cbd5e1 !important;
-    border-left-color: #cbd5e1 !important;
-    border-right-color: #cbd5e1 !important;
+#password {
+    width: 100%;
 }
 
-.custom-form-column {
-    border-color: #cbd5e1 !important;
-    border-left-color: #cbd5e1 !important;
-    border-right-color: #cbd5e1 !important;
+#password>.p-inputtext {
+    width: 100%;
 }
 
-.pi-eye-slash {
-    color: #f76f31 !important;
+.custom-form>.custom-form-column>.p-button {
+    background-color: #F76F31 !important;
+    border-color: #F76F31 !important;
 }
 
-.p-button-primary:hover {
+.custom-form>.custom-form-column>.p-button:hover {
     background-color: #f7601a !important;
     border-color: #f7601a !important;
-}
-
-.p-galleria-indicator-button {
-    background-color: #f76f31 !important;
 }
 
 .p-tag {
@@ -236,4 +166,12 @@ h3 {
 .p-paginator-page-selected {
     background-color: #E5E5E5 !important;
     color: #333333 !important;
+}
+
+.swal2-confirm {
+    background-color: #F76F31;
+}
+
+.swal2-cancel {
+    background-color: #db6464;
 }
