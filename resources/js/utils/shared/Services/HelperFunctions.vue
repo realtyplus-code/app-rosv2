@@ -22,6 +22,13 @@ export default {
                 return { tag, id: parseInt(id) };
             });
         },
+        $parseInsurance(cant) {
+            if (cant > 1) {
+                return "pi pi-eye";
+            } else {
+                return "pi pi-eye-slash";
+            }
+        },
         $formatStatus(type) {
             switch (type) {
                 case 1:

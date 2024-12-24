@@ -10,8 +10,8 @@
                     @click="addProperty"
                     style="
                         margin-right: 10px;
-                        background-color: #F76F31 !important;
-                        border-color: #F76F31;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
                     "
                 />
                 <Button
@@ -21,8 +21,8 @@
                     raised
                     @click="clearFilters"
                     style="
-                    background-color: #F76F31 !important;
-                    border-color: #F76F31;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
                     "
                 />
             </div>
@@ -158,6 +158,40 @@
                         </div>
                     </template>
                 </Column>
+                <!-- Insurances Type Name Column -->
+                <Column
+                    field="insurances"
+                    header="Insurances"
+                    style="min-width: 180px"
+                >
+                    <template #body="{ data }">
+                        <div
+                            class="size-insurances"
+                            style="justify-content: center"
+                        >
+                            <i
+                                class="size-insurance"
+                                :class="$parseInsurance(data.insurances)"
+                                :title="
+                                    data.insurances > 0
+                                        ? 'View insurances'
+                                        : 'No insurances available'
+                                "
+                                :style="{
+                                    fontSize: '1.5rem',
+                                    color:
+                                        data.insurances > 0 ? 'green' : 'red',
+                                    cursor:
+                                        data.insurances > 0 ? 'pointer' : '',
+                                }"
+                                @click="
+                                    viewPanelInsurance(data.insurances, data.id)
+                                "
+                            ></i>
+                        </div>
+                    </template>
+                </Column>
+
                 <!-- Photos Column -->
                 <Column header="Photo">
                     <template #body="{ data }">
@@ -190,7 +224,7 @@
                 <!-- Actions Column -->
                 <Column
                     header="Actions"
-                    style="min-width: 120px; text-align: center"
+                    style="min-width: 180px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -206,13 +240,19 @@
                                 style="margin: 5px"
                                 @click="deleteProperty(slotProps.data.id)"
                             />
+                            <Button
+                                icon="pi pi-shield"
+                                class="p-button-rounded p-button-warn"
+                                style="margin: 5px"
+                                @click="viewInsurance(slotProps.data.id)"
+                            />
                         </div>
                     </template>
                 </Column>
             </DataTable>
         </template>
     </Card>
-    <!-- gestion de aliados -->
+    <!-- gestion de propiedades -->
     <ManagemenPropertyComponent
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
@@ -220,6 +260,13 @@
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
+    />
+    <!-- gestion de seguros -->
+    <ManagemenInsuranceComponent
+        v-if="dialogVisibleInsurance"
+        :dialogVisible="dialogVisibleInsurance"
+        :selectedPropertyId="selectedPropertyId"
+        @hidden="hiddenInsurance"
     />
 </template>
 
@@ -229,6 +276,7 @@
 import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
+import ManagemenInsuranceComponent from "../insurance/management/ManagemenInsuranceComponent.vue";
 import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
 import Galleria from "primevue/galleria";
@@ -253,7 +301,9 @@ export default {
             loading: true,
             //
             selectedProperty: null,
+            selectedPropertyId: true,
             dialogVisible: false,
+            dialogVisibleInsurance: false,
             statuses: [
                 { value: "Active", id: 1 },
                 { value: "Inactive", id: 2 },
@@ -266,6 +316,7 @@ export default {
         FilterOperator,
         Card,
         ManagemenPropertyComponent,
+        ManagemenInsuranceComponent,
         DataTable,
         Column,
         Button,
@@ -427,6 +478,17 @@ export default {
         hidden(status) {
             this.dialogVisible = status;
         },
+        hiddenInsurance(status) {
+            this.dialogVisibleInsurance = status;
+        },
+        viewInsurance(id) {
+            this.selectedPropertyId = id;
+            this.dialogVisibleInsurance = true;
+        },
+        viewPanelInsurance(insurances, id) {
+            if (insurances == 0) return;
+            alert(id);
+        },
     },
 };
 </script>
@@ -466,15 +528,15 @@ span {
 }
 
 svg {
-    color: #F76F31 !important;
+    color: #f76f31 !important;
 }
 
 .p-menubar-item-icon {
-    color: #F76F31 !important;
+    color: #f76f31 !important;
 }
 
 .p-button-rounded {
-    background-color: #F76F31;
+    background-color: #f76f31;
 }
 
 .p-datatable-filter-apply-button {
@@ -497,54 +559,52 @@ h3 {
         sans-serif;
 }
 
-.p-datatable-filter-buttonbar>.p-datatable-filter-clear-button {
+.p-datatable-filter-buttonbar > .p-datatable-filter-clear-button {
     display: none;
 }
 
-.p-fileupload-header>.p-fileupload-upload-button {
+.p-fileupload-header > .p-fileupload-upload-button {
     display: none;
 }
 
-.p-datatable-filter-buttonbar>.p-datatable-filter-apply-button>span {
+.p-datatable-filter-buttonbar > .p-datatable-filter-apply-button > span {
     color: #ffff;
 }
 
-.p-datatable-filter-rule>.p-inputtext {
+.p-datatable-filter-rule > .p-inputtext {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
-    sans-serif !important;
+        sans-serif !important;
     color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
 }
 
-.p-fileupload-header>.p-fileupload-choose-button {
-    background-color: #F76F31;
-
+.p-fileupload-header > .p-fileupload-choose-button {
+    background-color: #f76f31;
 }
 
-.p-fileupload-header>.p-fileupload-choose-button>span {
-    color: #ffff !important;
-
-}
-
-.p-fileupload-header>.p-fileupload-choose-button>svg {
+.p-fileupload-header > .p-fileupload-choose-button > span {
     color: #ffff !important;
 }
 
-.text-center>.p-button-success {
-    background-color: #F76F31;
+.p-fileupload-header > .p-fileupload-choose-button > svg {
+    color: #ffff !important;
 }
 
-.text-center>.p-button-success>span {
+.text-center > .p-button-success {
+    background-color: #f76f31;
+}
+
+.text-center > .p-button-success > span {
     color: #ffff;
 }
 
-.text-center>.p-button-danger {
+.text-center > .p-button-danger {
     background-color: #db6464;
     border-color: #db6464;
 }
 
-.text-center>.p-button-danger>span {
+.text-center > .p-button-danger > span {
     color: #ffff;
 }
 </style>
