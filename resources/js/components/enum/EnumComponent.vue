@@ -42,7 +42,7 @@
                                 @click="clearFilters"
                                 style="
                                     background-color: #F76F31 !important;
-                                    border-color: #F76F31;
+                                    border-color: #F76F31 !important;
                                 "
                             />
                         </div>
@@ -125,7 +125,11 @@
                         <Button
                             icon="pi pi-trash"
                             class="p-button-rounded p-button-danger"
-                            style="margin: 5px"
+                            style="
+                                margin: 5px;
+                                background-color: #db6464;
+                                border-color: #db6464;
+                            "
                             @click="deleteEnum(slotProps.data.id)"
                         />
                     </template>

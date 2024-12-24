@@ -162,4 +162,8 @@ export default {
 .p-menubar {
     border: none !important;
 }
+
+.swal2-confirm {
+    background-color: #F76F31;
+}
 </style>
