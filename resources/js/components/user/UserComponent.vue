@@ -10,7 +10,8 @@
                     @click="addProperty"
                     style="
                         margin-right: 10px;
-                        background-color: #58b78f !important;
+                        background-color: #F76F31 !important;
+                        border-color: #F76F31;
                     "
                 />
                 <Button
@@ -19,7 +20,10 @@
                     rounded
                     raised
                     @click="clearFilters"
-                    style="background-color: #58b78f !important"
+                    style="
+                    background-color: #F76F31 !important;
+                    border-color: #F76F31;
+                    "
                 />
             </div>
             <DataTable
@@ -418,7 +422,7 @@ export default {
 }
 
 span {
-    color: #3c3c3b;
+    color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -426,6 +430,7 @@ span {
 }
 
 .p-card-title {
+    color: #666666;
     font-weight: bold !important;
     font-size: 1.75rem !important;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -437,15 +442,15 @@ span {
 }
 
 svg {
-    color: #58b78f !important;
+    color: #F76F31 !important;
 }
 
 .p-menubar-item-icon {
-    color: #58b78f !important;
+    color: #F76F31 !important;
 }
 
 .p-button-rounded {
-    background-color: #58b78f;
+    background-color: #F76F31;
 }
 
 .p-datatable-filter-apply-button {
@@ -454,7 +459,7 @@ svg {
 
 #name,
 #address {
-    color: #3c3c3b;
+    color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -483,13 +488,19 @@ h3 {
 .p-datatable-filter-rule > .p-inputtext {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
         sans-serif !important;
-    color: #3c3c3b;
+    color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
 }
 
 .p-fileupload-header > .p-fileupload-choose-button {
-    background-color: #58b78f;
+    background-color: #F76F31;
+    border-color: #F76F31;
+}
+
+.p-fileupload-header > .p-fileupload-choose-button:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }
 
 .p-fileupload-header > .p-fileupload-choose-button > span {
@@ -501,7 +512,13 @@ h3 {
 }
 
 .text-center > .p-button-success {
-    background-color: #58b78f;
+    background-color: #F76F31;
+    border-color: #F76F31;
+}
+
+.text-center > .p-button-success:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }
 
 .text-center > .p-button-success > span {
@@ -515,5 +532,27 @@ h3 {
 
 .text-center > .p-button-danger > span {
     color: #ffff;
+}
+
+.p-dialog {
+    background-color: #E5E5E5 !important;
+}
+
+#password {
+    width: 100%;
+}
+
+#password>.p-inputtext {
+    width: 100%;
+}
+
+.custom-form>.custom-form-column>.p-button {
+    background-color: #F76F31 !important;
+    border-color: #F76F31 !important;
+}
+
+.custom-form>.custom-form-column>.p-button:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }
 </style>

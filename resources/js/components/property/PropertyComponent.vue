@@ -10,7 +10,8 @@
                     @click="addProperty"
                     style="
                         margin-right: 10px;
-                        background-color: #58b78f !important;
+                        background-color: #F76F31 !important;
+                        border-color: #F76F31;
                     "
                 />
                 <Button
@@ -19,7 +20,10 @@
                     rounded
                     raised
                     @click="clearFilters"
-                    style="background-color: #58b78f !important"
+                    style="
+                    background-color: #F76F31 !important;
+                    border-color: #F76F31;
+                    "
                 />
             </div>
             <DataTable
@@ -443,7 +447,7 @@ export default {
 }
 
 span {
-    color: #3c3c3b;
+    color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -462,15 +466,15 @@ span {
 }
 
 svg {
-    color: #58b78f !important;
+    color: #F76F31 !important;
 }
 
 .p-menubar-item-icon {
-    color: #58b78f !important;
+    color: #F76F31 !important;
 }
 
 .p-button-rounded {
-    background-color: #58b78f;
+    background-color: #F76F31;
 }
 
 .p-datatable-filter-apply-button {
@@ -479,7 +483,7 @@ svg {
 
 #name,
 #address {
-    color: #3c3c3b;
+    color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
@@ -508,13 +512,13 @@ h3 {
 .p-datatable-filter-rule>.p-inputtext {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
     sans-serif !important;
-    color: #3c3c3b;
+    color: #333333;
     font-weight: bold !important;
     font-size: 1.25rem;
 }
 
 .p-fileupload-header>.p-fileupload-choose-button {
-    background-color: #58b78f;
+    background-color: #F76F31;
 
 }
 
@@ -528,7 +532,7 @@ h3 {
 }
 
 .text-center>.p-button-success {
-    background-color: #58b78f;
+    background-color: #F76F31;
 }
 
 .text-center>.p-button-success>span {

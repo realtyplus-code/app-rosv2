@@ -23,7 +23,7 @@
         @if (Auth::check())
             @include('layouts.navbar')
         @endif
-        <main class="" style="margin-top: 50px; margin-bottom:50px">
+        <main class="">
             @yield('content')
         </main>
     </div>
