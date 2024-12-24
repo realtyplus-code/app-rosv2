@@ -40,6 +40,10 @@
                                 rounded
                                 raised
                                 @click="clearFilters"
+                                style="
+                                    background-color: #F76F31 !important;
+                                    border-color: #F76F31;
+                                "
                             />
                         </div>
                         <div class="header-end" style="margin-top: 20px;">

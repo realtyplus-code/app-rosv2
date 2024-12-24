@@ -1,7 +1,7 @@
 <template>
     <Menubar class="custom-menubar">
         <template #start>
-            <img :src="logoPath" alt="Logo" class="navbar-logo" />
+            <img :src="logoPath" alt="Logo" class="navbar-logo" style="max-width: 150px !important;" />
         </template>
         <template #end>
             <div class="menu-items">
@@ -9,6 +9,7 @@
             </div>
         </template>
     </Menubar>
+    <br><br>
 </template>
 
 <script>
@@ -20,7 +21,7 @@ export default {
     props: [],
     data() {
         return {
-            logoPath: `${window.location.origin}/img/logo.png`,
+            logoPath: `${window.location.origin}/img/logo.jpg`,
             menuItems: [
                 {
                     label: "Property",
