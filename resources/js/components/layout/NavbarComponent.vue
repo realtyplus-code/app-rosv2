@@ -5,7 +5,8 @@
                 :src="logoPath"
                 alt="Logo"
                 class="navbar-logo"
-                style="max-width: 150px !important"
+                style="max-width: 150px !important;cursor: pointer;"
+                @click="route('home')"
             />
             <p class="custom-message">{{ rolMessage }}</p>
         </template>
@@ -35,7 +36,7 @@ export default {
                     label: "Property",
                     icon: "pi pi-home",
                     command: () => {
-                        this.route("home");
+                        this.route("property");
                     },
                 },
                 {
@@ -114,11 +115,14 @@ export default {
                 case "user":
                     window.location.href = "/users";
                     break;
-                case "home":
-                    window.location.href = "/home";
+                case "property":
+                    window.location.href = "/properties";
                     break;
                 case "enum":
                     window.location.href = "/enums";
+                    break;
+                case "home":
+                    window.location.href = "/home";
                     break;
                 default:
                     break;

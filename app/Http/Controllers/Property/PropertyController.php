@@ -19,6 +19,11 @@ class PropertyController extends Controller
         $this->propertyService = $propertyService;
     }
 
+    public function view()
+    {
+        return view('properties.property');
+    }
+
     public function index(Request $request)
     {
         try {

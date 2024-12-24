@@ -12,6 +12,9 @@ const app = createApp({});
 import NavBarComponent from './components/layout/NavbarComponent.vue';
 app.component('navbar-component', NavBarComponent);
 
+import HomeComponent from './components/layout/HomeComponent.vue';
+app.component('home-component', HomeComponent);
+
 // importacion de properties
 import PropertyComponent from './components/property/PropertyComponent.vue';
 app.component('property-component', PropertyComponent);
