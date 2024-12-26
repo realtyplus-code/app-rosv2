@@ -7,6 +7,7 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">Properties</h5>
                         <PieChart
+                            :key="propertiesChartKey"
                             :data="propertiesData"
                             :options="chartOptions"
                             class="chart-element"
@@ -25,6 +26,7 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">Incidents</h5>
                         <PieChart
+                            :key="incidentsChartKey"
                             :data="incidentsData"
                             :options="chartOptions"
                             class="chart-element"
@@ -74,9 +76,8 @@ export default {
                 datasets: [
                     {
                         label: "Properties Status",
-                        data: [40, 30],
+                        data: [10, 0], // Inicialmente vacío
                         backgroundColor: ["#A3D8F4", "#FFB3C1"],
-                        hoverOffset: 4,
                     },
                 ],
             },
@@ -88,7 +89,6 @@ export default {
                         label: "Incident Types",
                         data: [50, 20, 30],
                         backgroundColor: ["#FFB3C1", "#FFE0B3", "#C1E1FF"],
-                        hoverOffset: 4,
                     },
                 ],
             },
@@ -96,7 +96,7 @@ export default {
             chartOptions: {
                 responsive: true,
                 animation: {
-                    duration: 1500,
+                    duration: 3000,
                     easing: "easeInOutQuad",
                     animateRotate: true,
                     animateScale: true,
@@ -113,6 +113,8 @@ export default {
                     },
                 },
             },
+            propertiesChartKey: 0,
+            incidentsChartKey: 0,
         };
     },
     computed: {
@@ -129,9 +131,41 @@ export default {
             );
         },
     },
+    mounted() {
+        this.$nextTick(() => {
+            setTimeout(() => {
+                this.getPropertyTypeCount();
+            }, 500);
+        });
+    },
+    methods: {
+        getPropertyTypeCount() {
+            this.$axios
+                .get("/properties/byTypeCount")
+                .then((response) => {
+                    this.updatePropertiesData(
+                        response.data.data.actives,
+                        response.data.data.inactives
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching properties data:", error);
+                });
+        },
+        updatePropertiesData(actives, inactives) {
+            this.propertiesData.datasets[0].data = [actives, inactives];
+          
+            this.animateChartUpdate();
+          
+        },
+        animateChartUpdate() {
+            this.chartOptions.animation.duration = 1000; // Duración de la animación en milisegundos
+            this.chartOptions.animation.easing = "easeInOutQuad"; // Tipo de animación
+            this.propertiesChartKey += 1;
+        },
+    },
 };
 </script>
-
 <style scoped>
 .chart-container {
     padding: 20px;
@@ -153,11 +187,6 @@ export default {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 15px;
-}
-
-.chart-element {
-    width: 100%;
-    height: 250px; /* Ajusté el tamaño del gráfico */
 }
 
 .total-count {

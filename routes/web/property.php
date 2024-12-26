@@ -6,6 +6,7 @@ use App\Http\Controllers\Property\PropertyController;
 Route::prefix('properties')->middleware(['auth'])->group(function () {
     Route::get('/', [PropertyController::class, 'view'])->name('properties.view');
     Route::get('/list', [PropertyController::class, 'index'])->name('properties.index');
+    Route::get('/byTypeCount', [PropertyController::class, 'byTypeCount'])->name('properties.type.count');
     Route::post('/store', [PropertyController::class, 'store'])->name('properties.store');
     Route::post('/update/{id}', [PropertyController::class, 'update'])->name('properties.update');
     Route::delete('/{id}', [PropertyController::class, 'destroy'])->name('properties.destroy');

@@ -2,18 +2,6 @@
     display: none !important;
 }
 
-.custom-form {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 25px;
-}
-
-.custom-form-column {
-    flex: 1;
-    min-width: 200px;
-}
-
 .inputtext-custom {
     width: 100%;
 }
@@ -76,6 +64,9 @@
 .custom-form-column {
     flex: 1;
     min-width: 200px;
+    border-color: #cbd5e1 !important;
+    border-left-color: #cbd5e1 !important;
+    border-right-color: #cbd5e1 !important;
 }
 
 .custom-message{
@@ -205,12 +196,6 @@ h3 {
 }
 
 .p-multiselect {
-    border-color: #cbd5e1 !important;
-    border-left-color: #cbd5e1 !important;
-    border-right-color: #cbd5e1 !important;
-}
-
-.custom-form-column {
     border-color: #cbd5e1 !important;
     border-left-color: #cbd5e1 !important;
     border-right-color: #cbd5e1 !important;

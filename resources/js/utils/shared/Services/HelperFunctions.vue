@@ -23,7 +23,7 @@ export default {
             });
         },
         $parseInsurance(cant) {
-            if (cant > 1) {
+            if (cant > 0) {
                 return "pi pi-eye";
             } else {
                 return "pi pi-eye-slash";

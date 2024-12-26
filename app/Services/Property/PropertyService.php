@@ -61,6 +61,12 @@ class PropertyService
         return $query->distinct();
     }
 
+    public function getPropertiesTypeQuery()
+    {
+        $query = Property::query();
+        return $query->distinct();
+    }
+
     public function storeProperty(array $data)
     {
         DB::beginTransaction();

@@ -33,6 +33,28 @@ export default {
                     return selector;
             }
         },
+        $relationTableInsurance(selector) {
+            switch (selector) {
+                case "insurance_company":
+                    return "insurances.insurance_company";
+                case "start_date":
+                    return "insurances.start_date";
+                case "end_date":
+                    return "insurances.end_date";
+                case "contact_person":
+                    return "insurances.contact_person";
+                case "coverage_name":
+                    return "e_ct.name";
+                case "property_name":
+                    return "properties.name";
+                case "created_at":
+                    return "insurances.created_at";
+                case "updated_at":
+                    return "insurances.updated_at";
+                default:
+                    return selector;
+            }
+        },
     },
 };
 </script>

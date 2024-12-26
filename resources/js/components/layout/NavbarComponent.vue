@@ -5,7 +5,7 @@
                 :src="logoPath"
                 alt="Logo"
                 class="navbar-logo"
-                style="max-width: 150px !important;cursor: pointer;"
+                style="max-width: 150px !important; cursor: pointer"
                 @click="route('home')"
             />
             <p class="custom-message">{{ rolMessage }}</p>
@@ -33,44 +33,45 @@ export default {
             logoPath: `${window.location.origin}/img/logo.jpg`,
             menuItems: [
                 {
-                    label: "Property",
-                    icon: "pi pi-home",
-                    command: () => {
-                        this.route("property");
-                    },
-                },
-                {
-                    label: "User",
-                    icon: "pi pi-user",
-                    command: () => {
-                        this.route("user");
-                    },
-                },
-                {
-                    label: "Enum",
-                    icon: "pi pi-cog",
-                    command: () => {
-                        this.route("enum");
-                    },
-                },
-                /* {
-                    label: "Projects",
-                    icon: "pi pi-search",
+                    label: "Properties",
+                    icon: "pi pi-warehouse",
                     items: [
-                        {
-                            label: "Components",
-                            icon: "pi pi-bolt",
+                    {
+                            label: "Property",
+                            icon: "pi pi-home",
+                            command: () => {
+                                this.route("property");
+                            },
                         },
                         {
-                            label: "Blocks",
-                            icon: "pi pi-server",
-                        },
-                        {
-                            label: "UI Kit",
-                            icon: "pi pi-pencil",
+                            label: "Insurance",
+                            icon: "pi pi-shield",
+                            command: () => {
+                                this.route("insurance");
+                            },
                         },
                     ],
-                }, */
+                },
+                {
+                    label: "Admin",
+                    icon: "pi pi-users",
+                    items: [
+                        {
+                            label: "User",
+                            icon: "pi pi-user",
+                            command: () => {
+                                this.route("user");
+                            },
+                        },
+                        {
+                            label: "Enum",
+                            icon: "pi pi-cog",
+                            command: () => {
+                                this.route("enum");
+                            },
+                        },
+                    ],
+                },
                 {
                     label: "Logout",
                     icon: "pi pi-sign-out",
@@ -124,6 +125,9 @@ export default {
                 case "home":
                     window.location.href = "/home";
                     break;
+                case "insurance":
+                    window.location.href = "/insurances";
+                    break;
                 default:
                     break;
             }
@@ -164,6 +168,6 @@ export default {
 }
 
 .swal2-confirm {
-    background-color: #F76F31;
+    background-color: #f76f31;
 }
 </style>

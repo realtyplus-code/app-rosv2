@@ -2,7 +2,8 @@ import './bootstrap';
 import { createApp } from 'vue';
 import axios from "axios";
 import Swal from "sweetalert2";
-import shared from "./utils/shared"
+import shared from "./utils/shared";
+import $ from 'jquery'; // Importar jQuery
 
 import PrimeVue from "primevue/config";
 
@@ -22,6 +23,10 @@ app.component('property-component', PropertyComponent);
 //importacion de user
 import UserComponent from './components/user/UserComponent.vue';
 app.component('user-component', UserComponent);
+
+//importacion de insurance
+import InsuranceComponent from './components/insurance/InsuranceComponent.vue';
+app.component('insurance-component', InsuranceComponent);
 
 //importacion de enums
 import EnumComponent from './components/enum/EnumComponent.vue';
@@ -56,5 +61,13 @@ app.config.globalProperties.$axios = axios;
 
 // Configura SweetAlert2 globalmente
 app.config.globalProperties.$swal = Swal;
+
+window.$ = $;
+window.jQuery = $;
+
+$.urlParam = function(name) {
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return results ? results[1] : null;
+};
 
 app.mount('#app');

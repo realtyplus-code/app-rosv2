@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insurance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Insurance\InsuranceService;
 use App\Http\Requests\Insurance\StoreInsuranceRequest;
 use App\Http\Controllers\ResponseController as Response;
@@ -18,16 +19,39 @@ class InsuranceController extends Controller
         $this->insuranceService = $insuranceService;
     }
 
+    public function view()
+    {
+        return view('insurances.insurance');
+    }
+
     public function index(Request $request)
     {
         try {
-            $query = $this->insuranceService->getInsurancesQuery();
+
+            $role = Auth::user()->getRoleNames()[0];
+            if ($role !== 'admin' && !$request->has('property_id')) {
+                return Response::sendError('The property field is required for non-admin users', 400);
+            }
+            
+            $query = $this->insuranceService->getInsurancesQuery($request->all());
+
             return renderDataTable(
                 $query,
                 $request,
                 [],
                 [
                     'insurances.id',
+                    'insurances.insurance_company',
+                    'insurances.start_date',
+                    'insurances.end_date',
+                    'insurances.contact_person',
+                    'insurances.contact_email',
+                    'properties.id as property_id',
+                    'properties.name as property_name',
+                    'e_ct.name as coverage_name',
+                    'e_ct.id as coverage_id',
+                    'insurances.created_at',
+                    'insurances.updated_at',
                 ]
             );
         } catch (\Exception $ex) {

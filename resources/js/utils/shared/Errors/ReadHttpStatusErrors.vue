@@ -5,12 +5,17 @@ const readStatus = {};
 readStatus.getDataError = (error = []) => {
     let response = {};
     try {
-        response = [error][0].response;
+        if (Array.isArray(error) && error.length > 0) {
+            response = error[0].response;
+        } else {
+            response = error;
+        }
     } catch (error) {
         response = {};
     }
     return response;
 };
+
 
 readStatus.validateForm = (data) => {
     const errors = data.errors;
@@ -29,7 +34,6 @@ export default {
     methods: {
         $readStatusHttp(error = []) {
             const response = readStatus.getDataError(error);
-
             switch (response.status) {
                 case 400:
                     this.$alertDanger("Bad Request", response.data.message);

@@ -200,7 +200,13 @@ export default {
                 this.formInsurance.property_id =
                     this.selectedInsurance.property_id;
                 this.formInsurance.coverage_type_id =
-                    this.selectedInsurance.coverage_type_id;
+                    this.selectedInsurance.coverage_id;
+                this.formInsurance.start_date = new Date(
+                    this.selectedInsurance.start_date
+                );
+                this.formInsurance.end_date = new Date(
+                    this.selectedInsurance.end_date
+                );
             }
         });
     },

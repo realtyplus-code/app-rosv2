@@ -55,6 +55,25 @@ class PropertyController extends Controller
         }
     }
 
+    public function byTypeCount()
+    {
+        try {
+            $query = $this->propertyService->getPropertiesTypeQuery();
+            $properties = $query->get();
+            $actives = $properties->where('status', 1)->count();
+            $inactives = $properties->where('status', 2)->count();
+            $response = [
+                'actives' => $actives,
+                'inactives' => $inactives
+            ];
+            return Response::sendResponse($response, 'Registros obtenidos con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
     public function store(StorePropertyRequest $request)
     {
         try {

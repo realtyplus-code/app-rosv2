@@ -17,9 +17,16 @@ class InsuranceService
         $this->insuranceRepository = $insuranceRepository;
     }
 
-    public function getInsurancesQuery()
+    public function getInsurancesQuery($data)
     {
-        $query = Insurance::query();
+        $query = Insurance::query()
+            ->leftJoin('properties', 'properties.id', '=', 'insurances.property_id')
+            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'insurances.coverage_type_id');
+
+        if (isset($data['property_id'])) {
+            $query->where('properties.id', $data['property_id']);
+        }
+    
         return $query->distinct();
     }
 
