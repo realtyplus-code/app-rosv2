@@ -105,6 +105,7 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <Select
+                    filter
                     :options="listCoverageType"
                     v-model="formInsurance.coverage_type_id"
                     placeholder="Select coverage"

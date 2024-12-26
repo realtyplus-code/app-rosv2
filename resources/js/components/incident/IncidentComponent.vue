@@ -1,13 +1,13 @@
 <template>
     <Card>
-        <template #title>Property</template>
+        <template #title>Incident</template>
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
                     icon="pi pi-plus"
                     rounded
                     raised
-                    @click="addProperty"
+                    @click="addIncident"
                     style="
                         margin-right: 10px;
                         background-color: #f76f31 !important;
@@ -29,7 +29,7 @@
             <DataTable
                 v-model:filters="filters"
                 :loading="loading"
-                :value="users"
+                :value="incidents"
                 :paginator="true"
                 :rows="perPage"
                 :sortField="sortField"
@@ -44,53 +44,53 @@
                 stripedRows
                 scrollable
             >
-                <!-- Name Column -->
+                <!-- Description Column -->
                 <Column
-                    field="name"
-                    header="Name"
+                    field="description"
+                    header="Description"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.name }}
+                        {{ data.description }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by name"
+                            placeholder="Search by description"
                         />
                     </template>
                 </Column>
-                <!-- Address Column -->
+                <!-- Report Date Column -->
                 <Column
-                    field="address"
-                    header="Address"
+                    field="report_date"
+                    header="Report Date"
                     sortable
-                    style="min-width: 200px"
+                    style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.address }}
+                        {{ data.report_date }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by address"
+                            placeholder="Search by report date"
                         />
                     </template>
                 </Column>
                 <!-- Status Column -->
                 <Column
-                    field="status"
+                    field="status_name"
                     header="Status"
                     sortable
                     style="min-width: 120px"
                 >
                     <template #body="{ data }">
-                        {{ $formatStatus(data.status) }}
+                        {{ data.status_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <Select
@@ -98,133 +98,53 @@
                             v-model="filterModel.value"
                             placeholder="Select status"
                             optionLabel="value"
-                            optionValue="id"
+                            optionValue="name"
                             style="width: 100%"
                         />
                     </template>
                 </Column>
-                <!-- Property Type Name Column -->
+                <!-- Incident Type Column -->
                 <Column
-                    field="property_type_name"
-                    header="Property Type"
+                    field="incident_type_name"
+                    header="Incident Type"
                     sortable
                     style="min-width: 180px"
                 >
                     <template #body="{ data }">
-                        {{ data.property_type_name }}
+                        {{ data.incident_type_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by property type"
+                            placeholder="Search by incident type"
                         />
                     </template>
                 </Column>
-                <!-- Owner Name Column -->
+                <!-- Priority Column -->
                 <Column
-                    field="owners_name"
-                    header="Owner Name"
+                    field="priority_name"
+                    header="Priority"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        <div class="size-tags">
-                            <Tag
-                                v-for="index in $parseTags(data.owners_name)"
-                                :key="index.id"
-                                :value="`${index.tag}`"
-                                class="size-tag"
-                            />
-                        </div>
+                        {{ data.priority_name }}
                     </template>
-                </Column>
-                <!-- Tenant Name Column -->
-                <Column
-                    field="tenants_name"
-                    header="Tenant Name"
-                    sortable
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        <div class="size-tags">
-                            <Tag
-                                v-for="index in $parseTags(data.tenants_name)"
-                                :key="index.id"
-                                :value="`${index.tag}`"
-                                class="size-tag"
-                            />
-                        </div>
-                    </template>
-                </Column>
-                <!-- Insurances Type Name Column -->
-                <Column
-                    field="insurances"
-                    header="Insurances"
-                    style="min-width: 180px"
-                >
-                    <template #body="{ data }">
-                        <div
-                            class="size-insurances"
-                            style="justify-content: center"
-                        >
-                            <i
-                                class="size-insurance"
-                                :class="$parseInsurance(data.insurances)"
-                                :title="
-                                    data.insurances > 0
-                                        ? 'View insurances'
-                                        : 'No insurances available'
-                                "
-                                :style="{
-                                    fontSize: '1.5rem',
-                                    color:
-                                        data.insurances > 0 ? 'green' : 'red',
-                                    cursor:
-                                        data.insurances > 0 ? 'pointer' : '',
-                                }"
-                                @click="
-                                    viewPanelInsurance(data.insurances, data.id)
-                                "
-                            ></i>
-                        </div>
-                    </template>
-                </Column>
-
-                <!-- Photos Column -->
-                <Column header="Photo">
-                    <template #body="{ data }">
-                        <div style="text-align: center">
-                            <Galleria
-                                :key="galleryKey"
-                                :value="$getImages(data)"
-                                :numVisible="4"
-                                style="width: 900px"
-                                containerClass="custom-galleria"
-                                :showThumbnails="true"
-                                showIndicators
-                                circular
-                                autoPlay
-                                :transitionInterval="5000"
-                            >
-                                <template #item="{ item }">
-                                    <Image
-                                        :src="item"
-                                        class="w-full h-full object-cover cursor-pointer"
-                                        height="100px"
-                                        width="150px"
-                                        preview
-                                    />
-                                </template>
-                            </Galleria>
-                        </div>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by priority"
+                        />
                     </template>
                 </Column>
                 <!-- Actions Column -->
                 <Column
                     header="Actions"
-                    style="min-width: 120px; text-align: center"
+                    style="min-width: 180px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -236,25 +156,7 @@
                                     background-color: #f76f31;
                                     border-color: #f76f31;
                                 "
-                                @click="editProperty(slotProps.data)"
-                            />
-                            <Button
-                                icon="pi pi-shield"
-                                class="p-button-rounded p-button-warn"
-                                style="margin: 5px"
-                                @click="viewInsurance(slotProps.data.id)"
-                                title="Insurances"
-                            />
-                            <Button
-                                icon="pi pi-exclamation-circle"
-                                class="p-button-rounded p-button-info"
-                                style="
-                                    margin: 5px;
-                                    background-color: #DACC3E;
-                                    border-color: #DACC3E;
-                                "
-                                @click="viewIncident(slotProps.data.id)"
-                                title="Incidents"
+                                @click="editIncident(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
@@ -264,7 +166,7 @@
                                     background-color: #db6464;
                                     border-color: #db6464;
                                 "
-                                @click="deleteProperty(slotProps.data.id)"
+                                @click="deleteIncident(slotProps.data.id)"
                             />
                         </div>
                     </template>
@@ -272,28 +174,14 @@
             </DataTable>
         </template>
     </Card>
-    <!-- gestion de propiedades -->
-    <ManagemenPropertyComponent
+    <!-- gestion de incidentes -->
+    <ManagementIncidentComponent
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
-        :selectedProperty="selectedProperty"
+        :selectedIncident="selectedIncident"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
-    />
-    <!-- gestion de seguros -->
-    <ManagemenInsuranceComponent
-        v-if="dialogVisibleInsurance"
-        :dialogVisible="dialogVisibleInsurance"
-        :selectedPropertyId="selectedPropertyId"
-        @hidden="hiddenInsurance"
-    />
-    <!-- gestion de incidencias -->
-    <ManagemenIncidentComponent
-        v-if="dialogVisibleIncident"
-        :dialogVisible="dialogVisibleIncident"
-        :selectedPropertyId="selectedPropertyId"
-        @hidden="hiddenIncident"
     />
 </template>
 
@@ -302,23 +190,18 @@
 
 import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
-import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
-import ManagemenInsuranceComponent from "../insurance/management/ManagemenInsuranceComponent.vue";
-import ManagemenIncidentComponent from "../incident/management/ManagemenIncidentComponent.vue";
+import ManagementIncidentComponent from "./management/ManagemenIncidentComponent.vue";
 import InputText from "primevue/inputtext";
 import DataTable from "primevue/datatable";
-import Galleria from "primevue/galleria";
 import Select from "primevue/select";
 import Column from "primevue/column";
 import Button from "primevue/button";
-import Image from "primevue/image";
-import Tag from "primevue/tag";
 
 export default {
     props: [],
     data() {
         return {
-            users: [],
+            incidents: [],
             perPage: 10,
             totalRecords: 0,
             page: 1,
@@ -328,56 +211,47 @@ export default {
             filtroInfo: [],
             loading: true,
             //
-            selectedProperty: null,
-            selectedPropertyId: true,
+            selectedIncident: null,
             dialogVisible: false,
-            dialogVisibleInsurance: false,
-            dialogVisibleIncident: false,
             statuses: [
-                { value: "Active", id: 1 },
-                { value: "Inactive", id: 2 },
+                { value: "Open", name: "Open" },
+                { value: "Closed", name: "Closed" },
             ],
-            galleryKey: 0,
         };
     },
     components: {
         FilterMatchMode,
         FilterOperator,
         Card,
-        ManagemenPropertyComponent,
-        ManagemenInsuranceComponent,
-        ManagemenIncidentComponent,
+        ManagementIncidentComponent,
         DataTable,
         Column,
         Button,
         InputText,
-        Tag,
         Select,
-        Galleria,
-        Image,
     },
     created() {
         this.initFilters();
     },
     mounted() {
-        this.fetchProperty();
+        this.fetchIncident();
     },
     methods: {
         initFilters() {
             this.filters = {
-                name: {
+                description: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                address: {
+                report_date: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                status: {
+                status_name: {
                     clear: false,
                     filterOptions: {
                         showFilterMenu: false,
@@ -386,19 +260,13 @@ export default {
                         { value: null, matchMode: FilterMatchMode.EQUALS },
                     ],
                 },
-                owner_name: {
+                incident_type_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                tenant_name: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-                property_type_name: {
+                priority_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -409,18 +277,18 @@ export default {
         clearFilters() {
             this.initFilters();
             this.filtroInfo = [];
-            this.fetchProperty();
+            this.fetchIncident();
         },
         onPage(event) {
             this.page = event.page + 1;
             this.perPage = event.rows;
-            this.fetchProperty();
+            this.fetchIncident();
         },
         onSort(event) {
             this.page = 1;
             this.sortField = event.sortField;
             this.sortOrder = event.sortOrder;
-            this.fetchProperty();
+            this.fetchIncident();
         },
         onFilters(event) {
             this.page = 1;
@@ -431,7 +299,7 @@ export default {
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
                             this.filtroInfo.push([
-                                this.$relationTableProperty(key),
+                                this.$relationTableIncident(key),
                                 constraint.matchMode,
                                 constraint.value,
                             ]);
@@ -439,12 +307,12 @@ export default {
                     }
                 }
             }
-            this.fetchProperty();
+            this.fetchIncident();
         },
-        fetchProperty() {
+        fetchIncident() {
             this.loading = true;
             this.$axios
-                .get("/properties/list", {
+                .get("/incidents/list", {
                     params: {
                         page: this.page,
                         perPage: this.perPage,
@@ -454,7 +322,7 @@ export default {
                     },
                 })
                 .then((response) => {
-                    this.users = response.data.data;
+                    this.incidents = response.data.data;
                     this.totalRecords = response.data.total;
                     this.loading = false;
                 })
@@ -463,18 +331,18 @@ export default {
                     this.loading = false;
                 });
         },
-        addProperty() {
-            this.selectedProperty = null;
+        addIncident() {
+            this.selectedIncident = null;
             this.dialogVisible = true;
         },
-        editProperty(aliado) {
-            this.selectedProperty = aliado;
+        editIncident(incident) {
+            this.selectedIncident = incident;
             this.dialogVisible = true;
         },
-        async deleteProperty(aliadoId) {
+        async deleteIncident(incidentId) {
             const result = await this.$swal.fire({
                 title: "You're sure?",
-                text: "You are about to delete this property. Are you sure you want to continue?",
+                text: "You are about to delete this incident. Are you sure you want to continue?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -485,47 +353,24 @@ export default {
 
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`/properties/${aliadoId}`);
+                    await axios.delete(`/incidents/${incidentId}`);
                     this.$alertSuccess("Register delete");
-                    this.fetchProperty();
+                    this.fetchIncident();
                 } catch (error) {
                     this.$readStatusHttp(error);
                 }
             }
         },
         reload() {
-            this.fetchProperty();
-            this.selectedProperty = null;
+            this.fetchIncident();
+            this.selectedIncident = null;
             this.dialogVisible = false;
         },
         reloadTable() {
-            this.fetchProperty();
-            this.resetGallery();
-        },
-        resetGallery() {
-            this.galleryKey += 1;
+            this.fetchIncident();
         },
         hidden(status) {
             this.dialogVisible = status;
-        },
-        hiddenInsurance(status) {
-            this.dialogVisibleInsurance = status;
-        },
-        hiddenIncident(status) {
-            this.dialogVisibleIncident = status;
-        },
-        viewInsurance(id) {
-            this.selectedPropertyId = id;
-            this.dialogVisibleInsurance = true;
-        },
-        viewIncident(id) {
-            this.selectedPropertyId = id;
-            this.dialogVisibleIncident = true;
-        },
-        viewPanelInsurance(insurances, id) {
-            if (insurances == 0) return;
-            window.location.href = "/insurances?property_id=" + id;
-            return;
         },
     },
 };

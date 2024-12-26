@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             __DIR__ . '/../routes/web/user.php',
             __DIR__ . '/../routes/web/role.php',
             __DIR__ . '/../routes/web/insurance.php',
+            __DIR__ . '/../routes/web/incident.php',
+            __DIR__ . '/../routes/web/provider.php',
         ],
         commands: __DIR__.'/../routes/console.php',
         health: '/up',

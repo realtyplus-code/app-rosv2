@@ -53,6 +53,7 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <Select
+                    filter
                     :options="listPropertyType"
                     v-model="formProperty.property_type_id"
                     placeholder="Select property type"
@@ -69,6 +70,7 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <Select
+                    filter
                     :options="listStatus"
                     v-model="formProperty.status"
                     placeholder="Select status"

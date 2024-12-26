@@ -19,6 +19,7 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <Select
+                    filter
                     :options="listRoles"
                     v-model="formUser.role"
                     placeholder="Select rol"
@@ -132,7 +133,7 @@
                     >{{ errors.photos }}</small
                 >
             </div>
-            <div v-else class="gallery" >
+            <div v-else class="gallery">
                 <div class="gallery-grid">
                     <div
                         v-for="(photo, index) in formUser.photos"
@@ -313,7 +314,7 @@ export default {
                     .min(1, "At least 1 photo is required")
                     .max(1, "You can upload up to 1 photos")
                     .required("Photo is required"),
-                role: Yup.string().required("Role is required")
+                role: Yup.string().required("Role is required"),
             };
             if (!this.selectedUser) {
                 this.dynamicRules.password = Yup.string().required(
@@ -378,7 +379,7 @@ export default {
             let tmpFormatCountry = null;
             const isValid = await this.validateForm();
             const countryData = this.phoneInput.getSelectedCountryData();
-            console.log(this.errors)
+            console.log(this.errors);
             if (!countryData.dialCode || countryData.dialCode == undefined) {
                 this.isLoad = false;
                 return this.$alertWarning("select first country phone");

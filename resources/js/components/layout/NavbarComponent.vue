@@ -36,7 +36,7 @@ export default {
                     label: "Properties",
                     icon: "pi pi-warehouse",
                     items: [
-                    {
+                        {
                             label: "Property",
                             icon: "pi pi-home",
                             command: () => {
@@ -50,6 +50,13 @@ export default {
                                 this.route("insurance");
                             },
                         },
+                        /* {
+                            label: "Incident",
+                            icon: "pi pi-exclamation-triangle",
+                            command: () => {
+                                this.route("incident");
+                            },
+                        }, */
                     ],
                 },
                 {
@@ -127,6 +134,9 @@ export default {
                     break;
                 case "insurance":
                     window.location.href = "/insurances";
+                    break;
+                case "incident":
+                    window.location.href = "/incidents";
                     break;
                 default:
                     break;

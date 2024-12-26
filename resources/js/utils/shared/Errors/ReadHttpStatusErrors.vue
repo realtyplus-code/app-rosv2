@@ -77,7 +77,7 @@ export default {
                     this.$alertDanger("Limit Exceeded");
                     break;
                 case 500:
-                    if (response.data.message == "FALSE EMAIL") {
+                    if (response.data?.message && response.data.message == "FALSE EMAIL") {
                         this.$alertDanger(
                             "Bad Request",
                             "Email not found on server"

@@ -55,6 +55,22 @@ export default {
                     return selector;
             }
         },
+        $relationTableIncident(selector) {
+            switch (selector) {
+                case "description":
+                    return "incidents.description";
+                case "report_date":
+                    return "incidents.report_date";
+                case "status_name":
+                    return "eo_status.name";
+                case "incident_type_name":
+                    return "eo_incident_type.name";
+                case "priority_name":
+                    return "eo_priority.name";
+                default:
+                    return selector;
+            }
+        },
     },
 };
 </script>

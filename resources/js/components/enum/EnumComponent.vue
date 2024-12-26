@@ -41,13 +41,14 @@
                                 raised
                                 @click="clearFilters"
                                 style="
-                                    background-color: #F76F31 !important;
-                                    border-color: #F76F31 !important;
+                                    background-color: #f76f31 !important;
+                                    border-color: #f76f31 !important;
                                 "
                             />
                         </div>
-                        <div class="header-end" style="margin-top: 20px;">
+                        <div class="header-end" style="margin-top: 20px">
                             <Select
+                                filter
                                 v-model="selectedOption"
                                 :options="listOptions"
                                 placeholder="Select option"
@@ -89,7 +90,7 @@
                             placeholder="Buscar por nombre"
                         />
                     </template>
-                </Column> 
+                </Column>
                 <Column
                     field="status"
                     header="Status"
@@ -101,6 +102,7 @@
                     </template>
                     <template #filter="{ filterModel }">
                         <Select
+                            filter
                             :options="statuses"
                             v-model="filterModel.value"
                             placeholder="Select status"
@@ -152,7 +154,6 @@
 </template>
 
 <script>
-
 import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagemenEnumComponent from "./management/ManagemenEnumComponent.vue";

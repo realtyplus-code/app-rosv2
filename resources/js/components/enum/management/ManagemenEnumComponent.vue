@@ -12,6 +12,7 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <Select
+                    filter
                     :options="options"
                     v-model="formEnum.parent_id"
                     placeholder="Selecciona opcion"
@@ -35,7 +36,7 @@
                         :class="{ 'p-invalid': errors.name }"
                         v-model="formEnum.name"
                         @input="clearError('name')"
-                        style="width: 100%;"
+                        style="width: 100%"
                     />
                     <label for="name">Name</label>
                 </FloatLabel>
@@ -47,6 +48,7 @@
         <div class="custom-form mt-2">
             <div class="custom-form-column">
                 <Select
+                    filter
                     :options="listStatus"
                     v-model="formEnum.status"
                     placeholder="Select status"
@@ -123,19 +125,16 @@ export default {
         Dialog,
         Select,
         InputText,
-        Button
+        Button,
     },
-    watch: {
-
-    },
+    watch: {},
     mounted() {
         this.formEnum.parent_id = this.selectedOption;
         if (this.selectedEnum) {
             this.formEnum.name = this.selectedEnum.name;
-            this.formEnum.brother_relation_id = this.selectedEnum.brother_relation_id;
-            this.formEnum.status = parseInt(
-                    this.selectedEnum.status
-                );
+            this.formEnum.brother_relation_id =
+                this.selectedEnum.brother_relation_id;
+            this.formEnum.status = parseInt(this.selectedEnum.status);
         }
     },
     created() {

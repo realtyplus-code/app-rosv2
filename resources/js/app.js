@@ -4,6 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import shared from "./utils/shared";
 import $ from 'jquery'; // Importar jQuery
+import { GlobalVariables } from './utils/shared/Services/GlobalVariables'; // Importar variables globales
 
 import PrimeVue from "primevue/config";
 
@@ -31,6 +32,10 @@ app.component('insurance-component', InsuranceComponent);
 //importacion de enums
 import EnumComponent from './components/enum/EnumComponent.vue';
 app.component('enum-component', EnumComponent);
+
+//importacion de incident
+import IncidentComponent from './components/incident/IncidentComponent.vue';
+app.component('incident-component', IncidentComponent);
 
 import Aura from "@primevue/themes/aura";
 import "primeicons/primeicons.css";
@@ -61,6 +66,9 @@ app.config.globalProperties.$axios = axios;
 
 // Configura SweetAlert2 globalmente
 app.config.globalProperties.$swal = Swal;
+
+// Configura variables globales
+app.config.globalProperties.$globals = GlobalVariables;
 
 window.$ = $;
 window.jQuery = $;

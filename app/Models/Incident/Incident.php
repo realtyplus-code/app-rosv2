@@ -2,6 +2,7 @@
 
 namespace App\Models\Incident;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Property\Property;
 use App\Models\Provider\Provider;
@@ -78,4 +79,16 @@ class Incident extends Model
     {
         return $this->belongsTo(EnumOption::class, 'payer_id');
     }
+
+    public function setReportDateAttribute($value)
+    {
+        $this->attributes['report_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+
+    public function getReportDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
 }
