@@ -227,6 +227,7 @@ h3 {
 .p-tag {
     background-color: #E5E5E5 !important;
     margin-bottom: 5px !important;
+    margin-right: 5px !important;
 }
 
 .p-paginator-page-selected {
