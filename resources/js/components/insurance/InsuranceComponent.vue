@@ -206,6 +206,7 @@
         :selectedInsurance="selectedInsurance"
         :selectedInsuranceId="selectedInsuranceId"
         @hidden="hiddenInsurance"
+        @reload="reload"
     />
 </template>
 
@@ -345,7 +346,7 @@ export default {
         },
         fetchInsurance() {
             this.loading = true;
-            const property_id = $.urlParam('property_id');
+            const property_id = $.urlParam("property_id");
             this.$axios
                 .get("/insurances/list", {
                     params: {
@@ -419,6 +420,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
