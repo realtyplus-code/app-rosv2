@@ -7,7 +7,7 @@
             <div class="col-md-6 text-white d-flex align-items-center justify-content-center"
                 style="background-color: #E5E5E5;">
                 <div class="text-center">
-                    <img src="{{ asset('img/rentalcolora.svg') }}" class="img-fluid" alt="Placeholder Image" width="550" style="margin: 50px 0">
+                    <img src="{{ asset('img/rentalcolora.svg') }}" class="img-fluid" alt="Placeholder Image" width="450" style="margin: 50px 0">
                     <h1
                         style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 3.25rem; color: #333333;">
                         <strong>
