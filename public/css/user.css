@@ -4,6 +4,16 @@
     font-weight: bold;
 }
 
+.size-tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.size-tag {
+    padding: 8px !important;
+    margin: 3px;
+}
+
 .p-d-flex {
     display: flex;
 }
