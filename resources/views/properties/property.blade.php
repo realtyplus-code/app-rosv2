@@ -1,4 +1,4 @@
-<link href="{{ asset('/css/property.css') }}" rel="stylesheet">
+<link href="{{ asset('/css/property.css') }}?v={{ time() }}" rel="stylesheet">
 @extends('layouts.app')
 @section('content')
     <div class="container">

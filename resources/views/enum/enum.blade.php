@@ -1,4 +1,4 @@
-<link href="{{ asset('/css/enum.css') }}" rel="stylesheet">
+<link href="{{ asset('/css/enum.css') }}?v={{ time() }}" rel="stylesheet">
 @extends('layouts.app')
 @section('content')
     <div class="container">

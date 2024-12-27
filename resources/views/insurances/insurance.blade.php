@@ -1,4 +1,4 @@
-<link href="{{ asset('/css/insurance.css') }}" rel="stylesheet">
+<link href="{{ asset('/css/insurance.css') }}?v={{ time() }}" rel="stylesheet">
 @extends('layouts.app')
 @section('content')
     <div class="container">
