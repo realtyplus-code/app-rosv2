@@ -1,0 +1,41 @@
+.swal2-confirm {
+    background-color: #F76F31 !important;
+}
+
+.swal2-cancel {
+    background-color: #db6464 !important;
+}
+
+span {
+    color: #333333;
+    font-weight: bold !important;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+        sans-serif;
+}
+
+.p-card-title {
+    color: #666666;
+    font-weight: bold !important;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+        sans-serif;
+}
+
+.p-button-icon {
+    color: #ffff;
+}
+
+svg {
+    color: #F76F31 !important;
+}
+
+.p-menubar-item-icon {
+    color: #F76F31 !important;
+}
+
+.p-button-rounded {
+    background-color: #F76F31;
+}
+
+.p-datatable-filter-apply-button {
+    color: #ffff !important;
+}
