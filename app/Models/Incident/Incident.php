@@ -19,7 +19,6 @@ class Incident extends Model
         'reported_by',
         'incident_type_id',
         'priority_id',
-        'assigned_responsible',
         'cost',
         'payer_id',
     ];
@@ -38,14 +37,6 @@ class Incident extends Model
     public function reportedBy()
     {
         return $this->belongsTo(User::class, 'reported_by');
-    }
-
-    /**
-     * Relación: Incidente - Responsable asignado (assigned_responsible)
-     */
-    public function assignedResponsible()
-    {
-        return $this->belongsTo(Provider::class, 'assigned_responsible');
     }
 
     /**

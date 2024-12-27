@@ -38,18 +38,19 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
-                <Select
-                    filter
+                <MultiSelect
                     :options="listProviders"
-                    v-model="formIncident.assigned_responsible"
-                    placeholder="Select responsible"
-                    :class="{ 'p-invalid': errors.assigned_responsible }"
+                    v-model="formIncident.providers"
+                    filter
+                    placeholder="Select providers"
+                    :class="{ 'p-invalid': errors.providers }"
+                    :maxSelectedLabels="limitProviders"
                     optionLabel="name"
                     optionValue="id"
                     style="width: 100%"
                 />
-                <small v-if="errors.assigned_responsible" class="p-error">{{
-                    errors.assigned_responsible
+                <small v-if="errors.providers" class="p-error">{{
+                    errors.providers
                 }}</small>
             </div>
         </div>
@@ -181,16 +182,6 @@
 
 <script>
 import * as Yup from "yup";
-import MultiSelect from "primevue/multiselect";
-import FloatLabel from "primevue/floatlabel";
-import FileUpload from "primevue/fileupload";
-import DatePicker from "primevue/datepicker";
-import InputText from "primevue/inputtext";
-import Dialog from "primevue/dialog";
-import Select from "primevue/select";
-import Button from "primevue/button";
-import Textarea from "primevue/textarea";
-import InputNumber from "primevue/inputnumber";
 import { hide } from "@popperjs/core";
 
 export default {
@@ -206,7 +197,7 @@ export default {
                 status_id: null,
                 incident_type_id: null,
                 priority_id: null,
-                assigned_responsible: null,
+                providers: [],
                 cost: null,
                 payer_id: null,
             },
@@ -218,20 +209,10 @@ export default {
             listOwners: [],
             listProviders: [],
             isLoad: false,
+            limitProviders: 10,
         };
     },
-    components: {
-        FloatLabel,
-        Dialog,
-        Select,
-        InputText,
-        Button,
-        MultiSelect,
-        FileUpload,
-        DatePicker,
-        Textarea,
-        InputNumber,
-    },
+    components: {},
     computed: {
         characterCount() {
             return this.formIncident.description
@@ -258,8 +239,6 @@ export default {
                     this.selectedIncident.report_date
                 );
                 this.formIncident.status_id = this.selectedIncident.status_id;
-                this.formIncident.assigned_responsible =
-                    this.selectedIncident.assigned_responsible;
             }
         });
     },
@@ -294,7 +273,7 @@ export default {
             return new Promise((resolve, reject) => {
                 const params = role ? { params: { role } } : {};
                 this.$axios
-                    .get(`/providers/list`, params)
+                    .get(`/providers/listByProperty`, params)
                     .then(function (response) {
                         resolve(response.data);
                     })
@@ -317,9 +296,6 @@ export default {
                 payer_id: Yup.string().required("Payer is required"),
                 report_date: Yup.string().required("Report date is required"),
                 status_id: Yup.string().required("Status is required"),
-                assigned_responsible: Yup.string().required(
-                    "Assigned responsible is required"
-                ),
             };
             const schema = Yup.object().shape({
                 ...initialRules,

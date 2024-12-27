@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('coverage_area');
-            $table->string('services_offered'); //son varios  ";"
             $table->string('contact_phone');
+            $table->string('code_number')->nullable();
+            $table->string('code_country')->nullable();
             $table->string('contact_email');
             $table->decimal('service_cost', 10, 2);
             $table->boolean('status')->default(true);

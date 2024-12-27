@@ -287,6 +287,7 @@
         :dialogVisible="dialogVisibleInsurance"
         :selectedPropertyId="selectedPropertyId"
         @hidden="hiddenInsurance"
+        @reload="reloadInsurance"
     />
     <!-- gestion de incidencias -->
     <ManagemenIncidentComponent
@@ -299,20 +300,10 @@
 
 <script>
 // Importar Librerias o Modulos
-
-import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
 import ManagemenInsuranceComponent from "../insurance/management/ManagemenInsuranceComponent.vue";
 import ManagemenIncidentComponent from "../incident/management/ManagemenIncidentComponent.vue";
-import InputText from "primevue/inputtext";
-import DataTable from "primevue/datatable";
-import Galleria from "primevue/galleria";
-import Select from "primevue/select";
-import Column from "primevue/column";
-import Button from "primevue/button";
-import Image from "primevue/image";
-import Tag from "primevue/tag";
 
 export default {
     props: [],
@@ -343,18 +334,9 @@ export default {
     components: {
         FilterMatchMode,
         FilterOperator,
-        Card,
         ManagemenPropertyComponent,
         ManagemenInsuranceComponent,
         ManagemenIncidentComponent,
-        DataTable,
-        Column,
-        Button,
-        InputText,
-        Tag,
-        Select,
-        Galleria,
-        Image,
     },
     created() {
         this.initFilters();
@@ -497,6 +479,11 @@ export default {
             this.fetchProperty();
             this.selectedProperty = null;
             this.dialogVisible = false;
+        },
+        reloadInsurance() {
+            this.fetchProperty();
+            this.selectedPropertyId = null;
+            this.dialogVisibleInsurance = false;
         },
         reloadTable() {
             this.fetchProperty();

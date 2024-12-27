@@ -1,17 +1,17 @@
 <template>
     <Card>
-        <template #title>User</template>
+        <template #title>Provider</template>
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
                     icon="pi pi-plus"
                     rounded
                     raised
-                    @click="addProperty"
+                    @click="addProvider"
                     style="
                         margin-right: 10px;
-                        background-color: #F76F31 !important;
-                        border-color: #F76F31;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
                     "
                 />
                 <Button
@@ -21,15 +21,15 @@
                     raised
                     @click="clearFilters"
                     style="
-                    background-color: #F76F31 !important;
-                    border-color: #F76F31;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
                     "
                 />
             </div>
             <DataTable
                 v-model:filters="filters"
                 :loading="loading"
-                :value="users"
+                :value="providers"
                 :paginator="true"
                 :rows="perPage"
                 :sortField="sortField"
@@ -63,39 +63,57 @@
                         />
                     </template>
                 </Column>
-                <!-- Email Column -->
+                <!-- Address Column -->
                 <Column
-                    field="email"
-                    header="Email"
+                    field="address"
+                    header="Address"
                     sortable
-                    style="min-width: 200px"
+                    style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.email }}
+                        {{ data.address }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by email"
+                            placeholder="Search by address"
                         />
                     </template>
                 </Column>
-                <!-- Phone Column -->
+                <!-- Coverage Area Column -->
                 <Column
-                    field="phone"
-                    header="Phone"
+                    field="coverage_area"
+                    header="Coverage Area"
                     sortable
-                    :showClearButton="false"
-                    style="min-width: 100px"
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.coverage_area }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by coverage area"
+                        />
+                    </template>
+                </Column>
+                <!-- contact phone Column -->
+                <Column
+                    field="contact_phone"
+                    header="Contact phone"
+                    sortable
+                    style="min-width: 150px"
                 >
                     <template #body="{ data }">
                         {{
                             "+" +
                             (data.code_number || "") +
                             " " +
-                            (data.phone || "")
+                            (data.contact_phone || "")
                         }}
                     </template>
                     <template #filter="{ filterModel }">
@@ -103,62 +121,84 @@
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by phone"
+                            placeholder="Search by contact phone"
                         />
                     </template>
                 </Column>
+                <!-- Contact Email Column -->
                 <Column
-                    field="property_name"
-                    header="Property Name"
+                    field="contact_email"
+                    header="Contact Email"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.contact_email }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by contact email"
+                        />
+                    </template>
+                </Column>
+                <!-- Service Cost Column -->
+                <Column
+                    field="service_cost"
+                    header="Service Cost"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.service_cost }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by service cost"
+                        />
+                    </template>
+                </Column>
+                <!-- Status Column -->
+                <Column
+                    field="status"
+                    header="Status"
+                    sortable
+                    style="min-width: 120px"
+                >
+                    <template #body="{ data }">
+                        {{ $formatStatus(data.status) }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <Select
+                            :options="statuses"
+                            v-model="filterModel.value"
+                            placeholder="Select status"
+                            optionLabel="value"
+                            optionValue="id"
+                            style="width: 100%"
+                        />
+                    </template>
+                </Column>
+                 <!-- Provider Name Column -->
+                 <Column
+                    field="providers_name"
+                    header="Services offered"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
                         <div class="size-tags">
                             <Tag
-                                v-for="index in $parseTags(data.property_name)"
+                                v-for="index in $parseTags(data.providers_name)"
                                 :key="index.id"
                                 :value="`${index.tag}`"
                                 class="size-tag"
                             />
-                        </div>
-                    </template>
-                </Column>
-                <Column
-                    field="roles.name"
-                    header="User Type"
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        {{ data.roles[0].name }}
-                    </template>
-                </Column>
-                <!-- Photos Column -->
-                <Column header="Photo">
-                    <template #body="{ data }">
-                        <div style="text-align: center">
-                            <Galleria
-                                :key="galleryKey"
-                                :value="$getImages(data)"
-                                :numVisible="1"
-                                style="width: 900px"
-                                containerClass="custom-galleria"
-                                :showThumbnails="true"
-                                showIndicators
-                                circular
-                                autoPlay
-                                :transitionInterval="5000"
-                            >
-                                <template #item="{ item }">
-                                    <Image
-                                        :src="item"
-                                        class="w-full h-full object-cover cursor-pointer"
-                                        height="100px"
-                                        width="150px"
-                                        preview
-                                    />
-                                </template>
-                            </Galleria>
                         </div>
                     </template>
                 </Column>
@@ -177,7 +217,7 @@
                                     background-color: #f76f31;
                                     border-color: #f76f31;
                                 "
-                                @click="editProperty(slotProps.data)"
+                                @click="editProvider(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
@@ -187,7 +227,7 @@
                                     background-color: #db6464;
                                     border-color: #db6464;
                                 "
-                                @click="deleteProperty(slotProps.data.id)"
+                                @click="deleteProvider(slotProps.data.id)"
                             />
                         </div>
                     </template>
@@ -195,11 +235,11 @@
             </DataTable>
         </template>
     </Card>
-    <!-- gestion de aliados -->
-    <ManagemenUserComponent
+    <!-- gestion de proveedores -->
+    <ManagementProviderComponent
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
-        :selectedUser="selectedUser"
+        :selectedProvider="selectedProvider"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
@@ -210,14 +250,14 @@
 // Importar Librerias o Modulos
 
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
-import ManagemenUserComponent from "./management/ManagemenUserComponent.vue";
+import ManagementProviderComponent from "./management/ManagementProviderComponent.vue";
 
 export default {
     props: [],
     data() {
         return {
-            users: [],
-            perPage: 5,
+            providers: [],
+            perPage: 10,
             totalRecords: 0,
             page: 1,
             sortField: "",
@@ -226,21 +266,24 @@ export default {
             filtroInfo: [],
             loading: true,
             //
-            selectedUser: null,
+            selectedProvider: null,
             dialogVisible: false,
-            galleryKey: 0,
+            statuses: [
+                { value: "Active", id: 1 },
+                { value: "Inactive", id: 2 },
+            ],
         };
     },
     components: {
         FilterMatchMode,
         FilterOperator,
-        ManagemenUserComponent,
+        ManagementProviderComponent,
     },
     created() {
         this.initFilters();
     },
     mounted() {
-        this.fetchUser();
+        this.fetchProvider();
     },
     methods: {
         initFilters() {
@@ -251,51 +294,73 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                email: {
+                address: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                phone: {
+                coverage_area: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                /* 'roles.name': {
+                contact_email: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
-                }, */
+                },
+                contact_phone: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                service_cost: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                status: {
+                    clear: false,
+                    filterOptions: {
+                        showFilterMenu: false,
+                    },
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.EQUALS },
+                    ],
+                },
             };
         },
         clearFilters() {
             this.initFilters();
             this.filtroInfo = [];
-            this.fetchUser();
+            this.fetchProvider();
         },
         onPage(event) {
             this.page = event.page + 1;
             this.perPage = event.rows;
-            this.fetchUser();
+            this.fetchProvider();
         },
         onSort(event) {
             this.page = 1;
             this.sortField = event.sortField;
             this.sortOrder = event.sortOrder;
-            this.fetchUser();
+            this.fetchProvider();
         },
         onFilters(event) {
             this.page = 1;
             this.filtroInfo = [];
             for (const [key, filter] of Object.entries(event.filters)) {
                 if (filter.constraints) {
+                    console.log(filter.constraints);
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
                             this.filtroInfo.push([
-                                this.$relationTableUser(key),
+                                this.$relationTableProvider(key),
                                 constraint.matchMode,
                                 constraint.value,
                             ]);
@@ -303,12 +368,12 @@ export default {
                     }
                 }
             }
-            this.fetchUser();
+            this.fetchProvider();
         },
-        fetchUser() {
+        fetchProvider() {
             this.loading = true;
             this.$axios
-                .get("/users/list", {
+                .get("/providers/list", {
                     params: {
                         page: this.page,
                         perPage: this.perPage,
@@ -318,7 +383,7 @@ export default {
                     },
                 })
                 .then((response) => {
-                    this.users = response.data.data;
+                    this.providers = response.data.data;
                     this.totalRecords = response.data.total;
                     this.loading = false;
                 })
@@ -327,31 +392,18 @@ export default {
                     this.loading = false;
                 });
         },
-        addProperty() {
-            this.selectedUser = null;
+        addProvider() {
+            this.selectedProvider = null;
             this.dialogVisible = true;
         },
-        editProperty(aliado) {
-            this.selectedUser = aliado;
+        editProvider(provider) {
+            this.selectedProvider = provider;
             this.dialogVisible = true;
         },
-        fetchUserProperty(id) {
-            return new Promise((resolve, reject) => {
-                this.$axios
-                    .get("/user-properties/byProperties/" + id)
-                    .then((response) => {
-                        resolve(response.data);
-                    })
-                    .catch((error) => {
-                        this.$readStatusHttp(error);
-                        reject(error);
-                    });
-            });
-        },
-        async deleteProperty(userId) {
+        async deleteProvider(providerId) {
             const result = await this.$swal.fire({
                 title: "You're sure?",
-                text: "You are about to delete this property. Are you sure you want to continue?",
+                text: "You are about to delete this provider. Are you sure you want to continue?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -362,32 +414,21 @@ export default {
 
             if (result.isConfirmed) {
                 try {
-                    const properties = await this.fetchUserProperty(userId);
-                    if (properties.data.length > 0) {
-                        this.$alertWarning(
-                            "Has associated properties for this user"
-                        );
-                    } else {
-                        await axios.delete(`/users/${userId}`);
-                        this.$alertSuccess("Register delete");
-                        this.fetchUser();
-                    }
+                    await axios.delete(`/providers/${providerId}`);
+                    this.$alertSuccess("Register delete");
+                    this.fetchProvider();
                 } catch (error) {
                     this.$readStatusHttp(error);
                 }
             }
         },
         reload() {
-            this.fetchUser();
-            this.selectedUser = null;
+            this.fetchProvider();
+            this.selectedProvider = null;
             this.dialogVisible = false;
         },
         reloadTable() {
-            this.fetchUser();
-            this.resetGallery();
-        },
-        resetGallery() {
-            this.galleryKey += 1;
+            this.fetchProvider();
         },
         hidden(status) {
             this.dialogVisible = status;
@@ -396,6 +437,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

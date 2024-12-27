@@ -158,17 +158,8 @@
 </template>
 
 <script>
-import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagemenEnumComponent from "./management/ManagemenEnumComponent.vue";
-import InputText from "primevue/inputtext";
-import DataTable from "primevue/datatable";
-import Galleria from "primevue/galleria";
-import Select from "primevue/select";
-import Column from "primevue/column";
-import Button from "primevue/button";
-import Image from "primevue/image";
-import Tag from "primevue/tag";
 
 export default {
     data() {
@@ -198,19 +189,9 @@ export default {
         };
     },
     components: {
-        Select,
         FilterMatchMode,
         FilterOperator,
-        Card,
         ManagemenEnumComponent,
-        DataTable,
-        Column,
-        Button,
-        InputText,
-        Tag,
-        Select,
-        Galleria,
-        Image,
     },
     created() {
         this.initFilters();

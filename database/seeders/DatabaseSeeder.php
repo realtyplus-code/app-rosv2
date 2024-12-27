@@ -24,5 +24,6 @@ class DatabaseSeeder extends Seeder
         $this->call(Configuration\CoreMasterComboPrioritySeeder::class);
         $this->call(Configuration\CoreMasterComboPropertTypeSeeder::class);
         $this->call(Configuration\CoreMasterComboCoverageTypeSeeder::class);
+        $this->call(Configuration\CoreMasterComboProviderTypeSeeder::class);
     }
 }

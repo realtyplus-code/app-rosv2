@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Provider;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Provider\ProviderService;
@@ -33,8 +34,36 @@ class ProviderController extends Controller
                 [
                     'providers.id',
                     'providers.name',
+                    'providers.address',
+                    'providers.coverage_area',
+                    'providers.contact_phone',
+                    'providers.code_number',
+                    'providers.code_country',
+                    'providers.contact_email',
+                    'providers.service_cost',
+                    'providers.status',
+                    DB::raw('GROUP_CONCAT(CONCAT(e_provider.id, ":", e_provider.name) ORDER BY e_provider.name ASC SEPARATOR ";") as providers_name'),
                 ]
             );
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function byProperty()
+    {
+        try {
+            $data['status'] = 1;
+            $query = $this->incidentService->getProvidersQuery($data);
+            $providers = $query->get(
+                [
+                    'providers.id',
+                    'providers.name',
+                ]
+            );
+            return Response::sendResponse($providers, 'Registros obtenidos con exito.');
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

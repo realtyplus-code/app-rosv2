@@ -90,11 +90,6 @@
 
 <script>
 import * as Yup from "yup";
-import FloatLabel from "primevue/floatlabel";
-import InputText from "primevue/inputtext";
-import Dialog from "primevue/dialog";
-import Select from "primevue/select";
-import Button from "primevue/button";
 
 export default {
     props: [
@@ -121,11 +116,6 @@ export default {
         };
     },
     components: {
-        FloatLabel,
-        Dialog,
-        Select,
-        InputText,
-        Button,
     },
     watch: {},
     mounted() {
@@ -176,7 +166,7 @@ export default {
                 this.$axios
                     .post("/enums/store", this.formEnum)
                     .then((response) => {
-                        this.$alertSuccess("Opcion Añadida");
+                        this.$alertSuccess("Record added");
                         this.$emit("reload", true);
                     })
                     .catch((error) => {
@@ -193,7 +183,7 @@ export default {
                         this.formEnum
                     )
                     .then((response) => {
-                        this.$alertSuccess("Opcion Actualizado");
+                        this.$alertSuccess("Record updated");
                         this.$emit("reload", true);
                     })
                     .catch((error) => {

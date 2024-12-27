@@ -188,14 +188,8 @@
 <script>
 // Importar Librerias o Modulos
 
-import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagementIncidentComponent from "./management/ManagemenIncidentComponent.vue";
-import InputText from "primevue/inputtext";
-import DataTable from "primevue/datatable";
-import Select from "primevue/select";
-import Column from "primevue/column";
-import Button from "primevue/button";
 
 export default {
     props: [],
@@ -222,13 +216,7 @@ export default {
     components: {
         FilterMatchMode,
         FilterOperator,
-        Card,
         ManagementIncidentComponent,
-        DataTable,
-        Column,
-        Button,
-        InputText,
-        Select,
     },
     created() {
         this.initFilters();

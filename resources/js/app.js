@@ -7,6 +7,22 @@ import $ from 'jquery'; // Importar jQuery
 import { GlobalVariables } from './utils/shared/Services/GlobalVariables'; // Importar variables globales
 
 import PrimeVue from "primevue/config";
+import Card from 'primevue/card';
+import InputText from 'primevue/inputtext';
+import DataTable from 'primevue/datatable';
+import Select from 'primevue/select';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import Tag from 'primevue/tag';
+import Galleria from "primevue/galleria";
+import Image from "primevue/image";
+import FloatLabel from "primevue/floatlabel";
+import Dialog from "primevue/dialog";
+import MultiSelect from "primevue/multiselect";
+import FileUpload from "primevue/fileupload";
+import DatePicker from "primevue/datepicker";
+import Textarea from "primevue/textarea";
+import InputNumber from "primevue/inputnumber";
 
 const app = createApp({});
 
@@ -37,6 +53,10 @@ app.component('enum-component', EnumComponent);
 import IncidentComponent from './components/incident/IncidentComponent.vue';
 app.component('incident-component', IncidentComponent);
 
+// importacion de provider
+import ProviderComponent from './components/provider/ProviderComponent.vue';
+app.component('provider-component', ProviderComponent);
+
 import Aura from "@primevue/themes/aura";
 import "primeicons/primeicons.css";
 
@@ -54,6 +74,22 @@ app.use(PrimeVue, {
 });
 
 app.component("ProgressSpinner", ProgressSpinner);
+app.component('Card', Card);
+app.component('InputText', InputText);
+app.component('DataTable', DataTable);
+app.component('Select', Select);
+app.component('Column', Column);
+app.component('Button', Button);
+app.component('Tag', Tag);
+app.component('Galleria', Galleria);
+app.component('Image', Image);
+app.component('FloatLabel', FloatLabel);
+app.component('Dialog', Dialog);
+app.component('MultiSelect', MultiSelect);
+app.component('FileUpload', FileUpload);
+app.component('DatePicker', DatePicker);
+app.component('Textarea', Textarea);
+app.component('InputNumber', InputNumber);
 
 // Registrar funciones compartidas
 app.mixin(shared.AlertsComponent);

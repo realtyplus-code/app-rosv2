@@ -59,14 +59,7 @@ class EnumOptionService
     {
         DB::beginTransaction();
         try {
-            $enum = [
-                'parent_id' => $data['parent_id'],
-                'brother_relation_id' => $data['brother_relation_id'] ?? NULL,
-                'name' => $data['name'],
-                'status' => true,
-                'value1' => $value1 ?? NULL,
-            ];
-            $enum = $this->enumRepository->create($enum);
+            $enum = $this->enumRepository->create($data);
             DB::commit();
             return $enum;
         } catch (\Exception $ex) {

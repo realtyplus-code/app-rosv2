@@ -1,3 +1,3 @@
 <nav>
-    <navbar-component :rol="{{ Auth::user()->getRoleNames() }}"></navbar-component>
+    <navbar-component></navbar-component>
 </nav>

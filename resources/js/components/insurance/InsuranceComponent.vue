@@ -212,17 +212,8 @@
 <script>
 // Importar Librerias o Modulos
 
-import Card from "primevue/card";
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagemenInsuranceComponent from "./management/ManagemenInsuranceComponent.vue";
-import InputText from "primevue/inputtext";
-import DataTable from "primevue/datatable";
-import Galleria from "primevue/galleria";
-import Select from "primevue/select";
-import Column from "primevue/column";
-import Button from "primevue/button";
-import Image from "primevue/image";
-import Tag from "primevue/tag";
 
 export default {
     props: [],
@@ -251,16 +242,7 @@ export default {
     components: {
         FilterMatchMode,
         FilterOperator,
-        Card,
         ManagemenInsuranceComponent,
-        DataTable,
-        Column,
-        Button,
-        InputText,
-        Tag,
-        Select,
-        Galleria,
-        Image,
     },
     created() {
         this.initFilters();

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <home-component></home-component>
+            <home-component :rol="{{ Auth::user()->getRoleNames() }}"></home-component>
         </div>
     </div>
 @endsection

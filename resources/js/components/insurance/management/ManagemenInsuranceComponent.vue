@@ -148,14 +148,6 @@
 
 <script>
 import * as Yup from "yup";
-import MultiSelect from "primevue/multiselect";
-import FloatLabel from "primevue/floatlabel";
-import FileUpload from "primevue/fileupload";
-import DatePicker from "primevue/datepicker";
-import InputText from "primevue/inputtext";
-import Dialog from "primevue/dialog";
-import Select from "primevue/select";
-import Button from "primevue/button";
 
 export default {
     props: ["dialogVisible", "selectedInsurance", "selectedPropertyId"],
@@ -178,14 +170,6 @@ export default {
         };
     },
     components: {
-        FloatLabel,
-        Dialog,
-        Select,
-        InputText,
-        Button,
-        MultiSelect,
-        FileUpload,
-        DatePicker,
     },
     watch: {},
     mounted() {

@@ -71,6 +71,26 @@ export default {
                     return selector;
             }
         },
+        $relationTableProvider(selector) {
+            switch (selector) {
+                case "name":
+                    return "providers.name";
+                case "address":
+                    return "providers.address";
+                case "coverage_area":
+                    return "providers.coverage_area";
+                case "contact_phone":
+                    return "providers.contact_phone";
+                case "contact_email":
+                    return "providers.contact_email";
+                case "service_cost":
+                    return "providers.service_cost";
+                case "status":
+                    return "providers.status";
+                default:
+                    return selector;
+            }
+        },
     },
 };
 </script>

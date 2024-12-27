@@ -208,14 +208,6 @@
 
 <script>
 import * as Yup from "yup";
-import MultiSelect from "primevue/multiselect";
-import FloatLabel from "primevue/floatlabel";
-import FileUpload from "primevue/fileupload";
-import InputText from "primevue/inputtext";
-import Password from "primevue/password";
-import Dialog from "primevue/dialog";
-import Select from "primevue/select";
-import Button from "primevue/button";
 
 import "intl-tel-input/build/css/intlTelInput.css";
 import intlTelInput from "intl-tel-input";
@@ -242,14 +234,6 @@ export default {
         };
     },
     components: {
-        FloatLabel,
-        Dialog,
-        Select,
-        InputText,
-        Button,
-        MultiSelect,
-        FileUpload,
-        Password,
     },
     watch: {},
     mounted() {

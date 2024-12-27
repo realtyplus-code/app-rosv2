@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('reported_by');
             $table->unsignedInteger('incident_type_id');
             $table->unsignedInteger('priority_id');
-            $table->unsignedBigInteger('assigned_responsible');
             $table->decimal('cost', 10, 2);
             $table->unsignedInteger('payer_id');
             $table->timestamps();
@@ -32,7 +31,6 @@ return new class extends Migration
 
             $table->foreign('property_id')->references('id')->on('properties');
             $table->foreign('reported_by')->references('id')->on('users');
-            $table->foreign('assigned_responsible')->references('id')->on('providers');
         });
     }
 

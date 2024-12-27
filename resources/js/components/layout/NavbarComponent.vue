@@ -5,16 +5,12 @@
                 :src="logoPath"
                 alt="Logo"
                 class="navbar-logo"
-                style="max-width: 150px !important; cursor: pointer"
                 @click="route('home')"
             />
-            <div>
-                <p class="custom-message">{{ rolMessage }}</p>
-            </div>
         </template>
         <template #end>
             <div class="menu-items">
-                <Menubar :model="menuItems" class="custom-check" />
+                <Menubar :model="menuItems" />
             </div>
         </template>
     </Menubar>
@@ -27,11 +23,10 @@
 import Menubar from "primevue/menubar";
 
 export default {
-    props: ["rol"],
+    props: [],
     data() {
         return {
             rolName: null,
-            rolMessage: null,
             logoPath: `${window.location.origin}/img/rentalcolorb.svg`,
             menuItems: [
                 {
@@ -73,6 +68,13 @@ export default {
                             },
                         },
                         {
+                            label: "Provider",
+                            icon: "pi pi-truck",
+                            command: () => {
+                                this.route("provider");
+                            },
+                        },
+                        {
                             label: "Enum",
                             icon: "pi pi-cog",
                             command: () => {
@@ -94,12 +96,7 @@ export default {
     components: {
         Menubar,
     },
-    created() {
-        if (Array.isArray(this.rol) && this.rol.length > 0) {
-            this.rolName = this.rol[0];
-            this.rolMessage = this.getWelcomeMessage(this.rolName);
-        }
-    },
+    created() {},
     mounted() {},
     methods: {
         async logout() {
@@ -140,30 +137,12 @@ export default {
                 case "incident":
                     window.location.href = "/incidents";
                     break;
+                case "provider":
+                    window.location.href = "/providers";
+                    break;
                 default:
                     break;
             }
-        },
-        getWelcomeMessage(userRole) {
-            let message;
-            switch (userRole) {
-                case "owner":
-                    message = "Welcome back, Property Owner!";
-                    break;
-                case "tenant":
-                    message = "Hello, Tenant! Welcome to your dashboard.";
-                    break;
-                case "admin":
-                    message = "Welcome, Admin! You have full access.";
-                    break;
-                case "providers":
-                    message = "Hello, Provider! Welcome to your dashboard.";
-                    break;
-                default:
-                    message = "Welcome! Please check your profile.";
-                    break;
-            }
-            return message;
         },
     },
 };
@@ -171,8 +150,9 @@ export default {
 
 <style scoped>
 .navbar-logo {
-    max-width: 80px !important;
+    width: 180px !important;
     margin-left: 20px !important;
+    cursor: pointer;
 }
 
 .p-menubar {
@@ -181,5 +161,24 @@ export default {
 
 .swal2-confirm {
     background-color: #f76f31;
+}
+</style>
+
+<style>
+.menu-items {
+    position: relative;
+}
+
+.menu-items .p-menubar-mobile .p-menubar-root-list {
+    position: absolute !important;
+    left: -160px !important;
+    width: 400% !important;
+    padding: 10px 20px !important;
+}
+
+.menu-items .p-menubar-mobile .p-menubar-submenu {
+    background-color: rgb(255, 255, 255) !important;
+    position: relative !important;
+    right: 15px !important;
 }
 </style>

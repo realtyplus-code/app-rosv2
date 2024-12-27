@@ -1,5 +1,6 @@
 <template>
     <div class="chart-container">
+        <p class="rol-message text-center">{{ rolMessage }}</p>
         <div class="row">
             <!-- Gráfico de Properties -->
             <div class="col-md-6 mb-4">
@@ -64,12 +65,14 @@ ChartJS.register(
 );
 
 export default {
+    props: ["rol"],
     name: "PieChartComponent",
     components: {
         PieChart: Pie,
     },
     data() {
         return {
+            rolMessage: null,
             // Datos para el gráfico de Properties
             propertiesData: {
                 labels: ["Actives", "Inactives"],
@@ -137,6 +140,10 @@ export default {
                 this.getPropertyTypeCount();
             }, 500);
         });
+        if (Array.isArray(this.rol) && this.rol.length > 0) {
+            this.rolName = this.rol[0];
+            this.rolMessage = this.getWelcomeMessage(this.rolName);
+        }
     },
     methods: {
         getPropertyTypeCount() {
@@ -154,14 +161,34 @@ export default {
         },
         updatePropertiesData(actives, inactives) {
             this.propertiesData.datasets[0].data = [actives, inactives];
-          
+
             this.animateChartUpdate();
-          
         },
         animateChartUpdate() {
             this.chartOptions.animation.duration = 1000; // Duración de la animación en milisegundos
             this.chartOptions.animation.easing = "easeInOutQuad"; // Tipo de animación
             this.propertiesChartKey += 1;
+        },
+        getWelcomeMessage(userRole) {
+            let message;
+            switch (userRole) {
+                case "owner":
+                    message = "Welcome back, Property Owner. Please review your properties.";
+                    break;
+                case "tenant":
+                    message = "Hello, Tenant. Please review your properties and reports.";
+                    break;
+                case "admin":
+                    message = "Welcome, Admin. You have full access to the system.";
+                    break;
+                case "providers":
+                    message = "Hello, Provider. Please review your assignments and tasks.";
+                    break;
+                default:
+                    message = "Welcome. Please check your profile.";
+                    break;
+            }
+            return message;
         },
     },
 };
@@ -170,8 +197,15 @@ export default {
 .chart-container {
     padding: 20px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.rol-message {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 
 .card {

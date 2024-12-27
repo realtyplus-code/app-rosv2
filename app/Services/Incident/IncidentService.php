@@ -2,18 +2,21 @@
 
 namespace App\Services\Incident;
 
-use Illuminate\Support\Facades\DB;
 use App\Models\Incident\Incident;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
+use App\Interfaces\IncidentProvider\IncidentProviderRepositoryInterface;
 
 class IncidentService
 {
     protected $incidentRepository;
+    protected $incidentProviderRepository;
 
-    public function __construct(IncidentRepositoryInterface $incidentRepository)
+    public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository)
     {
         $this->incidentRepository = $incidentRepository;
+        $this->incidentProviderRepository = $incidentProviderRepository;
     }
 
     public function getIncidentsQuery()
@@ -30,9 +33,16 @@ class IncidentService
         DB::beginTransaction();
         try {
             $data['reported_by'] = auth()->user()->id;
-            $insurance = $this->incidentRepository->create($data);
+            $providers = $data['providers'];
+            $incident = $this->incidentRepository->create($data);
+            foreach ($providers as $key => $value) {
+                $this->incidentProviderRepository->create([
+                    'incident_id' => $incident->id,
+                    'provider_id' => $value,
+                ]);
+            }
             DB::commit();
-            return $insurance;
+            return $incident;
         } catch (\Exception $ex) {
             DB::rollBack();
             Log::info($ex->getLine());
@@ -45,9 +55,9 @@ class IncidentService
     {
         DB::beginTransaction();
         try {
-            $insurance = $this->incidentRepository->update($id, $data);
+            $incident = $this->incidentRepository->update($id, $data);
             DB::commit();
-            return $insurance;
+            return $incident;
         } catch (\Exception $ex) {
             DB::rollBack();
             Log::info($ex->getLine());
