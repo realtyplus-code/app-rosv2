@@ -8,7 +8,9 @@
                 style="max-width: 150px !important; cursor: pointer"
                 @click="route('home')"
             />
-            <p class="custom-message">{{ rolMessage }}</p>
+            <div>
+                <p class="custom-message">{{ rolMessage }}</p>
+            </div>
         </template>
         <template #end>
             <div class="menu-items">
@@ -30,7 +32,7 @@ export default {
         return {
             rolName: null,
             rolMessage: null,
-            logoPath: `${window.location.origin}/img/logo.jpg`,
+            logoPath: `${window.location.origin}/img/rentalcolorb.svg`,
             menuItems: [
                 {
                     label: "Properties",

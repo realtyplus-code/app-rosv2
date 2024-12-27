@@ -33,7 +33,7 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form mt-4">
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
@@ -41,6 +41,7 @@
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.name }"
                         v-model="formUser.name"
+                        style="width: 100%;"
                         @input="clearError('name')"
                     />
                     <label for="name">Name</label>
@@ -50,7 +51,7 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form mt-4">
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
@@ -58,6 +59,7 @@
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.email }"
                         v-model="formUser.email"
+                        style="width: 100%;"
                         @input="clearError('email')"
                     />
                     <label for="email">Email</label>
@@ -67,7 +69,7 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form" v-if="!this.selectedUser">
+        <div class="custom-form mt-4" v-if="!this.selectedUser">
             <div class="custom-form-column">
                 <FloatLabel>
                     <Password
@@ -89,7 +91,7 @@
                 />
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form mt-4">
             <div class="custom-form-column">
                 <div class="phone-wrapper">
                     <input
@@ -586,5 +588,9 @@ export default {
 .file-input {
     width: 100%;
     height: 100%;
+}
+
+.phone-wrapper>.iti {
+    width: 100% !important;
 }
 </style>
