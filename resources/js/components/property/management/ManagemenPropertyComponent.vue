@@ -202,7 +202,10 @@
                     v-if="!selectedProperty"
                     label="Save"
                     severity="success"
-                    style="margin-right: 10px"
+                    style="
+                        margin-right: 10px;
+                        border-color: #F76F31;
+                    "
                     @click="save"
                 />
                 <Button

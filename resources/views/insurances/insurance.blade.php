@@ -1,3 +1,4 @@
+<link href="{{ asset('/css/insurance.css') }}" rel="stylesheet">
 @extends('layouts.app')
 @section('content')
     <div class="container">

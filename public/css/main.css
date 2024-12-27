@@ -1,3 +1,6 @@
+.dialog-management-custom .p-dialog-close-button {
+    display: none !important;
+}
 
 .custom-message{
     font-size: 18px;

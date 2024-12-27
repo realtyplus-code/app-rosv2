@@ -121,7 +121,11 @@
                             v-if="selectedOption"
                             icon="pi pi-pencil"
                             class="p-button-rounded p-button-success"
-                            style="margin: 5px"
+                            style="
+                                margin: 5px;
+                                background-color: #f76f31;
+                                border-color: #f76f31;
+                            "
                             @click="editEnum(slotProps.data)"
                         />
                         <Button
