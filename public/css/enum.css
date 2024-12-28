@@ -1,3 +1,7 @@
+.dialog-management .p-dialog-close-button {
+    display: none !important;
+}
+
 .custom-message{
     font-size: 18px;
     margin-left: 20px;
@@ -185,4 +189,9 @@ h3 {
 
 .p-datatable-column-sorted {
     background-color: #E5E5E5 !important;
+}
+
+.p-datatable-filter-apply-button:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }

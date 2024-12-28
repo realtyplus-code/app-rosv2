@@ -1,4 +1,4 @@
-.dialog-management-custom .p-dialog-close-button {
+.dialog-management .p-dialog-close-button {
     display: none !important;
 }
 
@@ -179,6 +179,7 @@ h3 {
 
 .text-center > .p-button-success {
     background-color: #f76f31;
+    border-color: #F76F31 !important;
 }
 
 .text-center > .p-button-success:hover {
@@ -245,4 +246,14 @@ h3 {
 
 .swal2-cancel {
     background-color: #db6464 !important;
+}
+
+.p-datatable-filter-apply-button {
+    background-color: #f76f31 !important;
+    border-color: #F76F31 !important;
+}
+
+.p-datatable-filter-apply-button:hover {
+    background-color: #f7601a !important;
+    border-color: #f7601a !important;
 }
