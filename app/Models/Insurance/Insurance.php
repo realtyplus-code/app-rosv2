@@ -5,7 +5,6 @@ namespace App\Models\Insurance;
 use Carbon\Carbon;
 use App\Models\Property\Property;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Configuration\EnumOption;
 
 class Insurance extends Model
 {
@@ -16,7 +15,13 @@ class Insurance extends Model
         'contact_person',
         'contact_email',
         'property_id',
-        'coverage_type_id',
+        'insurance_type_id',
+        'position',
+        'phone',
+        'code_number',
+        'code_country',
+        'country',
+        'policy_number',
     ];
 
     protected $casts = [
@@ -30,14 +35,6 @@ class Insurance extends Model
     public function property()
     {
         return $this->belongsTo(Property::class, 'property_id');
-    }
-
-    /**
-     * Relación: Seguro - Tipo de cobertura (coverage_type_id)
-     */
-    public function coverageType()
-    {
-        return $this->belongsTo(EnumOption::class, 'coverage_type_id');
     }
 
     public function setStartDateAttribute($value)

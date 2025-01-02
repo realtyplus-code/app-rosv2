@@ -45,16 +45,26 @@ export default {
             switch (selector) {
                 case "insurance_company":
                     return "insurances.insurance_company";
+                case "policy_number":
+                    return "insurances.policy_number";
                 case "start_date":
                     return "insurances.start_date";
                 case "end_date":
                     return "insurances.end_date";
-                case "contact_person":
-                    return "insurances.contact_person";
-                case "coverage_name":
+                case "insurance_name":
                     return "e_ct.name";
                 case "property_name":
                     return "properties.name";
+                case "contact_person":
+                    return "insurances.contact_person";
+                case "contact_email":
+                    return "insurances.contact_email";
+                case "country_name":
+                    return "ec.name";
+                case "position":
+                    return "insurances.position";
+                case "phone":
+                    return "insurances.phone";
                 case "created_at":
                     return "insurances.created_at";
                 case "updated_at":

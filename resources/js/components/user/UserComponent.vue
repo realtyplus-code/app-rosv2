@@ -103,7 +103,7 @@
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by phone"
+                            placeholder="Search by phone without code"
                         />
                     </template>
                 </Column>

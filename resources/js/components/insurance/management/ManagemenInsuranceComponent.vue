@@ -36,6 +36,23 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <FloatLabel>
+                    <InputText
+                        id="policy_number"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.policy_number }"
+                        v-model="formInsurance.policy_number"
+                        @input="clearError('policy_number')"
+                    />
+                    <label for="policy_number">Policy</label>
+                </FloatLabel>
+                <small v-if="errors.policy_number" class="p-error">{{
+                    errors.policy_number
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <FloatLabel>
                     <DatePicker
                         id="start_date"
                         class="inputtext-custom"
@@ -67,7 +84,24 @@
                 }}</small>
             </div>
         </div>
-
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listInsuranceType"
+                    v-model="formInsurance.insurance_type_id"
+                    placeholder="Select insurance"
+                    :class="{ 'p-invalid': errors.insurance_type_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.insurance_type_id" class="p-error">{{
+                    errors.insurance_type_id
+                }}</small>
+            </div>
+        </div>
+        <hr />
         <div class="custom-form">
             <div class="custom-form-column">
                 <FloatLabel>
@@ -84,8 +118,6 @@
                     errors.contact_person
                 }}</small>
             </div>
-        </div>
-        <div class="custom-form">
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
@@ -105,17 +137,51 @@
         <div class="custom-form">
             <div class="custom-form-column">
                 <Select
-                    filter
-                    :options="listCoverageType"
-                    v-model="formInsurance.coverage_type_id"
-                    placeholder="Select coverage"
-                    :class="{ 'p-invalid': errors.coverage_type_id }"
+                    :options="listCountry"
+                    v-model="formInsurance.country"
+                    placeholder="Select country"
+                    :class="{ 'p-invalid': errors.country }"
                     optionLabel="name"
                     optionValue="id"
                     style="width: 100%"
                 />
-                <small v-if="errors.coverage_type_id" class="p-error">{{
-                    errors.coverage_type_id
+                <small v-if="errors.country" class="p-error">{{
+                    errors.country
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputText
+                        id="position"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.position }"
+                        v-model="formInsurance.position"
+                        @input="clearError('position')"
+                    />
+                    <label for="position">Position</label>
+                </FloatLabel>
+                <small v-if="errors.position" class="p-error">{{
+                    errors.position
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column">
+                <div class="phone-wrapper">
+                    <input
+                        id="countryPhone"
+                        type="tel"
+                        class="p-inputtext p-component p-inputtext-sm p-rounded"
+                        :class="{ 'p-invalid': errors.phone }"
+                        placeholder="Enter the ally's phone number"
+                        v-model="formInsurance.phone"
+                        style="width: 100% !important; height: 42px"
+                    />
+                </div>
+                <small v-if="errors.phone" class="p-error">{{
+                    errors.phone
                 }}</small>
             </div>
         </div>
@@ -149,6 +215,9 @@
 <script>
 import * as Yup from "yup";
 
+import "intl-tel-input/build/css/intlTelInput.css";
+import intlTelInput from "intl-tel-input";
+
 export default {
     props: ["dialogVisible", "selectedInsurance", "selectedPropertyId"],
     data() {
@@ -161,16 +230,22 @@ export default {
                 end_date: null,
                 contact_person: null,
                 contact_email: null,
+                position: null,
+                phone: null,
+                code_number: null,
+                code_country: null,
                 property_id: null,
-                coverage_type_id: null,
+                insurance_type_id: null,
+                country: null,
+                policy_number: null,
             },
             errors: {},
-            listCoverageType: [],
+            listInsuranceType: [],
+            listCountry: [],
             isLoad: false,
         };
     },
-    components: {
-    },
+    components: {},
     watch: {},
     mounted() {
         this.$nextTick(() => {
@@ -184,15 +259,37 @@ export default {
                     this.selectedInsurance.contact_email;
                 this.formInsurance.property_id =
                     this.selectedInsurance.property_id;
-                this.formInsurance.coverage_type_id =
-                    this.selectedInsurance.coverage_id;
+                this.formInsurance.insurance_type_id =
+                    this.selectedInsurance.insurance_id;
                 this.formInsurance.start_date = new Date(
                     this.selectedInsurance.start_date
                 );
                 this.formInsurance.end_date = new Date(
                     this.selectedInsurance.end_date
                 );
+                this.formInsurance.position = this.selectedInsurance.position;
+                this.formInsurance.phone = this.selectedInsurance.phone;
+                this.formInsurance.country = this.selectedInsurance.country_id;
+                this.formInsurance.policy_number =
+                    this.selectedInsurance.policy_number;
+                this.formInsurance.code_country =
+                    this.selectedInsurance.code_country;
+                this.formInsurance.code_number =
+                    this.selectedInsurance.code_number;
             }
+            const phoneInputField = document.querySelector("#countryPhone");
+            if (!phoneInputField) {
+                console.error("El elemento #phone no está definido.");
+                return;
+            }
+            this.phoneInput = intlTelInput(phoneInputField, {
+                preferredCountries: ["us", "mx", "es", "ar"],
+                initialCountry: this.selectedInsurance
+                    ? this.selectedInsurance.code_country
+                    : null,
+                utilsScript:
+                    "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+            });
         });
     },
     created() {
@@ -200,10 +297,14 @@ export default {
     },
     methods: {
         async initServices() {
-            const comboNames = ["coverage_type"];
+            const comboNames = ["insurance_type", "country"];
             const response = await this.$getEnumsOptions(comboNames);
-            const { coverage_type: responCoverageType } = response.data;
-            this.listCoverageType = responCoverageType;
+            const {
+                insurance_type: respInsuranceType,
+                country: responsCountry,
+            } = response.data;
+            this.listInsuranceType = respInsuranceType;
+            this.listCountry = responsCountry;
         },
         getUsers(role = null) {
             const vm = this;
@@ -233,9 +334,15 @@ export default {
                 contact_email: Yup.string()
                     .required("Contact email is required")
                     .email("Contact email must be a valid email"),
-                coverage_type_id: Yup.string().required(
+                position: Yup.string().required("Position is required"),
+                phone: Yup.string().required("Phone number is required"),
+                insurance_type_id: Yup.string().required(
                     "Coverage type is required"
                 ),
+                policy_number: Yup.string().required(
+                    "Policy number is required"
+                ),
+                country: Yup.string().required("Country is required"),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -255,8 +362,20 @@ export default {
         },
         async save() {
             this.isLoad = true;
+            let tmpFormatNumber = null;
+            let tmpFormatCountry = null;
             const isValid = await this.validateForm();
+            console.log(this.errors);
+            const countryData = this.phoneInput.getSelectedCountryData();
+            if (!countryData.dialCode || countryData.dialCode == undefined) {
+                this.isLoad = false;
+                return this.$alertWarning("select first country phone");
+            }
+            tmpFormatNumber = countryData.dialCode;
+            tmpFormatCountry = countryData.iso2;
             if (isValid) {
+                this.formInsurance.code_number = tmpFormatNumber;
+                this.formInsurance.code_country = tmpFormatCountry;
                 this.formInsurance.property_id = this.selectedPropertyId;
                 this.$axios
                     .post("/insurances/store", this.formInsurance, {
@@ -280,8 +399,20 @@ export default {
         },
         async update() {
             this.isLoad = true;
+            let tmpFormatNumber = null;
+            let tmpFormatCountry = null;
             const isValid = await this.validateForm();
+            const countryData = this.phoneInput.getSelectedCountryData();
+            console.log(this.errors);
+            if (!countryData.dialCode || countryData.dialCode == undefined) {
+                this.isLoad = false;
+                return this.$alertWarning("select first country phone");
+            }
+            tmpFormatNumber = countryData.dialCode;
+            tmpFormatCountry = countryData.iso2;
             if (isValid) {
+                this.formInsurance.code_number = tmpFormatNumber;
+                this.formInsurance.code_country = tmpFormatCountry;
                 this.$axios
                     .post(
                         `/insurances/update/${this.selectedInsurance.id}`,

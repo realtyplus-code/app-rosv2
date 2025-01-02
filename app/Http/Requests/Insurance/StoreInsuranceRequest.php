@@ -27,7 +27,15 @@ class StoreInsuranceRequest extends FormRequest
             'end_date' => 'required|date',
             'contact_person' => 'required|string|max:255',
             'contact_email' => 'required|email|max:255',
-            'coverage_type_id' => 'required|integer',
+            'insurance_type_id' => 'required|integer',
+            'property_id' => 'required|integer',
+            'insurance_type_id' => 'required|integer',
+            'position' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'code_number' => 'nullable|string|max:10',
+            'code_country' => 'nullable|string|max:10',
+            'country' => 'nullable|string|max:255',
+            'policy_number' => 'nullable|string|max:255',
         ];
     }
 
@@ -53,7 +61,31 @@ class StoreInsuranceRequest extends FormRequest
             'contact_email.max' => 'The contact email may not be greater than 255 characters.',
 
             'coverage_type_id.required' => 'The coverage type is required.',
-            'coverage_type_id.integer' => 'The coverage type must be an integer.'
+            'coverage_type_id.integer' => 'The coverage type must be an integer.',
+
+            'property_id.required' => 'The property ID is required.',
+            'property_id.integer' => 'The property ID must be an integer.',
+
+            'insurance_type_id.required' => 'The insurance type ID is required.',
+            'insurance_type_id.integer' => 'The insurance type ID must be an integer.',
+
+            'position.string' => 'The position must be a valid string.',
+            'position.max' => 'The position may not be greater than 255 characters.',
+
+            'phone.string' => 'The phone must be a valid string.',
+            'phone.max' => 'The phone may not be greater than 20 characters.',
+
+            'code_number.string' => 'The code number must be a valid string.',
+            'code_number.max' => 'The code number may not be greater than 10 characters.',
+
+            'code_country.string' => 'The code country must be a valid string.',
+            'code_country.max' => 'The code country may not be greater than 10 characters.',
+
+            'country.string' => 'The country must be a valid string.',
+            'country.max' => 'The country may not be greater than 255 characters.',
+
+            'policy_number.string' => 'The policy number must be a valid string.',
+            'policy_number.max' => 'The policy number may not be greater than 255 characters.',
         ];
     }
 }

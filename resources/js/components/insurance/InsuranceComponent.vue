@@ -52,6 +52,24 @@
                     </template>
                 </Column>
                 <Column
+                    field="policy_number"
+                    header="Policy number"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.policy_number }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by policiy"
+                        />
+                    </template>
+                </Column>
+                <Column
                     field="start_date"
                     header="Start Date"
                     sortable
@@ -88,20 +106,20 @@
                     </template>
                 </Column>
                 <Column
-                    field="contact_person"
-                    header="Person"
+                    field="insurance_name"
+                    header="Insurance"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.contact_person }}
+                        {{ data.insurance_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by contact_person"
+                            placeholder="Search by insurance_name"
                         />
                     </template>
                 </Column>
@@ -124,20 +142,98 @@
                     </template>
                 </Column>
                 <Column
-                    field="coverage_name"
-                    header="Coverage"
+                    field="contact_person"
+                    header="Person"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.coverage_name }}
+                        {{ data.contact_person }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by coverage_name"
+                            placeholder="Search by contact_person"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="contact_email"
+                    header="Person email"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.contact_email }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by contact_email"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="country_name"
+                    header="Country"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.country_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by country"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="position"
+                    header="Position"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.position }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by position"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="phone"
+                    header="Phone"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{
+                            "+" +
+                            (data.code_number || "") +
+                            " " +
+                            (data.phone || "")
+                        }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by phone without code"
                         />
                     </template>
                 </Column>
@@ -260,6 +356,12 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
+                policy_number: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
                 start_date: {
                     clear: false,
                     constraints: [
@@ -272,13 +374,7 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                contact_person: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-                contact_person: {
+                insurance_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -290,7 +386,31 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                coverage_name: {
+                contact_person: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                contact_email: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                country_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                position: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                phone: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },

@@ -8,6 +8,9 @@
     font-weight: bold;
 }
 
+.phone-wrapper > .iti {
+    width: 100% !important;
+}
 
 .swal2-container {
     z-index: 9999 !important;

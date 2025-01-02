@@ -21,7 +21,8 @@ class InsuranceService
     {
         $query = Insurance::query()
             ->leftJoin('properties', 'properties.id', '=', 'insurances.property_id')
-            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'insurances.coverage_type_id');
+            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'insurances.insurance_type_id')
+            ->leftJoin('enum_options as ec', 'ec.id', '=', 'insurances.country');
 
         if (isset($data['property_id'])) {
             $query->where('properties.id', $data['property_id']);

@@ -18,12 +18,18 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('contact_person');
             $table->string('contact_email');
+            $table->string('position');
+            $table->string('phone');
+            $table->string('code_number')->nullable();
+            $table->string('code_country')->nullable();
+            $table->string('country');
+            $table->string('policy_number');
             $table->unsignedBigInteger('property_id');
-            $table->unsignedInteger('coverage_type_id');
+            $table->unsignedInteger('insurance_type_id');
             $table->timestamps();
 
             $table->foreign('property_id')->references('id')->on('properties');
-            $table->foreign('coverage_type_id')->references('id')->on('enum_options');
+            $table->foreign('insurance_type_id')->references('id')->on('enum_options');
         });
     }
 
