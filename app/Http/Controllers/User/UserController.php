@@ -35,6 +35,13 @@ class UserController extends Controller
                     'users.id',
                     'users.name',
                     'users.phone',
+                    'users.address',
+                    'ec.id as country_id',
+                    'es.id as state_id',
+                    'eci.id as city_id',
+                    'ec.name as country_name',
+                    'es.name as state_name',
+                    'eci.name as city_name',
                     'users.code_number',
                     'users.code_country',
                     'users.email',
@@ -54,7 +61,7 @@ class UserController extends Controller
         try {
             $user = $this->userService->storeUser($request->all());
             if($user == 'FALSE EMAIL'){
-                return Response::sendError('FALSE EMAIL', 500);
+                return Response::sendError('FALSE EMAIL', 400);
             }
             return Response::sendResponse($user, 'Registro creado con exito.');
         } catch (\Exception $ex) {

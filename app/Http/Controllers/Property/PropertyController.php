@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Property;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Exports\ExportDataGrid;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
 use App\Http\Requests\Property\StorePropertyRequest;
 use App\Http\Controllers\ResponseController as Response;
@@ -140,5 +143,53 @@ class PropertyController extends Controller
         } catch (\Exception $ex) {
             return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
         }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $currentDate = Carbon::now()->format('Y-m-d H:i:s');
+
+        return Excel::download(new ExportDataGrid([
+            'Name',
+            'Address',
+            'Status',
+            'Property Type Name',
+            'Owners Name',
+            'Tenants Name',
+            'Insurances'
+        ], $this->getDataToExport($request), [], ''), "User_{$currentDate}.xlsx",);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        try {
+            $data = $this->getDataToExport($request);
+            $pdf = \PDF::loadView('exports.properties', ['data' => $data]);
+            $currentDate = Carbon::now()->format('Y-m-d H:i:s');
+            return $pdf->download("User_{$currentDate}.pdf");
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    private function getDataToExport(Request $request)
+    {
+        $query = $this->propertyService->getPropertiesQuery();
+        return renderDataTableExport(
+            $query,
+            $request,
+            [],
+            [
+                'properties.name',
+                'properties.address',
+                'properties.status',
+                'eo_property_type.name as property_type_name',
+                DB::raw('GROUP_CONCAT(user_owner.name ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
+                DB::raw('GROUP_CONCAT(user_tenant.name ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
+                DB::raw('COUNT(DISTINCT insurances.id) as insurances')
+            ]
+        );
     }
 }

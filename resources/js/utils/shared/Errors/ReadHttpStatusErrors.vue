@@ -1,21 +1,16 @@
 <script>
 const readStatus = {};
 
-// Function to get error details from HTTP responses
+// Funcion para obtener los datos del error de las respuesta http
 readStatus.getDataError = (error = []) => {
     let response = {};
     try {
-        if (Array.isArray(error) && error.length > 0) {
-            response = error[0].response;
-        } else {
-            response = error;
-        }
+        response = [error][0].response;
     } catch (error) {
         response = {};
     }
     return response;
 };
-
 
 readStatus.validateForm = (data) => {
     const errors = data.errors;
@@ -34,9 +29,10 @@ export default {
     methods: {
         $readStatusHttp(error = []) {
             const response = readStatus.getDataError(error);
+            console.log(response);
             switch (response.status) {
                 case 400:
-                    this.$alertDanger("Bad Request", response.data.message);
+                    this.$alertDanger("Bad Request", this.textCodeMessage(response.data.message));
                     break;
                 case 401:
                     this.$alertDanger("Your session has expired", "");
@@ -60,7 +56,7 @@ export default {
                 case 409:
                     this.$alertDanger(
                         "Unauthorized Process",
-                        "The process was not authorized. Try another type of process."
+                        "The process was not authorized, try another type of process"
                     );
                     break;
                 case 419:
@@ -77,23 +73,26 @@ export default {
                     this.$alertDanger("Limit Exceeded");
                     break;
                 case 500:
-                    if (response.data?.message && response.data.message == "FALSE EMAIL") {
-                        this.$alertDanger(
-                            "Bad Request",
-                            "Email not found on server"
-                        );
-                    } else {
-                        this.$alertDanger(
-                            "Bad Request",
-                            "An error occurred while performing the process"
-                        );
-                    }
+                    this.$alertDanger(
+                        "Bad Request",
+                        "An error occurred while performing the process"
+                    );
                     break;
                 default:
                     this.$alertDanger(
                         "Bad Request",
                         "An unexpected error occurred"
                     );
+            }
+        },
+        textCodeMessage(code) {
+            switch (code) {
+                case "FALSE EMAIL":
+                    return "The system did not recognize the email host domain";
+                    break;
+                default:
+                    return code;
+                    break;
             }
         },
     },

@@ -133,6 +133,82 @@
                         {{ data.roles[0].name }}
                     </template>
                 </Column>
+                <Column
+                    field="country"
+                    header="Country"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.country_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by country"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="state"
+                    header="State"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.state_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by state"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="city"
+                    header="City"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.city_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by city"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="address"
+                    header="Address"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.address }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by address"
+                        />
+                    </template>
+                </Column>
                 <!-- Photos Column -->
                 <Column header="Photo">
                     <template #body="{ data }">
@@ -258,6 +334,30 @@ export default {
                     ],
                 },
                 phone: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                country: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                state: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                }, 
+                city: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                address: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },

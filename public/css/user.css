@@ -188,3 +188,9 @@ h3 {
     background-color: #f7601a !important;
     border-color: #f7601a !important;
 }
+
+.p-error {
+    color: red;
+    font-size: 0.75em;
+    display: block;
+}

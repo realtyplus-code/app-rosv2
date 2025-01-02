@@ -11,6 +11,7 @@ class CreateEnumOptionsTable extends Migration
         Schema::create('enum_options', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id')->unsigned();
+            $table->integer('brother_relation_id')->unsigned()->nullable();
             $table->string('code')->index()->unique()->nullable();
             $table->string('name')->index();
             $table->string('description', 255)->nullable();
@@ -23,6 +24,7 @@ class CreateEnumOptionsTable extends Migration
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('parent_id')->references('id')->on('enum_options')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('brother_relation_id')->references('id')->on('enum_options')->onUpdate('cascade')->onDelete('set null');
         });
 
 

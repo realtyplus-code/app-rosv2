@@ -21,8 +21,34 @@
                     raised
                     @click="clearFilters"
                     style="
+                        margin-right: 10px;
                         background-color: #f76f31 !important;
                         border-color: #f76f31;
+                    "
+                />
+                <Button
+                    icon="pi pi-file-excel"
+                    class="p-button-sm"
+                    rounded
+                    raised
+                    @click="exportToExcel"
+                    v-if="false"
+                    style="
+                        margin-right: 10px;
+                        background-color: #28a745 !important;
+                        border-color: #28a745;
+                    "
+                />
+                <Button
+                    icon="pi pi-file-pdf"
+                    class="p-button-sm"
+                    rounded
+                    raised
+                    @click="exportToPDF"
+                    v-if="false"
+                    style="
+                        background-color: #dc3545 !important;
+                        border-color: #dc3545;
                     "
                 />
             </div>
@@ -241,7 +267,11 @@
                             <Button
                                 icon="pi pi-shield"
                                 class="p-button-rounded p-button-warn"
-                                style="margin: 5px"
+                                style="
+                                    margin: 5px;
+                                    background-color: #ffc107;
+                                    border-color: #ffc107;
+                                "
                                 @click="viewInsurance(slotProps.data.id)"
                                 title="Insurances"
                             />
@@ -250,8 +280,8 @@
                                 class="p-button-rounded p-button-info"
                                 style="
                                     margin: 5px;
-                                    background-color: #DACC3E;
-                                    border-color: #DACC3E;
+                                    background-color: #17a2b8;
+                                    border-color: #17a2b8;
                                 "
                                 @click="viewIncident(slotProps.data.id)"
                                 title="Incidents"
@@ -514,10 +544,52 @@ export default {
             window.location.href = "/insurances?property_id=" + id;
             return;
         },
+        async exportToExcel() {
+            const params = {
+                page: this.page,
+                perPage: this.perPage,
+                sort: [this.sortField, this.sortOrder],
+                filters: this.filtroInfo,
+                select: this.filterSelect ?? null,
+            };
+            this.loading = true;
+            try {
+                await this.$exportToExcel(
+                    "properties/export",
+                    params,
+                    "Properties"
+                );
+                this.$alertSuccess("Document generated successfully");
+            } catch (error) {
+                this.$readStatusHttp(error);
+            } finally {
+                this.loading = false;
+            }
+        },
+        async exportToPDF() {
+            const params = {
+                page: this.page,
+                perPage: this.perPage,
+                sort: [this.sortField, this.sortOrder],
+                filters: this.filtroInfo,
+                select: this.filterSelect ?? null,
+            };
+            this.loading = true;
+            try {
+                await this.$exportToPDF(
+                    "properties/export-pdf",
+                    params,
+                    "Properties"
+                );
+                this.$alertSuccess("PDF generated successfully");
+            } catch (error) {
+                this.$readStatusHttp(error);
+            } finally {
+                this.loading = false;
+            }
+        },
     },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

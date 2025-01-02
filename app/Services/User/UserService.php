@@ -37,14 +37,24 @@ class UserService
 
         $consult->leftJoin('user_properties as up', 'up.user_id', '=', 'users.id')
             ->leftJoin('properties as p', 'p.id', '=', 'up.property_id')
+            ->leftJoin('enum_options as ec', 'ec.id', '=', 'users.country')
+            ->leftJoin('enum_options as es', 'es.id', '=', 'users.state')
+            ->leftJoin('enum_options as eci', 'eci.id', '=', 'users.city')
             ->groupBy([
                 'users.id',
                 'users.name',
                 'users.phone',
+                'ec.id',
+                'es.id',
+                'eci.id',
+                'ec.name',
+                'es.name',
+                'eci.name',
                 'users.code_number',
                 'users.code_country',
                 'users.email',
                 'users.photo',
+                'users.address'
             ]);
 
         return $consult;

@@ -23,6 +23,14 @@ export default {
                     return "users.email";
                 case "phone":
                     return "users.phone";
+                case "address":
+                    return "users.address";
+                case "country":
+                    return "ec.name";
+                case "state":
+                    return "es.name";
+                case "city":
+                    return "eci.name";
                 default:
                     return selector;
             }

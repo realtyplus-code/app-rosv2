@@ -11,6 +11,7 @@ class EnumOption extends Model
 
     protected $fillable = [
         'parent_id',
+        'brother_relation_id',
         'code',
         'name',
         'description',

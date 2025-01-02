@@ -5,7 +5,7 @@ namespace Database\Seeders\Configuration;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CoreMasterComboPropertTypeSeeder extends Seeder
+class CoreMasterComboPropertyTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -22,8 +22,10 @@ class DatabaseSeeder extends Seeder
         $this->call(Configuration\CoreMasterComboIncidentTypeSeeder::class);
         $this->call(Configuration\CoreMasterComboPayerSeeder::class);
         $this->call(Configuration\CoreMasterComboPrioritySeeder::class);
-        $this->call(Configuration\CoreMasterComboPropertTypeSeeder::class);
+        $this->call(Configuration\CoreMasterComboPropertyTypeSeeder::class);
         $this->call(Configuration\CoreMasterComboCoverageTypeSeeder::class);
         $this->call(Configuration\CoreMasterComboProviderTypeSeeder::class);
+        $this->call(Configuration\CoreEnumCountryStateCitySeeder::class);
+        $this->call(Configuration\CoreMasterComboInsuranceTypeSeeder::class);
     }
 }

@@ -21,7 +21,7 @@ class EnumOptionService
     {
         return EnumOption::query()
             ->where('is_father', '!=', true)
-            ->where('name', '!=', 'master padre')
+            ->where('name', '!=', 'master father')
             ->whereHas('parent', function ($query) {
                 $query->where('status', true);
             })

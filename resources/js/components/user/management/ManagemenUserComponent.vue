@@ -7,7 +7,7 @@
         :draggable="false"
     >
         <template #header>
-            <h3>Management Property</h3>
+            <h3>Management User</h3>
             <ProgressSpinner
                 style="width: 25px; height: 25px; margin-left: 20px"
                 strokeWidth="8"
@@ -41,7 +41,7 @@
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.name }"
                         v-model="formUser.name"
-                        style="width: 100%;"
+                        style="width: 100%"
                         @input="clearError('name')"
                     />
                     <label for="name">Name</label>
@@ -59,7 +59,7 @@
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.email }"
                         v-model="formUser.email"
-                        style="width: 100%;"
+                        style="width: 100%"
                         @input="clearError('email')"
                     />
                     <label for="email">Email</label>
@@ -89,6 +89,71 @@
                     class="mt-2"
                     @click="generateRandomPassword"
                 />
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column" style="margin-top: 12px">
+                <Select
+                    :options="listCountry"
+                    v-model="formUser.country"
+                    placeholder="Select country"
+                    :class="{ 'p-invalid': errors.country }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeCountry(formUser.country, true)"
+                />
+                <small v-if="errors.country" class="p-error">{{
+                    errors.country
+                }}</small>
+            </div>
+            <div class="custom-form-column" style="margin-top: 25px">
+                <Select
+                    :options="listState"
+                    v-model="formUser.state"
+                    :placeholder="placeholderState"
+                    :class="{ 'p-invalid': errors.state }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeState(formUser.state, true)"
+                />
+                <small v-if="errors.state" class="p-error">{{
+                    errors.state
+                }}</small>
+            </div>
+            <div class="custom-form-column" style="margin-top: 25px">
+                <Select
+                    :options="listCity"
+                    v-model="formUser.city"
+                    :placeholder="placeholderCity"
+                    :class="{ 'p-invalid': errors.city }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+
+                <small v-if="errors.city" class="p-error">{{
+                    errors.city
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputText
+                        id="address"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.address }"
+                        v-model="formUser.address"
+                        style="width: 100%"
+                        @input="clearError('address')"
+                    />
+                    <label for="address">Address</label>
+                </FloatLabel>
+                <small v-if="errors.address" class="p-error">{{
+                    errors.address
+                }}</small>
             </div>
         </div>
         <div class="custom-form mt-4">
@@ -177,6 +242,12 @@
                         </div>
                     </div>
                 </div>
+                <small
+                    v-if="errors.photos"
+                    style="display: block"
+                    class="p-error"
+                    >{{ errors.photos }}</small
+                >
             </div>
         </div>
         <hr />
@@ -222,6 +293,10 @@ export default {
                 name: null,
                 email: null,
                 phone: null,
+                address: null,
+                country: null,
+                state: null,
+                city: null,
                 code_number: null,
                 code_country: null,
                 photos: [],
@@ -231,22 +306,42 @@ export default {
             phoneInput: null,
             listRoles: [],
             isLoad: false,
+            listCity: [],
+            listCountry: [],
+            listState: [],
+            placeholderCity: "Select the state first",
+            placeholderState: "Select the country first",
         };
     },
-    components: {
-    },
+    components: {},
     watch: {},
     mounted() {
-        this.$nextTick(() => {
+        this.$nextTick(async () => {
             if (this.selectedUser) {
                 this.formUser.id = this.selectedUser.id;
                 this.formUser.name = this.selectedUser.name;
                 this.formUser.email = this.selectedUser.email;
                 this.formUser.phone = this.selectedUser.phone;
+                this.formUser.address = this.selectedUser.address;
+                this.formUser.country = parseInt(this.selectedUser.country_id);
+                this.formUser.state = parseInt(this.selectedUser.state_id);
+                this.formUser.city = parseInt(this.selectedUser.city_id);
                 this.formUser.code_number = this.selectedUser.code_number;
                 this.formUser.code_country = this.selectedUser.code_country;
                 this.formUser.role = this.selectedUser.roles[0].id;
                 this.setPhotos();
+                if (this.selectedUser.country_id) {
+                    await this.onChangeCountry(
+                        this.selectedUser.country_id,
+                        false
+                    );
+                    if (this.selectedUser.state_id) {
+                        await this.onChangeState(
+                            this.selectedUser.state_id,
+                            false
+                        );
+                    }
+                }
             }
 
             const phoneInputField = document.querySelector("#countryPhone");
@@ -273,6 +368,10 @@ export default {
             if (rols) {
                 this.listRoles = rols.data;
             }
+            const comboNames = ["country"];
+            const response = await this.$getEnumsOptions(comboNames);
+            const { country: responsCountry } = response.data;
+            this.listCountry = responsCountry;
         },
         getRoles() {
             const vm = this;
@@ -301,6 +400,10 @@ export default {
                     .max(1, "You can upload up to 1 photos")
                     .required("Photo is required"),
                 role: Yup.string().required("Role is required"),
+                country: Yup.string().required("Country is required"),
+                state: Yup.string().required("State is required"),
+                city: Yup.string().required("City is required"),
+                address: Yup.string().required("Address is required"),
             };
             if (!this.selectedUser) {
                 this.dynamicRules.password = Yup.string().required(
@@ -398,6 +501,59 @@ export default {
             } else {
                 this.isLoad = false;
             }
+        },
+        onChangeCountry(value, change) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await this.$getBrother(value);
+                    this.listState = [];
+                    this.listCity = [];
+                    if (value && change) {
+                        this.formUser.state_id = null;
+                        this.formUser.city_id = null;
+                    } else {
+                        this.formUser.state_id = this.selectedUser
+                            ? parseInt(this.selectedUser.state_id)
+                            : null;
+                        this.formUser.city_id = this.selectedUser
+                            ? parseInt(this.selectedUser.city_id)
+                            : null;
+                    }
+
+                    this.placeholderState =
+                        response.data.length > 0
+                            ? "Select state"
+                            : "Data empty";
+                    this.listState = response.data;
+                    resolve();
+                } catch (error) {
+                    console.error("Error in onChangeCountry:", error);
+                    reject(error);
+                }
+            });
+        },
+        onChangeState(value, change) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await this.$getBrother(value);
+                    this.listCity = [];
+                    if (value && change) {
+                        this.formUser.city_id = null;
+                    } else {
+                        this.formUser.city_id = this.selectedUser
+                            ? parseInt(this.selectedUser.city_id)
+                            : null;
+                    }
+
+                    this.placeholderCity =
+                        response.data.length > 0 ? "Select city" : "Data empty";
+                    this.listCity = response.data;
+                    resolve();
+                } catch (error) {
+                    console.error("Error in onChangeState:", error);
+                    reject(error);
+                }
+            });
         },
         handleDialogClose() {
             this.visible = false;
@@ -574,7 +730,7 @@ export default {
     height: 100%;
 }
 
-.phone-wrapper>.iti {
+.phone-wrapper > .iti {
     width: 100% !important;
 }
 </style>

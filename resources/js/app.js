@@ -23,6 +23,7 @@ import FileUpload from "primevue/fileupload";
 import DatePicker from "primevue/datepicker";
 import Textarea from "primevue/textarea";
 import InputNumber from "primevue/inputnumber";
+import Password from "primevue/password";
 
 const app = createApp({});
 
@@ -90,6 +91,7 @@ app.component('FileUpload', FileUpload);
 app.component('DatePicker', DatePicker);
 app.component('Textarea', Textarea);
 app.component('InputNumber', InputNumber);
+app.component('Password', Password);
 
 // Registrar funciones compartidas
 app.mixin(shared.AlertsComponent);
