@@ -47,13 +47,13 @@ export default {
                                 this.route("insurance");
                             },
                         },
-                        /* {
+                        {
                             label: "Incident",
                             icon: "pi pi-exclamation-triangle",
                             command: () => {
-                                this.route("incident");
+                                this.route("occurrences");
                             },
-                        }, */
+                        },
                     ],
                 },
                 {
@@ -134,8 +134,8 @@ export default {
                 case "insurance":
                     window.location.href = "/insurances";
                     break;
-                case "incident":
-                    window.location.href = "/incidents";
+                case "occurrences":
+                    window.location.href = "/occurrences";
                     break;
                 case "provider":
                     window.location.href = "/providers";

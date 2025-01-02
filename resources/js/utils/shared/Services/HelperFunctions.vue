@@ -36,7 +36,7 @@ export default {
                 return { tag, id: parseInt(id) };
             });
         },
-        $parseInsurance(cant) {
+        $parsePreview(cant) {
             if (cant > 0) {
                 return "pi pi-eye";
             } else {
@@ -127,6 +127,12 @@ export default {
                         reject(error);
                     });
             });
+        },
+        $formatCurrency(value, currency) {
+            return new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: currency,
+            }).format(value);
         },
     },
 };

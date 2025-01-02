@@ -22,10 +22,42 @@ class IncidentService
     public function getIncidentsQuery()
     {
         $query = Incident::query()
+            ->leftJoin('incident_provider', 'incident_provider.incident_id', '=', 'incidents.id')
+            ->leftJoin('providers', 'providers.id', '=', 'incident_provider.provider_id')
             ->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
-            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.type_id');
-    
-        return $query->distinct();
+            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.incident_type_id')
+            ->leftJoin('enum_options as e_st', 'e_st.id', '=', 'incidents.status_id')
+            ->leftJoin('enum_options as e_sev', 'e_sev.id', '=', 'incidents.priority_id')
+            ->leftJoin('enum_options as e_py', 'e_py.id', '=', 'incidents.payer_id')
+            ->leftJoin('users', 'users.id', '=', 'incidents.reported_by')
+            ->groupBy(
+                [
+                    'incidents.id',
+                    'incidents.description',
+                    'properties.id',
+                    'properties.name',
+                    'incidents.report_date',
+                    'e_st.id',
+                    'e_st.name',
+                    'users.id',
+                    'users.name',
+                    'e_sev.id',
+                    'e_sev.name',
+                    'e_ct.id',
+                    'e_ct.name',
+                    'e_py.id',
+                    'e_py.name',
+                    'incidents.cost',
+                    'incidents.created_at',
+                    'incidents.updated_at'
+                ]
+            );
+
+        if (isset($data['property_id'])) {
+            $query->where('properties.id', $data['property_id']);
+        }
+
+        return $query;
     }
 
     public function storeIncident(array $data)
@@ -55,7 +87,16 @@ class IncidentService
     {
         DB::beginTransaction();
         try {
+            $data['reported_by'] = auth()->user()->id;
+            $providers = $data['providers'];
             $incident = $this->incidentRepository->update($id, $data);
+            $this->incidentProviderRepository->deleteByIncident($id);
+            foreach ($providers as $key => $value) {
+                $this->incidentProviderRepository->create([
+                    'incident_id' => $incident->id,
+                    'provider_id' => $value,
+                ]);
+            }
             DB::commit();
             return $incident;
         } catch (\Exception $ex) {
@@ -70,7 +111,19 @@ class IncidentService
     {
         try {
             $this->incidentRepository->delete($id);
+            $this->incidentProviderRepository->deleteByIncident($id);
             return true;
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
+    }
+
+    public function showIncident($id)
+    {
+        try {
+            return $this->incidentRepository->findById($id);
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

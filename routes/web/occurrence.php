@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Incident\IncidentController;
 
-Route::prefix('incidents')->group(function () {
+Route::prefix('occurrences')->middleware(['auth'])->group(function () {
     Route::get('/', [IncidentController::class, 'view'])->name('incidents.view');
     Route::get('/list', [IncidentController::class, 'index'])->name('incidents.index');
     Route::post('/store', [IncidentController::class, 'store'])->name('incidents.store');

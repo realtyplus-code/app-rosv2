@@ -188,7 +188,7 @@
                 <Column
                     field="insurances"
                     header="Insurances"
-                    style="min-width: 180px"
+                    style="min-width: 120px"
                 >
                     <template #body="{ data }">
                         <div
@@ -197,7 +197,7 @@
                         >
                             <i
                                 class="size-insurance"
-                                :class="$parseInsurance(data.insurances)"
+                                :class="$parsePreview(data.insurances)"
                                 :title="
                                     data.insurances > 0
                                         ? 'View insurances'
@@ -212,6 +212,37 @@
                                 }"
                                 @click="
                                     viewPanelInsurance(data.insurances, data.id)
+                                "
+                            ></i>
+                        </div>
+                    </template>
+                </Column>
+                <!-- incidents Type Name Column -->
+                <Column
+                    field="incidents"
+                    header="Incidents"
+                    style="min-width: 120px"
+                >
+                    <template #body="{ data }">
+                        <div
+                            class="size-incidents"
+                            style="justify-content: center"
+                        >
+                            <i
+                                class="size-insurance"
+                                :class="$parsePreview(data.incidents)"
+                                :title="
+                                    data.incidents > 0
+                                        ? 'View incidents'
+                                        : 'No incidents available'
+                                "
+                                :style="{
+                                    fontSize: '1.5rem',
+                                    color: data.incidents > 0 ? 'green' : 'red',
+                                    cursor: data.incidents > 0 ? 'pointer' : '',
+                                }"
+                                @click="
+                                    viewPanelIncidents(data.incidents, data.id)
                                 "
                             ></i>
                         </div>
@@ -325,6 +356,7 @@
         :dialogVisible="dialogVisibleIncident"
         :selectedPropertyId="selectedPropertyId"
         @hidden="hiddenIncident"
+        @reload="reloadIncident"
     />
 </template>
 
@@ -439,7 +471,6 @@ export default {
             this.filtroInfo = [];
             for (const [key, filter] of Object.entries(event.filters)) {
                 if (filter.constraints) {
-                    console.log(filter.constraints);
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
                             this.filtroInfo.push([
@@ -515,6 +546,11 @@ export default {
             this.selectedPropertyId = null;
             this.dialogVisibleInsurance = false;
         },
+        reloadIncident() {
+            this.fetchProperty();
+            this.selectedPropertyId = null;
+            this.dialogVisibleIncident = false;
+        },
         reloadTable() {
             this.fetchProperty();
             this.resetGallery();
@@ -542,6 +578,11 @@ export default {
         viewPanelInsurance(insurances, id) {
             if (insurances == 0) return;
             window.location.href = "/insurances?property_id=" + id;
+            return;
+        },
+        viewPanelIncidents(insurances, id) {
+            if (insurances == 0) return;
+            window.location.href = "/occurrences?property_id=" + id;
             return;
         },
         async exportToExcel() {

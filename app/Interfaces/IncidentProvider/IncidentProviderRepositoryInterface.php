@@ -10,4 +10,5 @@ interface IncidentProviderRepositoryInterface
     public function findById($id);
     public function findAll();
     public function all();
+    public function deleteByIncident($id);
 }

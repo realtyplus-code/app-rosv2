@@ -47,4 +47,9 @@ class IncidentProviderRepository implements IncidentProviderRepositoryInterface
     {
         return $this->model->all();
     }
+
+    public function deleteByIncident($id)
+    {
+        return $this->model->where('incident_id', $id)->delete();
+    }
 }

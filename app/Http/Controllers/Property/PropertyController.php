@@ -48,7 +48,8 @@ class PropertyController extends Controller
                     'properties.photo3',
                     DB::raw('GROUP_CONCAT(CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                     DB::raw('GROUP_CONCAT(CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                    DB::raw('COUNT(DISTINCT insurances.id) as insurances')
+                    DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
+                    DB::raw('COUNT(DISTINCT incidents.id) as incidents')
                 ]
             );
         } catch (\Exception $ex) {

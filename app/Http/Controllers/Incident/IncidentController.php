@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Incident;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Incident\IncidentService;
 use App\Http\Controllers\ResponseController as Response;
 
@@ -25,6 +27,11 @@ class IncidentController extends Controller
     public function index(Request $request)
     {
         try {
+            $role = Auth::user()->getRoleNames()[0];
+            if ($role !== 'admin' && !$request->has('property_id')) {
+                return Response::sendError('The property field is required for non-admin users', 400);
+            }
+
             $query = $this->incidentService->getIncidentsQuery($request->all());
             return renderDataTable(
                 $query,
@@ -32,15 +39,24 @@ class IncidentController extends Controller
                 [],
                 [
                     'incidents.id',
-                    'incidents.type',
                     'incidents.description',
-                    'incidents.date',
                     'properties.id as property_id',
                     'properties.name as property_name',
-                    'e_ct.name as type_name',
+                    'incidents.report_date',
+                    'e_st.id as status_id',
+                    'e_st.name as status_name',
+                    'users.id as reported_by_id',
+                    'users.name as reported_by_name',
+                    'e_sev.id as priority_id',
+                    'e_sev.name as priority_name',
                     'e_ct.id as type_id',
+                    'e_ct.name as type_name',
+                    'e_py.id as payer_id',
+                    'e_py.name as payer_name',
+                    'incidents.cost',
                     'incidents.created_at',
                     'incidents.updated_at',
+                    DB::raw('GROUP_CONCAT(CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name'),
                 ]
             );
         } catch (\Exception $ex) {
@@ -67,6 +83,18 @@ class IncidentController extends Controller
         try {
             $incident = $this->incidentService->updateIncident($request->all(), $id);
             return Response::sendResponse($incident, 'Registro actualizado con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $incident = $this->incidentService->showIncident($id);
+            return Response::sendResponse($incident, 'Registro obtenido con exito.');
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

@@ -94,7 +94,7 @@
                     filter
                     :options="listIncidentType"
                     v-model="formIncident.incident_type_id"
-                    placeholder="Select incident type"
+                    placeholder="Select type"
                     :class="{ 'p-invalid': errors.incident_type_id }"
                     optionLabel="name"
                     optionValue="id"
@@ -224,11 +224,14 @@ export default {
     mounted() {
         this.$nextTick(() => {
             if (this.selectedIncident) {
+                const currentProvidersName = this.$parseTags(
+                    this.selectedIncident.provider_name
+                );
                 this.formIncident.id = this.selectedIncident.id;
                 this.formIncident.description =
                     this.selectedIncident.description;
                 this.formIncident.incident_type_id =
-                    this.selectedIncident.incident_type_id;
+                    this.selectedIncident.type_id;
                 this.formIncident.priority_id =
                     this.selectedIncident.priority_id;
                 this.formIncident.cost = this.selectedIncident.cost;
@@ -239,6 +242,9 @@ export default {
                     this.selectedIncident.report_date
                 );
                 this.formIncident.status_id = this.selectedIncident.status_id;
+                this.formIncident.providers = currentProvidersName.map(
+                    (provider) => provider.id
+                );
             }
         });
     },
@@ -296,6 +302,10 @@ export default {
                 payer_id: Yup.string().required("Payer is required"),
                 report_date: Yup.string().required("Report date is required"),
                 status_id: Yup.string().required("Status is required"),
+                providers: Yup.array().min(
+                    1,
+                    "At least one provider is required"
+                ),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -319,7 +329,7 @@ export default {
             if (isValid) {
                 this.formIncident.property_id = this.selectedPropertyId;
                 this.$axios
-                    .post("/incidents/store", this.formIncident, {
+                    .post("/occurrences/store", this.formIncident, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -344,7 +354,7 @@ export default {
             if (isValid) {
                 this.$axios
                     .post(
-                        `/incidents/update/${this.selectedIncident.id}`,
+                        `/occurrences/update/${this.selectedIncident.id}`,
                         this.formIncident,
                         {
                             headers: {

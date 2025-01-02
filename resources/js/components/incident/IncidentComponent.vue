@@ -4,17 +4,6 @@
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
-                    icon="pi pi-plus"
-                    rounded
-                    raised
-                    @click="addIncident"
-                    style="
-                        margin-right: 10px;
-                        background-color: #f76f31 !important;
-                        border-color: #f76f31;
-                    "
-                />
-                <Button
                     icon="pi pi-filter-slash"
                     class="p-button-sm"
                     rounded
@@ -44,7 +33,24 @@
                 stripedRows
                 scrollable
             >
-                <!-- Description Column -->
+                <Column
+                    field="property"
+                    header="Property"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.property_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by property"
+                        />
+                    </template>
+                </Column>
                 <Column
                     field="description"
                     header="Description"
@@ -63,7 +69,6 @@
                         />
                     </template>
                 </Column>
-                <!-- Report Date Column -->
                 <Column
                     field="report_date"
                     header="Report Date"
@@ -82,7 +87,6 @@
                         />
                     </template>
                 </Column>
-                <!-- Status Column -->
                 <Column
                     field="status_name"
                     header="Status"
@@ -103,15 +107,14 @@
                         />
                     </template>
                 </Column>
-                <!-- Incident Type Column -->
                 <Column
-                    field="incident_type_name"
-                    header="Incident Type"
+                    field="reported_by_name"
+                    header="Reported by"
                     sortable
                     style="min-width: 180px"
                 >
                     <template #body="{ data }">
-                        {{ data.incident_type_name }}
+                        {{ data.reported_by_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -122,7 +125,24 @@
                         />
                     </template>
                 </Column>
-                <!-- Priority Column -->
+                <Column
+                    field="type_name"
+                    header="Incident Type"
+                    sortable
+                    style="min-width: 180px"
+                >
+                    <template #body="{ data }">
+                        {{ data.type_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by incident type"
+                        />
+                    </template>
+                </Column>
                 <Column
                     field="priority_name"
                     header="Priority"
@@ -141,10 +161,62 @@
                         />
                     </template>
                 </Column>
-                <!-- Actions Column -->
+                <Column
+                    field="payer_name"
+                    header="Payer"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.payer_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by priority"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="cost"
+                    header="Cost"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ this.$formatCurrency(data.cost, "EUR") }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by priority"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="provider_name"
+                    header="Provider Name"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        <div class="size-tags">
+                            <Tag
+                                v-for="index in $parseTags(data.provider_name)"
+                                :key="index.id"
+                                :value="`${index.tag}`"
+                                class="size-tag"
+                            />
+                        </div>
+                    </template>
+                </Column>
                 <Column
                     header="Actions"
-                    style="min-width: 180px; text-align: center"
+                    style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -248,7 +320,7 @@ export default {
                         { value: null, matchMode: FilterMatchMode.EQUALS },
                     ],
                 },
-                incident_type_name: {
+                type_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -300,7 +372,7 @@ export default {
         fetchIncident() {
             this.loading = true;
             this.$axios
-                .get("/incidents/list", {
+                .get("/occurrences/list", {
                     params: {
                         page: this.page,
                         perPage: this.perPage,
@@ -318,10 +390,6 @@ export default {
                     this.$readStatusHttp(error);
                     this.loading = false;
                 });
-        },
-        addIncident() {
-            this.selectedIncident = null;
-            this.dialogVisible = true;
         },
         editIncident(incident) {
             this.selectedIncident = incident;
@@ -341,7 +409,7 @@ export default {
 
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`/incidents/${incidentId}`);
+                    await axios.delete(`/occurrences/${incidentId}`);
                     this.$alertSuccess("Register delete");
                     this.fetchIncident();
                 } catch (error) {

@@ -31,6 +31,7 @@ class PropertyService
             ->leftJoin('enum_options as eo_property_type', 'eo_property_type.id', '=', 'properties.property_type_id')
             ->leftJoin('user_properties', 'user_properties.property_id', '=', 'properties.id')
             ->leftJoin('insurances', 'insurances.property_id', '=', 'properties.id')
+            ->leftJoin('incidents', 'incidents.property_id', '=', 'incidents.id')
             ->leftJoin('users as user_owner', function ($join) {
                 $join->on('user_owner.id', '=', 'user_properties.user_id')
                     ->join('model_has_roles as mhr_owner', 'mhr_owner.model_id', '=', 'user_owner.id')

@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Provider\ProviderService;
+use App\Http\Requests\Provider\StoreProviderRequest;
+use App\Http\Requests\Provider\UpdateProviderRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class ProviderController extends Controller
@@ -71,7 +73,7 @@ class ProviderController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreProviderRequest $request)
     {
         try {
             $incident = $this->incidentService->storeProvider($request->all());
@@ -83,7 +85,7 @@ class ProviderController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProviderRequest $request, $id)
     {
         try {
             $incident = $this->incidentService->updateProvider($request->all(), $id);
