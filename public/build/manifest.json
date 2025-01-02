@@ -36,12 +36,12 @@
     "src": "node_modules/primeicons/fonts/primeicons.woff2"
   },
   "resources/js/app.js": {
-    "file": "assets/app-CtcdEOP9.js",
+    "file": "assets/app-B5A8w9Gd.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-iDZZsUnI.css"
+      "assets/app-C7F8EfTd.css"
     ],
     "assets": [
       "assets/flags-Cx4r8tdH.webp",
