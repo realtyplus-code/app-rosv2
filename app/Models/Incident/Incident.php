@@ -5,7 +5,7 @@ namespace App\Models\Incident;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Property\Property;
-use App\Models\Provider\Provider;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Configuration\EnumOption;
 
@@ -21,6 +21,12 @@ class Incident extends Model
         'priority_id',
         'cost',
         'payer_id',
+        'photo',
+        'photo1',
+        'photo2',
+        'photo3',
+        'pdf',
+        'pdf1',
     ];
 
     /**
@@ -80,6 +86,48 @@ class Incident extends Model
     public function getReportDateAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getPhotoAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident')->url($value);
+        }
+    }
+
+    public function getPhoto1Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident')->url($value);
+        }
+    }
+
+    public function getPhoto2Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident')->url($value);
+        }
+    }
+
+    public function getPhoto3Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident')->url($value);
+        }
+    }
+
+    public function getPdfAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident')->url($value);
+        }
+    }
+
+    public function getPdf1Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident')->url($value);
+        }
     }
 
 }

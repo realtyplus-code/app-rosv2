@@ -7,6 +7,9 @@ use App\Services\User\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\User\ValidatePhotoRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class UserController extends Controller
@@ -56,7 +59,7 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         try {
             $user = $this->userService->storeUser($request->all());
@@ -79,9 +82,10 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         try {
+            $request->merge(['id' => $id]);
             $user = $this->userService->updateUser($request->all(), $id);
             return Response::sendResponse($user, 'Registro actualizado con exito.');
         } catch (\Exception $ex) {
@@ -101,11 +105,11 @@ class UserController extends Controller
         }
     }
 
-    public function addPhoto(Request $request)
+    public function addPhoto(ValidatePhotoRequest $request)
     {
         try {
             $photo = $this->userService->addPhotoUser($request->all());
-            return Response::sendResponse($photo, 'Registro eliminado con exito.');
+            return Response::sendResponse($photo, 'Foto agregada con exito.');
         } catch (\Exception $ex) {
             return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
         }

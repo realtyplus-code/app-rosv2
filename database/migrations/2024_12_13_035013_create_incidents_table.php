@@ -22,6 +22,12 @@ return new class extends Migration
             $table->unsignedInteger('priority_id');
             $table->decimal('cost', 10, 2);
             $table->unsignedInteger('payer_id');
+            $table->string('photo')->nullable();
+            $table->string('photo1')->nullable();
+            $table->string('photo2')->nullable();
+            $table->string('photo3')->nullable();
+            $table->string('pdf')->nullable();
+            $table->string('pdf1')->nullable();
             $table->timestamps();
 
             $table->foreign('status_id')->references('id')->on('enum_options');

@@ -214,9 +214,37 @@
                         </div>
                     </template>
                 </Column>
+                <Column header="Photo">
+                    <template #body="{ data }">
+                        <div style="text-align: center">
+                            <Galleria
+                                :key="galleryKey"
+                                :value="$getImages(data)"
+                                :numVisible="4"
+                                style="width: 900px"
+                                containerClass="custom-galleria"
+                                :showThumbnails="true"
+                                showIndicators
+                                circular
+                                autoPlay
+                                :transitionInterval="5000"
+                            >
+                                <template #item="{ item }">
+                                    <Image
+                                        :src="item"
+                                        class="w-full h-full object-cover cursor-pointer"
+                                        height="100px"
+                                        width="150px"
+                                        preview
+                                    />
+                                </template>
+                            </Galleria>
+                        </div>
+                    </template>
+                </Column>
                 <Column
                     header="Actions"
-                    style="min-width: 120px; text-align: center"
+                    style="min-width: 180px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -240,6 +268,16 @@
                                 "
                                 @click="deleteIncident(slotProps.data.id)"
                             />
+                            <Button
+                                icon="pi pi-upload"
+                                class="p-button-rounded p-button-success"
+                                style="
+                                    margin: 5px;
+                                    background-color: #28a745;
+                                    border-color: #28a745;
+                                "
+                                @click="uploadPdfIncident(slotProps.data)"
+                            />
                         </div>
                     </template>
                 </Column>
@@ -255,6 +293,14 @@
         @reload="reload"
         @reloadTable="reloadTable"
     />
+    <UploadPdfModalComponent
+        v-if="dialogVisiblePdf"
+        :dialogVisible="dialogVisiblePdf"
+        :selectedRegister="selectedIncident"
+        @hidden="hidden"
+        @uploadFiles="uploadFiles"
+        @deletePdf="deletePdf"
+    />
 </template>
 
 <script>
@@ -262,6 +308,7 @@
 
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagementIncidentComponent from "./management/ManagemenIncidentComponent.vue";
+import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 
 export default {
     props: [],
@@ -279,16 +326,19 @@ export default {
             //
             selectedIncident: null,
             dialogVisible: false,
+            dialogVisiblePdf: false,
             statuses: [
                 { value: "Open", name: "Open" },
                 { value: "Closed", name: "Closed" },
             ],
+            galleryKey: 0,
         };
     },
     components: {
         FilterMatchMode,
         FilterOperator,
         ManagementIncidentComponent,
+        UploadPdfModalComponent,
     },
     created() {
         this.initFilters();
@@ -395,6 +445,10 @@ export default {
             this.selectedIncident = incident;
             this.dialogVisible = true;
         },
+        uploadPdfIncident(incident) {
+            this.selectedIncident = incident;
+            this.dialogVisiblePdf = true;
+        },
         async deleteIncident(incidentId) {
             const result = await this.$swal.fire({
                 title: "You're sure?",
@@ -424,9 +478,51 @@ export default {
         },
         reloadTable() {
             this.fetchIncident();
+            this.resetGallery();
+        },
+        resetGallery() {
+            this.galleryKey += 1;
         },
         hidden(status) {
             this.dialogVisible = status;
+            this.dialogVisiblePdf = status;
+        },
+        async uploadFiles(pdfs) {
+            if (pdfs.length === 0) {
+                this.$alertWarning("No files selected for upload");
+                return;
+            }
+            const data = {
+                incident_id: this.selectedIncident.id,
+                pdfs: pdfs,
+            };
+            this.$axios
+                .post("/occurrences/pdf/add", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then(() => {
+                    this.$alertSuccess("Files uploaded successfully");
+                    this.fetchIncident();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
+        },
+        deletePdf(pdfField) {
+            this.$axios
+                .post(`/occurrences/pdf/delete`, {
+                    incident_id: this.selectedIncident.id,
+                    type: pdfField,
+                })
+                .then(() => {
+                    this.$alertSuccess("File deleted successfully");
+                    this.fetchIncident();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
         },
     },
 };

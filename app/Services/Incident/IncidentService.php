@@ -3,6 +3,7 @@
 namespace App\Services\Incident;
 
 use App\Models\Incident\Incident;
+use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
@@ -14,9 +15,13 @@ class IncidentService
     protected $incidentRepository;
     protected $incidentProviderRepository;
     protected $enumOptionRepository;
+    protected $fileService;
+    private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
+    private $listDocuments = ['pdf', 'pdf1'];
 
-    public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository, EnumOptionRepositoryInterface $enumOptionRepository)
+    public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository, EnumOptionRepositoryInterface $enumOptionRepository, FileService $fileService)
     {
+        $this->fileService = $fileService;
         $this->incidentRepository = $incidentRepository;
         $this->incidentProviderRepository = $incidentProviderRepository;
         $this->enumOptionRepository = $enumOptionRepository;
@@ -51,8 +56,14 @@ class IncidentService
                     'e_py.id',
                     'e_py.name',
                     'incidents.cost',
+                    'incidents.photo',
+                    'incidents.photo1',
+                    'incidents.photo2',
+                    'incidents.photo3',
                     'incidents.created_at',
                     'incidents.updated_at',
+                    'incidents.pdf',
+                    'incidents.pdf1',
                 ]
             );
 
@@ -67,9 +78,13 @@ class IncidentService
     {
         DB::beginTransaction();
         try {
+            $photos = isset($data['photos']) ? $data['photos'] : [];
+            unset($data['photo']);
             $data['reported_by'] = auth()->user()->id;
             $providers = $data['providers'];
             $incident = $this->incidentRepository->create($data);
+            $this->assignedPhoto($incident, $photos);
+            $incident->save();
             foreach ($providers as $key => $value) {
                 $this->incidentProviderRepository->create([
                     'incident_id' => $incident->id,
@@ -133,6 +148,16 @@ class IncidentService
     public function deleteIncident($id)
     {
         try {
+            $currentIncident = Incident::find($id);
+            for ($i = 0; $i <= 5; $i++) {
+                $photoField = $i === 0 ? 'photo' : "photo{$i}";
+                if (!empty($currentIncident->$photoField)) {
+                    $this->fileService->deleteFile(
+                        cleanStorageUrl($currentIncident->$photoField, '/storage_incident/'),
+                        'disk_incident'
+                    );
+                }
+            }
             $this->incidentRepository->delete($id);
             $this->incidentProviderRepository->deleteByIncident($id);
             return true;
@@ -161,5 +186,120 @@ class IncidentService
             ->groupBy('e_ct.name');
 
         return $query->distinct();
+    }
+
+    private function assignedPhoto(&$incident, $photos)
+    {
+        if (isset($photos[0])) {
+            $incident->photo = $this->fileService->saveFile($photos[0], 'photo', 'disk_incident');
+        }
+        if (isset($photos[1])) {
+            $incident->photo1 = $this->fileService->saveFile($photos[1], 'photo', 'disk_incident');
+        }
+        if (isset($photos[2])) {
+            $incident->photo2 = $this->fileService->saveFile($photos[2], 'photo', 'disk_incident');
+        }
+        if (isset($photos[3])) {
+            $incident->photo3 = $this->fileService->saveFile($photos[3], 'photo', 'disk_incident');
+        }
+    }
+
+    public function addPhotoIncident($data)
+    {
+        $flagColumn = null;
+        $incident = $this->incidentRepository->findById($data['incident_id']);
+        $columns = $this->listPhotos;
+        foreach ($columns as $column) {
+            if (empty($incident->{$column})) {
+                $incident->{$column} = $this->fileService->saveFile($data['photo'], 'photo', 'disk_incident');
+                $flagColumn = $incident->{$column};
+                $incident->save();
+                break;
+            }
+        }
+        return $flagColumn;
+    }
+
+    public function deletePhotoIncident($data)
+    {
+        try {
+            $matchingColumn = $this->findPhotoColumn($data['incident_id'], $data['photo']);
+            if ($matchingColumn) {
+                if ($this->fileService->deleteFile(cleanStorageUrl($matchingColumn[1][$matchingColumn[0]], '/storage_incident/'), 'disk_incident')) {
+                    Incident::where('id', $data['incident_id'])->update([
+                        $matchingColumn[0] => null
+                    ]);
+                }
+            }
+            return true;
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
+    }
+
+    private function findPhotoColumn($id, $photo)
+    {
+        $filename = basename($photo);
+        $incident = Incident::where('id', $id)
+            ->where(function ($query) use ($filename) {
+                $query->where('photo', 'LIKE', "%$filename%")
+                    ->orWhere('photo1', 'LIKE', "%$filename%")
+                    ->orWhere('photo2', 'LIKE', "%$filename%")
+                    ->orWhere('photo3', 'LIKE', "%$filename%");
+            })
+            ->first();
+
+        if (!$incident) {
+            return null;
+        }
+
+        $columns = $this->listPhotos;
+        foreach ($columns as $column) {
+            if ($incident->$column == $photo) {
+                return [$column, $incident->toArray()];
+            }
+        }
+        return null;
+    }
+
+    public function addPdfIncident($data)
+    {
+        $flagColumn = null;
+        $pdfs = $data['pdfs'];
+        $incident = $this->incidentRepository->findById($data['incident_id']);
+        $columns = $this->listDocuments;
+        foreach ($pdfs as $key => $pdf) {
+            foreach ($columns as $column) {
+                if (empty($incident->{$column})) {
+                    $incident->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_incident');
+                    $flagColumn = $incident->{$column};
+                    $incident->save();
+                    break;
+                }
+            }
+        }
+        return $flagColumn;
+    }
+
+    public function deletePdfIncident($data)
+    {
+        try {
+            $incident = $this->incidentRepository->findById($data['incident_id']);
+            if ($data['type'] == 'pdf') {
+                $this->fileService->deleteFile(cleanStorageUrl($incident->pdf, '/storage_incident/'), 'disk_incident');
+                $incident->pdf = null;
+            } else {
+                $this->fileService->deleteFile(cleanStorageUrl($incident->pdf1, '/storage_incident/'), 'disk_incident');
+                $incident->pdf1 = null;
+            }
+            $incident->save();
+            return $incident;
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
     }
 }

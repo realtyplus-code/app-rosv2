@@ -11,6 +11,8 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
 use App\Http\Requests\Property\StorePropertyRequest;
+use App\Http\Requests\Property\UpdatePropertyRequest;
+use App\Http\Requests\Property\ValidatePhotoRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class PropertyController extends Controller
@@ -102,7 +104,7 @@ class PropertyController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePropertyRequest $request, $id)
     {
         try {
             $property = $this->propertyService->updateProperty($request->all(), $id);
@@ -126,11 +128,11 @@ class PropertyController extends Controller
         }
     }
 
-    public function addPhoto(Request $request)
+    public function addPhoto(ValidatePhotoRequest $request)
     {
         try {
             $photo = $this->propertyService->addPhotoProperty($request->all());
-            return Response::sendResponse($photo, 'Registro eliminado con exito.');
+            return Response::sendResponse($photo, 'Foto agregada con exito.');
         } catch (\Exception $ex) {
             return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
         }

@@ -152,7 +152,80 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form"></div>
+        <div class="custom-form mt-4">
+            <div v-if="!selectedIncident" class="custom-form-column">
+                <FileUpload
+                    id="attachPhoto"
+                    ref="fileUpload"
+                    accept="image/*"
+                    :multiple="true"
+                    :fileLimit="4"
+                    :class="{
+                        'p-invalid': errors.photos,
+                    }"
+                    @change="onFileUpload"
+                    @remove="onFileRemove"
+                >
+                    <template #empty>
+                        <p>Search photos (Max 4)</p>
+                    </template>
+                </FileUpload>
+                <small
+                    v-if="errors.photos"
+                    style="display: block"
+                    class="p-error"
+                    >{{ errors.photos }}</small
+                >
+            </div>
+            <div v-else class="gallery" style="margin-bottom: 20px">
+                <div class="gallery-grid">
+                    <div
+                        v-for="(photo, index) in formIncident.photos"
+                        :key="index"
+                        class="gallery-item"
+                    >
+                        <div class="card p-card gallery-card">
+                            <img
+                                :src="getImageSource(photo)"
+                                alt="Image"
+                                class="gallery-image"
+                            />
+                            <button
+                                v-if="formIncident.photos.length > 0"
+                                class="p-button-danger mt-2"
+                                style="
+                                    width: 100%;
+                                    border-radius: 0px 0px 10px 10px;
+                                "
+                                @click="
+                                    removePhoto(index, photo, formIncident.id)
+                                "
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        v-if="formIncident.photos.length < 4"
+                        class="gallery-item"
+                    >
+                        <div class="card p-card gallery-card">
+                            <input
+                                type="file"
+                                @change="
+                                    handleFileChange(
+                                        $event,
+                                        formIncident.photos.length,
+                                        formIncident.id
+                                    )
+                                "
+                                class="file-input"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <hr />
         <template #footer>
             <div class="text-center">
@@ -200,6 +273,7 @@ export default {
                 providers: [],
                 cost: null,
                 payer_id: null,
+                photos: [],
             },
             errors: {},
             listIncidentType: [],
@@ -245,6 +319,7 @@ export default {
                 this.formIncident.providers = currentProvidersName.map(
                     (provider) => provider.id
                 );
+                this.setPhotos();
             }
         });
     },
@@ -306,6 +381,10 @@ export default {
                     1,
                     "At least one provider is required"
                 ),
+                /* photos: Yup.array()
+                    .min(1, "At least 1 photo is required")
+                    .max(4, "You can upload up to 4 photos")
+                    .required("Photo is required"), */
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -382,6 +461,98 @@ export default {
         },
         clearError(field) {
             this.errors[field] = "";
+        },
+        setPhotos() {
+            this.formIncident.photos = [null, null, null, null];
+            const possiblePhotos = [
+                this.selectedIncident.photo,
+                this.selectedIncident.photo1,
+                this.selectedIncident.photo2,
+                this.selectedIncident.photo3,
+            ];
+            possiblePhotos.forEach((photo) => {
+                for (let i = 0; i < this.formIncident.photos.length; i++) {
+                    if (this.formIncident.photos[i] === null && photo) {
+                        this.formIncident.photos[i] = photo;
+                        break;
+                    }
+                }
+            });
+            this.formIncident.photos = this.formIncident.photos.filter(
+                (photo) => photo !== null
+            );
+        },
+        onFileUpload() {
+            const file_upload = this.$refs.fileUpload;
+            if (file_upload && file_upload.files.length <= 4) {
+                this.formIncident.photos = [];
+                for (let i = 0; i < file_upload.files.length; i++) {
+                    const file = file_upload.files[i];
+                    if (file.type && file.type.startsWith("image/")) {
+                        this.formIncident.photos.push(file);
+                    }
+                }
+            } else {
+                this.errors.photos = "You can upload up to 4 photos only.";
+            }
+        },
+        onFileRemove(event) {
+            const fileToRemove = event.file;
+            this.formIncident.photos = this.formIncident.photos.filter(
+                (photo) => photo.name !== fileToRemove.name
+            );
+        },
+        handleFileChange(event, index, id) {
+            const file = event.target.files[0];
+            if (file && !file.type.startsWith("image/")) {
+                this.$alertWarning("format not allowed!");
+                return;
+            }
+            if (file && index !== undefined) {
+                this.$axios
+                    .post(
+                        "/occurrences/photo/add",
+                        {
+                            incident_id: id,
+                            photo: file,
+                        },
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    )
+                    .then((response) => {
+                        this.$alertSuccess("Photo add!");
+                        this.formIncident.photos[index] = response.data.data;
+                        this.$emit("reloadTable", true);
+                    })
+                    .catch((error) => {
+                        this.$readStatusHttp(error);
+                    });
+            }
+            event.target.value = "";
+        },
+        removePhoto(index, name, id) {
+            this.$axios
+                .post("/occurrences/photo/delete", {
+                    incident_id: id,
+                    photo: name,
+                })
+                .then((response) => {
+                    this.$alertSuccess("Photo deleted!");
+                    this.formIncident.photos.splice(index, 1);
+                    this.$emit("reloadTable", true);
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
+        },
+        getImageSource(photo) {
+            if (photo instanceof File) {
+                return URL.createObjectURL(photo);
+            }
+            return photo;
         },
     },
 };

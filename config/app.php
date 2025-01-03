@@ -67,6 +67,8 @@ return [
 
     'timezone' => env('APP_TIMEZONE', 'UTC'),
 
+    'upload_max_filesize' => env('UPLOAD_MAX_FILESIZE', 10485760),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

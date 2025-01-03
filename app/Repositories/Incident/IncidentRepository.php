@@ -35,28 +35,12 @@ class IncidentRepository implements IncidentRepositoryInterface
 
     public function findById($id)
     {
-        return $this->model->with([
-            'property',
-            'reportedBy',
-            'assignedResponsible',
-            'status',
-            'incidentType',
-            'priority',
-            'payer',
-        ])->findOrFail($id);
+        return $this->model->findOrFail($id);
     }
 
     public function findAll()
     {
-        return $this->model->with([
-            'property',
-            'reportedBy',
-            'assignedResponsible',
-            'status',
-            'incidentType',
-            'priority',
-            'payer',
-        ])->get();
+        return $this->model->all();
     }
 
     public function all()

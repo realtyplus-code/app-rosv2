@@ -59,6 +59,12 @@ class IncidentController extends Controller
                     'e_py.id as payer_id',
                     'e_py.name as payer_name',
                     'incidents.cost',
+                    'incidents.photo',
+                    'incidents.photo1',
+                    'incidents.photo2',
+                    'incidents.photo3',
+                    'incidents.pdf',
+                    'incidents.pdf1',
                     'incidents.created_at',
                     'incidents.updated_at',
                     DB::raw('GROUP_CONCAT(CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name'),
@@ -137,6 +143,54 @@ class IncidentController extends Controller
     {
         try {
             $this->incidentService->deleteIncident($id);
+            return Response::sendResponse(true, 'Registro eliminado con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function addPhoto(Request $request)
+    {
+        try {
+            $photo = $this->incidentService->addPhotoIncident($request->all());
+            return Response::sendResponse($photo, 'Registro añadido con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function destroyPhoto(Request $request)
+    {
+        try {
+            $this->incidentService->deletePhotoIncident($request->all());
+            return Response::sendResponse(true, 'Registro eliminado con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function addPdf(Request $request)
+    {
+        try {
+            $pdf = $this->incidentService->addPdfIncident($request->all());
+            return Response::sendResponse($pdf, 'Registro añadido con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
+    public function destroyPdf(Request $request)
+    {
+        try {
+            $this->incidentService->deletePdfIncident($request->all());
             return Response::sendResponse(true, 'Registro eliminado con exito.');
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

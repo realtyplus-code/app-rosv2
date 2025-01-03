@@ -4,6 +4,7 @@
 /public/storage
 /public/storage_property
 /public/storage_user
+/public/storage_incident
 /storage/*.key
 /storage/pail
 /vendor
