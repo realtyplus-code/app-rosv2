@@ -24,6 +24,11 @@ class IncidentController extends Controller
         return view('incidents.incident');
     }
 
+    public function viewKanban()
+    {
+        return view('incidents.incident_kanban');
+    }
+
     public function index(Request $request)
     {
         try {
@@ -66,6 +71,23 @@ class IncidentController extends Controller
         }
     }
 
+    
+    public function byTypeCount()
+    {
+        try {
+            $query = $this->incidentService->getIncidentsTypeQuery();
+            $response = $query->get([
+                'e_ct.name as type_name',
+                DB::raw('COUNT(incidents.id) as count'),
+            ]);
+            return Response::sendResponse($response, 'Registros obtenidos con exito.');
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+        }
+    }
+
     public function store(Request $request)
     {
         try {
@@ -81,7 +103,16 @@ class IncidentController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $incident = $this->incidentService->updateIncident($request->all(), $id);
+            $type = $request->get('type') ?? null;
+            switch ($type) {
+                case 'status':
+                    $incident = $this->incidentService->updateByStatusIncident($request->all(), $id);
+                    break;
+                default:
+                    $incident = $this->incidentService->updateIncident($request->all(), $id);
+                    break;
+            }
+
             return Response::sendResponse($incident, 'Registro actualizado con exito.');
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

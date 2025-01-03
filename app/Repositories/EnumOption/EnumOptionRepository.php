@@ -32,4 +32,9 @@ class EnumOptionRepository implements EnumOptionRepositoryInterface
         $product->delete();
         return $product;
     }
+
+    public function findByName($name)
+    {
+        return $this->model->where('name', $name)->first();
+    }
 }

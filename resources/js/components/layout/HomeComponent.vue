@@ -79,18 +79,18 @@ export default {
                 datasets: [
                     {
                         label: "Properties Status",
-                        data: [10, 0], // Inicialmente vacío
+                        data: [0, 0], // Inicialmente vacío
                         backgroundColor: ["#A3D8F4", "#FFB3C1"],
                     },
                 ],
             },
             // Datos para el gráfico de Incidents
             incidentsData: {
-                labels: ["Electric", "Plumbing", "Structural"],
+                labels: [],
                 datasets: [
                     {
                         label: "Incident Types",
-                        data: [50, 20, 30],
+                        data: [0, 0, 0],
                         backgroundColor: ["#FFB3C1", "#FFE0B3", "#C1E1FF"],
                     },
                 ],
@@ -138,6 +138,7 @@ export default {
         this.$nextTick(() => {
             setTimeout(() => {
                 this.getPropertyTypeCount();
+                this.getIncidentTypeCount();
             }, 500);
         });
         if (Array.isArray(this.rol) && this.rol.length > 0) {
@@ -161,28 +162,48 @@ export default {
         },
         updatePropertiesData(actives, inactives) {
             this.propertiesData.datasets[0].data = [actives, inactives];
-
-            this.animateChartUpdate();
+            this.propertiesChartKey += 1;
+        },
+        getIncidentTypeCount() {
+            this.$axios
+            .get("/occurrences/byTypeCount")
+            .then((response) => {
+                const data = response.data.data;
+                const labels = data.map(item => item.type_name);
+                const counts = data.map(item => item.count);
+                this.updateIncidentsData(labels, counts);
+            })
+            .catch((error) => {
+                console.error("Error fetching incidents data:", error);
+            });
+        },
+        updateIncidentsData(labels, counts) {
+            this.incidentsData.labels = labels;
+            this.incidentsData.datasets[0].data = counts;
+            this.incidentsChartKey += 1;
         },
         animateChartUpdate() {
-            this.chartOptions.animation.duration = 1000; // Duración de la animación en milisegundos
-            this.chartOptions.animation.easing = "easeInOutQuad"; // Tipo de animación
-            this.propertiesChartKey += 1;
+            this.chartOptions.animation.duration = 1000;
+            this.chartOptions.animation.easing = "easeInOutQuad";
         },
         getWelcomeMessage(userRole) {
             let message;
             switch (userRole) {
                 case "owner":
-                    message = "Welcome back, Property Owner. Please review your properties.";
+                    message =
+                        "Welcome back, Property Owner. Please review your properties.";
                     break;
                 case "tenant":
-                    message = "Hello, Tenant. Please review your properties and reports.";
+                    message =
+                        "Hello, Tenant. Please review your properties and reports.";
                     break;
                 case "admin":
-                    message = "Welcome, Admin. You have full access to the system.";
+                    message =
+                        "Welcome, Admin. You have full access to the system.";
                     break;
                 case "providers":
-                    message = "Hello, Provider. Please review your assignments and tasks.";
+                    message =
+                        "Hello, Provider. Please review your assignments and tasks.";
                     break;
                 default:
                     message = "Welcome. Please check your profile.";

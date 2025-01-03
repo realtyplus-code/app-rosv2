@@ -6,17 +6,20 @@ use App\Models\Incident\Incident;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
+use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
 use App\Interfaces\IncidentProvider\IncidentProviderRepositoryInterface;
 
 class IncidentService
 {
     protected $incidentRepository;
     protected $incidentProviderRepository;
+    protected $enumOptionRepository;
 
-    public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository)
+    public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository, EnumOptionRepositoryInterface $enumOptionRepository)
     {
         $this->incidentRepository = $incidentRepository;
         $this->incidentProviderRepository = $incidentProviderRepository;
+        $this->enumOptionRepository = $enumOptionRepository;
     }
 
     public function getIncidentsQuery()
@@ -49,7 +52,7 @@ class IncidentService
                     'e_py.name',
                     'incidents.cost',
                     'incidents.created_at',
-                    'incidents.updated_at'
+                    'incidents.updated_at',
                 ]
             );
 
@@ -107,6 +110,26 @@ class IncidentService
         }
     }
 
+    public function updateByStatusIncident(array $data, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $response = $this->enumOptionRepository->findByName($data['status']);
+            if (!$response) {
+                throw new \Exception('Status no found');
+            }
+            $data['status_id'] = $response->id;
+            $incident = $this->incidentRepository->update($id, $data);
+            DB::commit();
+            return $incident;
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
+    }
+
     public function deleteIncident($id)
     {
         try {
@@ -129,5 +152,14 @@ class IncidentService
             Log::info($ex->getMessage());
             throw $ex;
         }
+    }
+
+    public function getIncidentsTypeQuery()
+    {
+        $query = Incident::query()
+            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.incident_type_id')
+            ->groupBy('e_ct.name');
+
+        return $query->distinct();
     }
 }

@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import shared from "./utils/shared";
 import $ from 'jquery'; // Importar jQuery
 import { GlobalVariables } from './utils/shared/Services/GlobalVariables'; // Importar variables globales
+import { VueDraggableNext } from 'vue-draggable-next';
 
 import PrimeVue from "primevue/config";
 import Card from 'primevue/card';
@@ -54,6 +55,9 @@ app.component('enum-component', EnumComponent);
 import IncidentComponent from './components/incident/IncidentComponent.vue';
 app.component('incident-component', IncidentComponent);
 
+import IncidentKanbanComponent from './components/incident/IncidentKanbanComponent.vue';
+app.component('incident-kanban-component', IncidentKanbanComponent);
+
 // importacion de provider
 import ProviderComponent from './components/provider/ProviderComponent.vue';
 app.component('provider-component', ProviderComponent);
@@ -92,6 +96,7 @@ app.component('DatePicker', DatePicker);
 app.component('Textarea', Textarea);
 app.component('InputNumber', InputNumber);
 app.component('Password', Password);
+app.component('VueDraggableNext', VueDraggableNext);
 
 // Registrar funciones compartidas
 app.mixin(shared.AlertsComponent);

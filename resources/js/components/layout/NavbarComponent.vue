@@ -54,6 +54,13 @@ export default {
                                 this.route("occurrences");
                             },
                         },
+                        {
+                            label: "Incident Kanban BETA!!!",
+                            icon: "pi pi-exclamation-triangle",
+                            command: () => {
+                                this.route("occurrences-kanban");
+                            },
+                        },
                     ],
                 },
                 {
@@ -136,6 +143,9 @@ export default {
                     break;
                 case "occurrences":
                     window.location.href = "/occurrences";
+                    break;
+                case "occurrences-kanban":
+                    window.location.href = "/occurrences/kanban";
                     break;
                 case "provider":
                     window.location.href = "/providers";
