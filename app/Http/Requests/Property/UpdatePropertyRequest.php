@@ -29,9 +29,7 @@ class UpdatePropertyRequest extends FormRequest
             'owners.*' => 'required|string',
             'tenants' => 'required|array',
             'tenants.*' => 'required|string',
-            'property_type_id' => 'required|string|max:10',
-            'photos' => 'nullable|array',
-            'photos.*' => 'nullable|image|max:' . config('app.upload_max_filesize'),
+            'property_type_id' => 'required|string|max:10'
         ];
     }
 
@@ -66,10 +64,6 @@ class UpdatePropertyRequest extends FormRequest
             'property_type_id.required' => 'Type property is required.',
             'property_type_id.string' => 'The property type ID must be a string.',
             'property_type_id.max' => 'The property type ID may not be greater than 10 characters.',
-
-            'photos.array' => 'The photos field must be an array.',
-            'photos.*.image' => 'Each photo must be an image.',
-            'photos.*.max' => 'Each photo may not be greater than ' . config('app.upload_max_filesize') . ' kilobytes.',
         ];
     }
 }

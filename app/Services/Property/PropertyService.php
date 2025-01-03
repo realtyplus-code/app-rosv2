@@ -48,6 +48,8 @@ class PropertyService
             })
             ->groupBy([
                 'properties.id',
+                'insurances.id',
+                'incidents.id',
                 'properties.name',
                 'properties.address',
                 'properties.status',

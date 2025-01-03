@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Incident\IncidentService;
+
+use App\Http\Requests\Incident\ValidatePdfRequest;
+use App\Http\Requests\Incident\StoreIncidentRequest;
+use App\Http\Requests\Incident\ValidatePhotoRequest;
+use App\Http\Requests\Incident\UpdateIncidentRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class IncidentController extends Controller
@@ -94,7 +99,7 @@ class IncidentController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(StoreIncidentRequest $request)
     {
         try {
             $incident = $this->incidentService->storeIncident($request->all());
@@ -106,7 +111,7 @@ class IncidentController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateIncidentRequest $request, $id)
     {
         try {
             $type = $request->get('type') ?? null;
@@ -151,7 +156,7 @@ class IncidentController extends Controller
         }
     }
 
-    public function addPhoto(Request $request)
+    public function addPhoto(ValidatePhotoRequest $request)
     {
         try {
             $photo = $this->incidentService->addPhotoIncident($request->all());
@@ -175,7 +180,7 @@ class IncidentController extends Controller
         }
     }
 
-    public function addPdf(Request $request)
+    public function addPdf(ValidatePdfRequest $request)
     {
         try {
             $pdf = $this->incidentService->addPdfIncident($request->all());

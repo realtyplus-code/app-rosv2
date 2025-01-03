@@ -27,7 +27,7 @@ class IncidentService
         $this->enumOptionRepository = $enumOptionRepository;
     }
 
-    public function getIncidentsQuery()
+    public function getIncidentsQuery($data = [])
     {
         $query = Incident::query()
             ->leftJoin('incident_provider', 'incident_provider.incident_id', '=', 'incidents.id')

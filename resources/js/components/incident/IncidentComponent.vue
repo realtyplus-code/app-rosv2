@@ -421,6 +421,7 @@ export default {
         },
         fetchIncident() {
             this.loading = true;
+            const property_id = $.urlParam("property_id");
             this.$axios
                 .get("/occurrences/list", {
                     params: {
@@ -429,6 +430,7 @@ export default {
                         sort: [this.sortField, this.sortOrder],
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
+                        property_id: property_id ?? null,
                     },
                 })
                 .then((response) => {
