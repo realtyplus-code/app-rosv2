@@ -16,7 +16,11 @@
                 />
             </div>
             <div class="kanban-board">
-                <div v-for="status in statuses" :key="status.name" class="kanban-column">
+                <div
+                    v-for="status in statuses"
+                    :key="status.name"
+                    class="kanban-column"
+                >
                     <h3>{{ status.name }}</h3>
                     <VueDraggableNext
                         :list="status.incidents"
@@ -30,25 +34,52 @@
                             class="kanban-task"
                             :data-id="incident.id"
                         >
-                            <div class="incident-property"><strong>Property:</strong> {{ incident.property_name }}</div>
-                            <div class="incident-description"><strong>Description:</strong> {{ incident.description }}</div>
-                            <div class="incident-report-date"><strong>Report Date:</strong> {{ incident.report_date }}</div>
-                            <div class="incident-status"><strong>Status:</strong> {{ incident.status_name }}</div>
-                            <div class="incident-reported-by"><strong>Reported By:</strong> {{ incident.reported_by_name }}</div>
-                            <div class="incident-type"><strong>Type:</strong> {{ incident.type_name }}</div>
-                            <div class="incident-priority"><strong>Priority:</strong> {{ incident.priority_name }}</div>
-                            <div class="incident-payer"><strong>Payer:</strong> {{ incident.payer_name }}</div>
-                            <div class="incident-cost">{{ this.$formatCurrency(incident.cost, "EUR") }}</div>
+                            <div class="incident-property">
+                                <strong>Property:</strong>
+                                {{ incident.property_name }}
+                            </div>
+                            <div class="incident-description">
+                                <strong>Description:</strong>
+                                {{ incident.description }}
+                            </div>
+                            <div class="incident-report-date">
+                                <strong>Report Date:</strong>
+                                {{ incident.report_date }}
+                            </div>
+                            <div class="incident-status">
+                                <strong>Status:</strong>
+                                {{ incident.status_name }}
+                            </div>
+                            <div class="incident-reported-by">
+                                <strong>Reported By:</strong>
+                                {{ incident.reported_by_name }}
+                            </div>
+                            <div class="incident-type">
+                                <strong>Type:</strong> {{ incident.type_name }}
+                            </div>
+                            <div class="incident-priority">
+                                <strong>Priority:</strong>
+                                {{ incident.priority_name }}
+                            </div>
+                            <div class="incident-payer">
+                                <strong>Payer:</strong>
+                                {{ incident.payer_name }}
+                            </div>
+                            <div class="incident-cost">
+                                {{ this.$formatCurrency(incident.cost, "EUR") }}
+                            </div>
                             <div class="size-tags">
                                 <Tag
-                                    v-for="index in $parseTags(incident.provider_name)"
+                                    v-for="index in $parseTags(
+                                        incident.provider_name
+                                    )"
                                     :key="index.id"
                                     :value="`${index.tag}`"
                                     class="size-tag"
                                 />
                             </div>
                             <!-- Acciones -->
-                            <div class="row" style="margin-right: 10px;">
+                            <div class="row" style="margin-right: 10px">
                                 <Button
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-primary"
@@ -76,8 +107,8 @@
             </div>
         </template>
     </Card>
-      <!-- gestion de incidentes -->
-      <ManagementIncidentComponent
+    <!-- gestion de incidentes -->
+    <ManagementIncidentComponent
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
         :selectedIncident="selectedIncident"
@@ -119,7 +150,7 @@ export default {
     components: {
         FilterMatchMode,
         FilterOperator,
-        ManagementIncidentComponent
+        ManagementIncidentComponent,
     },
     created() {
         this.initFilters();
@@ -224,8 +255,10 @@ export default {
                 });
         },
         updateStatuses() {
-            this.statuses.forEach(status => {
-                status.incidents = this.incidents.filter(incident => incident.status_name === status.name);
+            this.statuses.forEach((status) => {
+                status.incidents = this.incidents.filter(
+                    (incident) => incident.status_name === status.name
+                );
             });
         },
         editIncident(incident) {
@@ -266,11 +299,18 @@ export default {
             this.dialogVisible = status;
         },
         async onDragEnd(event, oldStatus) {
-            const incidentId = event.item.getAttribute('data-id');
+            const incidentId = event.item.getAttribute("data-id");
             if (!incidentId) return;
-            const newStatus = event.to.closest('.kanban-column').querySelector('h3').innerText.toLowerCase();
+            const newStatus = event.to
+                .closest(".kanban-column")
+                .querySelector("h3")
+                .innerText.toLowerCase();
             try {
-                await this.$axios.post(`/occurrences/update/${incidentId}/?type=status`, { status: newStatus });
+                await this.$axios.post(`/occurrences/update/${incidentId}`, {
+                    type: "status",
+                    status: newStatus,
+                });
+
                 this.fetchIncident();
             } catch (error) {
                 this.$readStatusHttp(error);
