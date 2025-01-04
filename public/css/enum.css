@@ -191,6 +191,11 @@ h3 {
     background-color: #E5E5E5 !important;
 }
 
+.p-datatable-filter-apply-button {
+    background-color: #F76F31 !important;
+    border-color: #F76F31 !important;
+}
+
 .p-datatable-filter-apply-button:hover {
     background-color: #f7601a !important;
     border-color: #f7601a !important;
