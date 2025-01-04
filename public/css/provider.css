@@ -221,8 +221,8 @@ h3 {
     border-color: #f7601a !important;
 }
 
-.p-galleria-indicator-button {
-    background-color: #f76f31 !important;
+.p-galleria-thumbnails .p-galleria-thumbnails-content {
+    display: none;
 }
 
 .p-tag {
@@ -250,6 +250,11 @@ h3 {
 
 .p-datatable-filter-apply-button {
     background-color: #f76f31 !important;
+    border-color: #F76F31 !important;
+}
+
+.p-datatable-filter-apply-button {
+    background-color: #F76F31 !important;
     border-color: #F76F31 !important;
 }
 
