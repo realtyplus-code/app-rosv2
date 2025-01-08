@@ -17,7 +17,7 @@ class IncidentService
     protected $enumOptionRepository;
     protected $fileService;
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
-    private $listDocuments = ['pdf', 'pdf1'];
+    private $listDocuments = ['document', 'document1'];
 
     public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository, EnumOptionRepositoryInterface $enumOptionRepository, FileService $fileService)
     {
@@ -62,8 +62,8 @@ class IncidentService
                     'incidents.photo3',
                     'incidents.created_at',
                     'incidents.updated_at',
-                    'incidents.pdf',
-                    'incidents.pdf1',
+                    'incidents.document',
+                    'incidents.document1',
                 ]
             );
 
@@ -288,11 +288,11 @@ class IncidentService
         try {
             $incident = $this->incidentRepository->findById($data['incident_id']);
             if ($data['type'] == 'pdf') {
-                $this->fileService->deleteFile(cleanStorageUrl($incident->pdf, '/storage_incident/'), 'disk_incident');
-                $incident->pdf = null;
+                $this->fileService->deleteFile(cleanStorageUrl($incident->document, '/storage_incident/'), 'disk_incident');
+                $incident->document = null;
             } else {
-                $this->fileService->deleteFile(cleanStorageUrl($incident->pdf1, '/storage_incident/'), 'disk_incident');
-                $incident->pdf1 = null;
+                $this->fileService->deleteFile(cleanStorageUrl($incident->document1, '/storage_incident/'), 'disk_incident');
+                $incident->document1 = null;
             }
             $incident->save();
             return $incident;

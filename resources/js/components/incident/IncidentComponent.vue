@@ -244,7 +244,7 @@
                 </Column>
                 <Column
                     header="Actions"
-                    style="min-width: 180px; text-align: center"
+                    style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -277,6 +277,16 @@
                                     border-color: #28a745;
                                 "
                                 @click="uploadPdfIncident(slotProps.data)"
+                            />
+                            <Button
+                                icon="pi pi-cog"
+                                class="p-button-rounded p-button-success"
+                                style="
+                                    margin: 5px;
+                                    background-color: #17a2b8;
+                                    border-color: #17a2b8;
+                                "
+                                @click="managementIncident(slotProps.data)"
                             />
                         </div>
                     </template>
@@ -499,7 +509,7 @@ export default {
                 pdfs: pdfs,
             };
             this.$axios
-                .post("/occurrences/pdf/add", data, {
+                .post("/occurrences/document/add", data, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
@@ -514,7 +524,7 @@ export default {
         },
         deletePdf(pdfField) {
             this.$axios
-                .post(`/occurrences/pdf/delete`, {
+                .post(`/occurrences/document/delete`, {
                     incident_id: this.selectedIncident.id,
                     type: pdfField,
                 })
@@ -526,6 +536,9 @@ export default {
                     this.$readStatusHttp(error);
                 });
         },
+        managementIncident(data){
+            console.log(data)
+        }
     },
 };
 </script>

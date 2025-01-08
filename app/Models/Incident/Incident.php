@@ -25,8 +25,8 @@ class Incident extends Model
         'photo1',
         'photo2',
         'photo3',
-        'pdf',
-        'pdf1',
+        'document',
+        'document1',
     ];
 
     /**
@@ -116,14 +116,14 @@ class Incident extends Model
         }
     }
 
-    public function getPdfAttribute($value)
+    public function getDocumentAttribute($value)
     {
         if ($value) {
             return Storage::disk('disk_incident')->url($value);
         }
     }
 
-    public function getPdf1Attribute($value)
+    public function getDocument1Attribute($value)
     {
         if ($value) {
             return Storage::disk('disk_incident')->url($value);

@@ -11,11 +11,11 @@
         </template>
         <div class="custom-form">
             <div class="custom-form-column custom-pdf-column">
-                <div v-if="selectedRegister && selectedRegister.pdf">
+                <div v-if="selectedRegister && selectedRegister.document">
                     <h4>PDF 1</h4>
                     <Button
                         icon="pi pi-eye"
-                        @click="viewPdf(selectedRegister.pdf)"
+                        @click="viewPdf(selectedRegister.document)"
                         style="margin: 20px"
                     />
                     <Button
@@ -29,30 +29,31 @@
                         id="uploadPdf1"
                         ref="fileUpload1"
                         accept="application/pdf"
-                        :class="{ 'p-invalid': errors.pdf1 }"
+                        :class="{ 'p-invalid': errors.document }"
                         @change="onFileUpload(1)"
+                        @remove="onFileRemove(1)"
                     >
                         <template #empty>
                             <p>Select PDF file 1</p>
                         </template>
                     </FileUpload>
-                    <small v-if="errors.pdf1" class="p-error">{{
-                        errors.pdf1
+                    <small v-if="errors.document" class="p-error">{{
+                        errors.document
                     }}</small>
                 </div>
             </div>
             <div class="custom-form-column custom-pdf-column">
-                <div v-if="selectedRegister && selectedRegister.pdf1">
+                <div v-if="selectedRegister && selectedRegister.document1">
                     <h4>PDF 2</h4>
                     <Button
                         icon="pi pi-eye"
-                        @click="viewPdf(selectedRegister.pdf1)"
+                        @click="viewPdf(selectedRegister.document1)"
                         style="margin: 20px"
                     />
                     <Button
                         icon="pi pi-trash"
                         severity="danger"
-                        @click="confirmDelete('pdf1')"
+                        @click="confirmDelete('document1')"
                     />
                 </div>
                 <div v-else>
@@ -60,15 +61,16 @@
                         id="uploadPdf2"
                         ref="fileUpload2"
                         accept="application/pdf"
-                        :class="{ 'p-invalid': errors.pdf2 }"
+                        :class="{ 'p-invalid': errors.document1 }"
                         @change="onFileUpload(2)"
+                        @remove="onFileRemove(2)"
                     >
                         <template #empty>
                             <p>Select PDF file 2</p>
                         </template>
                     </FileUpload>
-                    <small v-if="errors.pdf2" class="p-error">{{
-                        errors.pdf2
+                    <small v-if="errors.document1" class="p-error">{{
+                        errors.document1
                     }}</small>
                 </div>
             </div>
@@ -100,8 +102,8 @@ export default {
         return {
             visible: this.dialogVisible,
             files: {
-                pdf1: null,
-                pdf2: null,
+                document1: null,
+                document2: null,
             },
             errors: {},
         };
@@ -112,12 +114,19 @@ export default {
             if (fileUpload && fileUpload.files.length > 0) {
                 const file = fileUpload.files[0];
                 if (file.type === "application/pdf") {
-                    this.files[`pdf${fileNumber}`] = file;
-                    this.clearError(`pdf${fileNumber}`);
+                    this.files[`document${fileNumber}`] = file;
+                    this.clearError(`document${fileNumber}`);
                 } else {
-                    this.errors[`pdf${fileNumber}`] =
+                    this.errors[`document${fileNumber}`] =
                         "Only PDF files are allowed.";
                 }
+            }
+        },
+        onFileRemove(fileNumber) {
+            this.files[`document${fileNumber}`] = null;
+            const fileUpload = this.$refs[`fileUpload${fileNumber}`];
+            if (fileUpload) {
+                fileUpload.value = "";
             }
         },
         async validateForm() {
@@ -139,7 +148,10 @@ export default {
         async uploadFiles() {
             const isValid = await this.validateForm();
             if (isValid) {
-                const pdfFiles = [this.files.pdf1 || null, this.files.pdf2 || null];
+                const pdfFiles = [
+                    this.files.document1 || null,
+                    this.files.document2 || null,
+                ];
                 this.$emit("uploadFiles", pdfFiles);
                 setTimeout(() => {
                     this.handleDialogClose();

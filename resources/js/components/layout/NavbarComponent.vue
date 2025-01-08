@@ -54,13 +54,13 @@ export default {
                                 this.route("occurrences");
                             },
                         },
-                        {
+                       /*  {
                             label: "Incident Kanban BETA!!!",
                             icon: "pi pi-exclamation-triangle",
                             command: () => {
                                 this.route("occurrences-kanban");
                             },
-                        },
+                        }, */
                     ],
                 },
                 {
