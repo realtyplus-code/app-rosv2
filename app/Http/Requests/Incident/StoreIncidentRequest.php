@@ -15,7 +15,7 @@ class StoreIncidentRequest extends FormRequest
     {
         return [
             'property_id' => 'required|exists:properties,id',
-            'description' => 'required|string',
+            'description' => 'required|string|max:1000',
             'report_date' => 'required|date',
             'status_id' => 'required|exists:enum_options,id',
             'incident_type_id' => 'required|exists:enum_options,id',
@@ -34,7 +34,9 @@ class StoreIncidentRequest extends FormRequest
         return [
             'property_id.required' => 'The property field is required.',
             'property_id.exists' => 'The selected property is invalid.',
-            'description.required' => 'The description field is required.',
+            'description.required' => 'The description is required.',
+            'description.string' => 'The description must be a valid text.',
+            'description.max' => 'The description may not be greater than 1000 characters.',
             'report_date.required' => 'The report date field is required.',
             'status_id.required' => 'The status field is required.',
             'incident_type_id.required' => 'The incident type field is required.',

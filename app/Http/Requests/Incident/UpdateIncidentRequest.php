@@ -14,14 +14,14 @@ class UpdateIncidentRequest extends FormRequest
     public function rules()
     {
         return [
-            'property_id' => 'sometimes|required|exists:properties,id',
-            'description' => 'sometimes|required|string',
-            'report_date' => 'sometimes|required|date',
-            'status_id' => 'sometimes|required|exists:enum_options,id',
-            'incident_type_id' => 'sometimes|required|exists:enum_options,id',
-            'priority_id' => 'sometimes|required|exists:enum_options,id',
-            'cost' => 'sometimes|required|numeric',
-            'payer_id' => 'sometimes|required|exists:enum_options,id',
+            'property_id' => 'required|exists:properties,id',
+            'description' => 'required|string|max:1000',
+            'report_date' => 'required|date',
+            'status_id' => 'required|exists:enum_options,id',
+            'incident_type_id' => 'required|exists:enum_options,id',
+            'priority_id' => 'required|exists:enum_options,id',
+            'cost' => 'required|numeric',
+            'payer_id' => 'required|exists:enum_options,id',
         ];
     }
 
@@ -30,7 +30,9 @@ class UpdateIncidentRequest extends FormRequest
         return [
             'property_id.required' => 'The property field is required.',
             'property_id.exists' => 'The selected property is invalid.',
-            'description.required' => 'The description field is required.',
+            'description.required' => 'The description is required.',
+            'description.string' => 'The description must be a valid text.',
+            'description.max' => 'The description may not be greater than 1000 characters.',
             'report_date.required' => 'The report date field is required.',
             'status_id.required' => 'The status field is required.',
             'incident_type_id.required' => 'The incident type field is required.',

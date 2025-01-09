@@ -109,7 +109,7 @@
                         :class="{ 'p-invalid': errors.service_cost }"
                         v-model="formProvider.service_cost"
                         @input="clearError('service_cost')"
-                        :currency="$globals.CURRENCY_TYPES.USD"
+                        :currency="$globals.CURRENCY_TYPES.EUR"
                     />
                     <label for="service_cost">Service Cost</label>
                 </FloatLabel>
@@ -212,8 +212,7 @@ export default {
             listTypeProvider: [],
         };
     },
-    components: {
-    },
+    components: {},
     mounted() {
         this.$nextTick(() => {
             if (this.selectedProvider) {
@@ -232,8 +231,10 @@ export default {
                 this.formProvider.service_cost =
                     this.selectedProvider.service_cost;
                 this.formProvider.status = this.selectedProvider.status;
-                this.formProvider.code_number = this.selectedProvider.code_number;
-                this.formProvider.code_country = this.selectedProvider.code_country;
+                this.formProvider.code_number =
+                    this.selectedProvider.code_number;
+                this.formProvider.code_country =
+                    this.selectedProvider.code_country;
                 this.formProvider.providers = currentTypeName.map(
                     (type) => type.id
                 );

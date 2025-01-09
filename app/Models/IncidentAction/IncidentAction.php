@@ -2,9 +2,11 @@
 
 namespace App\Models\IncidentAction;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Incident\Incident;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class IncidentAction extends Model
 {
@@ -14,7 +16,12 @@ class IncidentAction extends Model
         'responsible_user_id',
         'action_description',
         'action_cost',
-        'evidence',
+        'photo',
+        'photo1',
+        'photo2',
+        'photo3',
+        'document',
+        'document1',
     ];
 
     /**
@@ -31,5 +38,57 @@ class IncidentAction extends Model
     public function responsibleUser()
     {
         return $this->belongsTo(User::class, 'responsible_user_id');
+    }
+
+    public function setActionDateAttribute($value)
+    {
+        $this->attributes['action_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function getActionDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getPhotoAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident_action')->url($value);
+        }
+    }
+
+    public function getPhoto1Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident_action')->url($value);
+        }
+    }
+
+    public function getPhoto2Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident_action')->url($value);
+        }
+    }
+
+    public function getPhoto3Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident_action')->url($value);
+        }
+    }
+
+    public function getDocumentAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident_action')->url($value);
+        }
+    }
+
+    public function getDocument1Attribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_incident_action')->url($value);
+        }
     }
 }

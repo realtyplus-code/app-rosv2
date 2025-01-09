@@ -25,6 +25,8 @@ import DatePicker from "primevue/datepicker";
 import Textarea from "primevue/textarea";
 import InputNumber from "primevue/inputnumber";
 import Password from "primevue/password";
+import ToggleButton from 'primevue/togglebutton';
+
 
 const app = createApp({});
 
@@ -54,6 +56,9 @@ app.component('enum-component', EnumComponent);
 //importacion de incident
 import IncidentComponent from './components/incident/IncidentComponent.vue';
 app.component('incident-component', IncidentComponent);
+
+import IncidentActionComponent from './components/incidentAction/IncidentActionComponent.vue';
+app.component('incident-action-component', IncidentActionComponent);
 
 import IncidentKanbanComponent from './components/incident/IncidentKanbanComponent.vue';
 app.component('incident-kanban-component', IncidentKanbanComponent);
@@ -97,6 +102,7 @@ app.component('Textarea', Textarea);
 app.component('InputNumber', InputNumber);
 app.component('Password', Password);
 app.component('VueDraggableNext', VueDraggableNext);
+app.component('ToggleButton', ToggleButton);
 
 // Registrar funciones compartidas
 app.mixin(shared.AlertsComponent);

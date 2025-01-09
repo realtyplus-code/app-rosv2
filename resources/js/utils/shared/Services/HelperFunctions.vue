@@ -129,6 +129,7 @@ export default {
             });
         },
         $formatCurrency(value, currency) {
+            if (!value) return;
             return new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: currency,

@@ -47,6 +47,19 @@ export default {
                                 this.route("insurance");
                             },
                         },
+                        /*  {
+                            label: "Incident Kanban BETA!!!",
+                            icon: "pi pi-exclamation-triangle",
+                            command: () => {
+                                this.route("occurrences-kanban");
+                            },
+                        }, */
+                    ],
+                },
+                {
+                    label: "Incidents",
+                    icon: "pi pi-exclamation-circle",
+                    items: [
                         {
                             label: "Incident",
                             icon: "pi pi-exclamation-triangle",
@@ -54,13 +67,13 @@ export default {
                                 this.route("occurrences");
                             },
                         },
-                       /*  {
-                            label: "Incident Kanban BETA!!!",
-                            icon: "pi pi-exclamation-triangle",
+                        {
+                            label: "Actions incident",
+                            icon: "pi pi-wrench",
                             command: () => {
-                                this.route("occurrences-kanban");
+                                this.route("occurrences-action");
                             },
-                        }, */
+                        },
                     ],
                 },
                 {
@@ -146,6 +159,9 @@ export default {
                     break;
                 case "occurrences-kanban":
                     window.location.href = "/occurrences/kanban";
+                    break;
+                case "occurrences-action":
+                    window.location.href = "/occurrences-action";
                     break;
                 case "provider":
                     window.location.href = "/providers";

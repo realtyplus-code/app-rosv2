@@ -78,6 +78,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'disk_incident_action' => [
+            'driver' => 'local',
+            'root' => storage_path('app/storage_incident_action'),
+            'url' => env('APP_URL') . '/storage_incident_action',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*
@@ -96,6 +103,7 @@ return [
         public_path('storage_property') => storage_path('app/storage_property'),
         public_path('storage_user') => storage_path('app/storage_user'),
         public_path('storage_incident') => storage_path('app/storage_incident'),
+        public_path('storage_incident_action') => storage_path('app/storage_incident_action'),
     ],
 
 ];

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('incidents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('property_id');
-            $table->text('description');
+            $table->string('description', 1000)->nullable();
             $table->date('report_date');
             $table->unsignedInteger('status_id');
             $table->unsignedBigInteger('reported_by');

@@ -16,9 +16,14 @@ return new class extends Migration
             $table->unsignedBigInteger('incident_id');
             $table->date('action_date');
             $table->unsignedBigInteger('responsible_user_id');
-            $table->text('action_description');
+            $table->string('action_description', 1000)->nullable();
             $table->decimal('action_cost', 10, 2);
-            $table->string('evidence')->nullable();
+            $table->string('photo')->nullable();
+            $table->string('photo1')->nullable();
+            $table->string('photo2')->nullable();
+            $table->string('photo3')->nullable();
+            $table->string('document')->nullable();
+            $table->string('document1')->nullable();
             $table->timestamps();
 
             $table->foreign('incident_id')->references('id')->on('incidents');

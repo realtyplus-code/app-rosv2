@@ -7,7 +7,7 @@
         :draggable="false"
     >
         <template #header>
-            <h3>Management Incident</h3>
+            <h3>Management Incident Action</h3>
             <ProgressSpinner
                 style="width: 25px; height: 25px; margin-left: 20px"
                 strokeWidth="8"
@@ -20,37 +20,61 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <Textarea
-                        id="description"
+                        id="action_description"
                         class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.description }"
-                        v-model="formIncident.description"
-                        @input="clearError('description')"
+                        :class="{ 'p-invalid': errors.action_description }"
+                        v-model="formIncident.action_description"
+                        @input="clearError('action_description')"
                         :maxlength="1000"
                         rows="5"
                     />
-                    <label for="description">Description</label>
+                    <label for="action_description">Description</label>
                 </FloatLabel>
-                <small v-if="errors.description" class="p-error">{{
-                    errors.description
+                <small v-if="errors.action_description" class="p-error">{{
+                    errors.action_description
                 }}</small>
                 <small>{{ characterCount }}/1000</small>
             </div>
         </div>
+        <br />
+        <p>Select type responsible</p>
         <div class="custom-form">
-            <div class="custom-form-column">
-                <MultiSelect
-                    :options="listProviders"
-                    v-model="formIncident.providers"
+            <ToggleButton
+                v-model="isTypeUser"
+                class="w-20"
+                onLabel="Users"
+                offLabel="Providers"
+            />
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column" v-if="isTypeUser">
+                <Select
                     filter
-                    placeholder="Select providers"
-                    :class="{ 'p-invalid': errors.providers }"
-                    :maxSelectedLabels="limitProviders"
+                    :options="listOtherUsers"
+                    v-model="formIncident.responsible_user_id"
+                    placeholder="Select user"
+                    :class="{ 'p-invalid': errors.responsible_user_id }"
                     optionLabel="name"
                     optionValue="id"
                     style="width: 100%"
                 />
-                <small v-if="errors.providers" class="p-error">{{
-                    errors.providers
+                <small v-if="errors.responsible_user_id" class="p-error">{{
+                    errors.responsible_user_id
+                }}</small>
+            </div>
+            <div class="custom-form-column" v-else>
+                <Select
+                    filter
+                    :options="listProviders"
+                    v-model="formIncident.responsible_user_id"
+                    placeholder="Select provider"
+                    :class="{ 'p-invalid': errors.responsible_user_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.responsible_user_id" class="p-error">{{
+                    errors.responsible_user_id
                 }}</small>
             </div>
         </div>
@@ -58,100 +82,36 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputNumber
-                        id="cost"
+                        id="action_cost"
                         class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.cost }"
-                        v-model="formIncident.cost"
-                        @input="clearError('cost')"
+                        :class="{ 'p-invalid': errors.action_cost }"
+                        v-model="formIncident.action_cost"
+                        @input="clearError('action_cost')"
                         :currency="$globals.CURRENCY_TYPES.EUR"
                     />
-                    <label for="cost">Cost</label>
+                    <label for="action_cost">Cost</label>
                 </FloatLabel>
-                <small v-if="errors.cost" class="p-error">{{
-                    errors.cost
+                <small v-if="errors.action_cost" class="p-error">{{
+                    errors.action_cost
                 }}</small>
             </div>
             <div class="custom-form-column">
                 <FloatLabel>
                     <DatePicker
-                        id="report_date"
+                        id="action_date"
                         class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.report_date }"
-                        v-model="formIncident.report_date"
-                        @input="clearError('report_date')"
+                        :class="{ 'p-invalid': errors.action_date }"
+                        v-model="formIncident.action_date"
+                        @input="clearError('action_date')"
                     />
-                    <label for="report_date">Report Date</label>
+                    <label for="action_date">Report Date</label>
                 </FloatLabel>
-                <small v-if="errors.report_date" class="p-error">{{
-                    errors.report_date
+                <small v-if="errors.action_date" class="p-error">{{
+                    errors.action_date
                 }}</small>
             </div>
         </div>
         <hr />
-        <div class="custom-form">
-            <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listIncidentType"
-                    v-model="formIncident.incident_type_id"
-                    placeholder="Select type"
-                    :class="{ 'p-invalid': errors.incident_type_id }"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
-                <small v-if="errors.incident_type_id" class="p-error">{{
-                    errors.incident_type_id
-                }}</small>
-            </div>
-            <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listPriority"
-                    v-model="formIncident.priority_id"
-                    placeholder="Select priority"
-                    :class="{ 'p-invalid': errors.priority_id }"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
-                <small v-if="errors.priority_id" class="p-error">{{
-                    errors.priority_id
-                }}</small>
-            </div>
-        </div>
-        <div class="custom-form">
-            <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listPayer"
-                    v-model="formIncident.payer_id"
-                    placeholder="Select payer"
-                    :class="{ 'p-invalid': errors.payer_id }"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
-                <small v-if="errors.payer_id" class="p-error">{{
-                    errors.payer_id
-                }}</small>
-            </div>
-            <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listStatus"
-                    v-model="formIncident.status_id"
-                    placeholder="Select status"
-                    :class="{ 'p-invalid': errors.status_id }"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
-                <small v-if="errors.status_id" class="p-error">{{
-                    errors.status_id
-                }}</small>
-            </div>
-        </div>
         <div class="custom-form mt-4">
             <div v-if="!selectedIncident" class="custom-form-column">
                 <FileUpload
@@ -230,7 +190,7 @@
         <template #footer>
             <div class="text-center">
                 <Button
-                    v-if="selectedPropertyId"
+                    v-if="!selectedIncident"
                     label="Save"
                     severity="success"
                     style="margin-right: 10px"
@@ -255,71 +215,64 @@
 
 <script>
 import * as Yup from "yup";
-import { hide } from "@popperjs/core";
 
 export default {
-    props: ["dialogVisible", "selectedIncident", "selectedPropertyId"],
+    props: ["dialogVisible", "selectedIncident", "selectedIncidentId"],
     data() {
         return {
             visible: this.dialogVisible,
             formIncident: {
                 id: null,
-                property_id: null,
-                description: null,
-                report_date: null,
-                status_id: null,
-                incident_type_id: null,
-                priority_id: null,
-                providers: [],
-                cost: null,
-                payer_id: null,
+                incident_id: null,
+                action_date: null,
+                responsible_user_id: null,
+                action_description: null,
+                action_cost: null,
                 photos: [],
             },
             errors: {},
-            listIncidentType: [],
-            listPriority: [],
-            listStatus: [],
-            listPayer: [],
-            listOwners: [],
+            listOtherUsers: [],
             listProviders: [],
             isLoad: false,
-            limitProviders: 10,
+            isTypeUser: false, //true: providers, false: others users
         };
     },
     components: {},
     computed: {
         characterCount() {
-            return this.formIncident.description
-                ? this.formIncident.description.length
+            return this.formIncident.action_description
+                ? this.formIncident.action_description.length
                 : 0;
         },
     },
-    watch: {},
+    watch: {
+        async isTypeUser(status) {
+            this.listOtherUsers = [];
+            this.listProviders = [];
+            if (status) {
+                // obtenemos los usuarios
+                const { data: owners } = await this.getUsers("owners");
+                let listOwners = owners;
+                const { data: tenants } = await this.getUsers("tenants");
+                let listTenants = tenants;
+                const combinedList = [...listOwners, ...listTenants].map(
+                    (user) => ({
+                        id: user.id,
+                        name: user.name,
+                    })
+                );
+                this.listOtherUsers = combinedList.sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                );
+            } else {
+                const { data: provider } = await this.getProviders();
+                this.listProviders = provider;
+            }
+        },
+    },
     mounted() {
         this.$nextTick(() => {
             if (this.selectedIncident) {
-                const currentProvidersName = this.$parseTags(
-                    this.selectedIncident.provider_name
-                );
-                this.formIncident.id = this.selectedIncident.id;
-                this.formIncident.description =
-                    this.selectedIncident.description;
-                this.formIncident.incident_type_id =
-                    this.selectedIncident.type_id;
-                this.formIncident.priority_id =
-                    this.selectedIncident.priority_id;
-                this.formIncident.cost = this.selectedIncident.cost;
-                this.formIncident.payer_id = this.selectedIncident.payer_id;
-                this.formIncident.property_id =
-                    this.selectedIncident.property_id;
-                this.formIncident.report_date = new Date(
-                    this.selectedIncident.report_date
-                );
-                this.formIncident.status_id = this.selectedIncident.status_id;
-                this.formIncident.providers = currentProvidersName.map(
-                    (provider) => provider.id
-                );
-                this.setPhotos();
             }
         });
     },
@@ -328,24 +281,6 @@ export default {
     },
     methods: {
         async initServices() {
-            const comboNames = [
-                "incident_type",
-                "priority",
-                "payer",
-                "incident_status",
-            ];
-            const response = await this.$getEnumsOptions(comboNames);
-            const {
-                incident_type: responIncidentType,
-                priority: responPriority,
-                payer: responPayer,
-                incident_status: responStatus,
-            } = response.data;
-            this.listIncidentType = responIncidentType;
-            this.listPriority = responPriority;
-            this.listStatus = responStatus;
-            this.listPayer = responPayer;
-            // obtenemos los usuarios
             const { data: provider } = await this.getProviders();
             this.listProviders = provider;
         },
@@ -364,27 +299,31 @@ export default {
                     });
             });
         },
+        getUsers(role = null) {
+            const vm = this;
+            return new Promise((resolve, reject) => {
+                const params = role ? { params: { role } } : {};
+                this.$axios
+                    .get(`/users/list`, params)
+                    .then(function (response) {
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        vm.$readStatusHttp(error);
+                        reject(error);
+                    });
+            });
+        },
         async validateForm() {
             let initialRules = {
-                description: Yup.string().required(
-                    "Incident description is required"
+                action_date: Yup.string().required("Action date is required"),
+                responsible_user_id: Yup.string().required(
+                    "Responsible is required"
                 ),
-                incident_type_id: Yup.string().required(
-                    "Incident type is required"
+                action_description: Yup.string().required(
+                    "Description is required"
                 ),
-                priority_id: Yup.string().required("Priority is required"),
-                cost: Yup.number().required("Cost is required"),
-                payer_id: Yup.string().required("Payer is required"),
-                report_date: Yup.string().required("Report date is required"),
-                status_id: Yup.string().required("Status is required"),
-                providers: Yup.array().min(
-                    1,
-                    "At least one provider is required"
-                ),
-                /* photos: Yup.array()
-                    .min(1, "At least 1 photo is required")
-                    .max(4, "You can upload up to 4 photos")
-                    .required("Photo is required"), */
+                action_cost: Yup.string().required("Cost is required"),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -406,9 +345,9 @@ export default {
             this.isLoad = true;
             const isValid = await this.validateForm();
             if (isValid) {
-                this.formIncident.property_id = this.selectedPropertyId;
+                this.formIncident.incident_id = this.selectedIncidentId;
                 this.$axios
-                    .post("/occurrences/store", this.formIncident, {
+                    .post("/occurrences-action/store", this.formIncident, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -433,7 +372,7 @@ export default {
             if (isValid) {
                 this.$axios
                     .post(
-                        `/occurrences/update/${this.selectedIncident.id}`,
+                        `/occurrences-action/update/${this.selectedIncident.id}`,
                         this.formIncident,
                         {
                             headers: {
@@ -511,7 +450,7 @@ export default {
             if (file && index !== undefined) {
                 this.$axios
                     .post(
-                        "/occurrences/photo/add",
+                        "/occurrences-action/photo/add",
                         {
                             incident_id: id,
                             photo: file,
@@ -535,7 +474,7 @@ export default {
         },
         removePhoto(index, name, id) {
             this.$axios
-                .post("/occurrences/photo/delete", {
+                .post("/occurrences-action/photo/delete", {
                     incident_id: id,
                     photo: name,
                 })

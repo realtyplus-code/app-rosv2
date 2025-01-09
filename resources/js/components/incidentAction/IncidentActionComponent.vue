@@ -1,6 +1,6 @@
 <template>
     <Card>
-        <template #title>Incident</template>
+        <template #title>Incident Actions</template>
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
@@ -34,31 +34,31 @@
                 scrollable
             >
                 <Column
-                    field="property"
-                    header="Property"
+                    field="incident_name"
+                    header="Incident"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.property_name }}
+                        {{ data.incident_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by property"
+                            placeholder="Search by incident"
                         />
                     </template>
                 </Column>
                 <Column
-                    field="description"
+                    field="action_description"
                     header="Description"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.description }}
+                        {{ data.action_description }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -70,13 +70,13 @@
                     </template>
                 </Column>
                 <Column
-                    field="report_date"
-                    header="Report Date"
+                    field="action_date"
+                    header="Action Date"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.report_date }}
+                        {{ data.action_date }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -88,105 +88,31 @@
                     </template>
                 </Column>
                 <Column
-                    field="status_name"
-                    header="Status"
-                    sortable
-                    style="min-width: 120px"
-                >
-                    <template #body="{ data }">
-                        {{ data.status_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <Select
-                            :options="statuses"
-                            v-model="filterModel.value"
-                            placeholder="Select status"
-                            optionLabel="value"
-                            optionValue="name"
-                            style="width: 100%"
-                        />
-                    </template>
-                </Column>
-                <Column
-                    field="reported_by_name"
-                    header="Reported by"
+                    field="responsible_user_name"
+                    header="Responsible by"
                     sortable
                     style="min-width: 180px"
                 >
                     <template #body="{ data }">
-                        {{ data.reported_by_name }}
+                        {{ data.responsible_user_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by incident type"
+                            placeholder="Search by responsible"
                         />
                     </template>
                 </Column>
                 <Column
-                    field="type_name"
-                    header="Incident Type"
-                    sortable
-                    style="min-width: 180px"
-                >
-                    <template #body="{ data }">
-                        {{ data.type_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <InputText
-                            v-model="filterModel.value"
-                            type="text"
-                            class="p-column-filter"
-                            placeholder="Search by incident type"
-                        />
-                    </template>
-                </Column>
-                <Column
-                    field="priority_name"
-                    header="Priority"
-                    sortable
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        {{ data.priority_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <InputText
-                            v-model="filterModel.value"
-                            type="text"
-                            class="p-column-filter"
-                            placeholder="Search by priority"
-                        />
-                    </template>
-                </Column>
-                <Column
-                    field="payer_name"
-                    header="Payer"
-                    sortable
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        {{ data.payer_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <InputText
-                            v-model="filterModel.value"
-                            type="text"
-                            class="p-column-filter"
-                            placeholder="Search by payer"
-                        />
-                    </template>
-                </Column>
-                <Column
-                    field="cost"
+                    field="action_cost"
                     header="Cost"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ this.$formatCurrency(data.cost, "EUR") }}
+                        {{ this.$formatCurrency(data.action_cost, "EUR") }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -195,23 +121,6 @@
                             class="p-column-filter"
                             placeholder="Search by cost"
                         />
-                    </template>
-                </Column>
-                <Column
-                    field="provider_name"
-                    header="Provider Name"
-                    sortable
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        <div class="size-tags">
-                            <Tag
-                                v-for="index in $parseTags(data.provider_name)"
-                                :key="index.id"
-                                :value="`${index.tag}`"
-                                class="size-tag"
-                            />
-                        </div>
                     </template>
                 </Column>
                 <Column header="Photo">
@@ -244,7 +153,7 @@
                 </Column>
                 <Column
                     header="Actions"
-                    style="min-width: 120px; text-align: center"
+                    style="min-width: 100px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -256,7 +165,7 @@
                                     background-color: #f76f31;
                                     border-color: #f76f31;
                                 "
-                                @click="editIncident(slotProps.data)"
+                                @click="editIncidentAction(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-trash"
@@ -266,7 +175,7 @@
                                     background-color: #db6464;
                                     border-color: #db6464;
                                 "
-                                @click="deleteIncident(slotProps.data.id)"
+                                @click="deleteIncidentAction(slotProps.data.id)"
                             />
                             <Button
                                 icon="pi pi-upload"
@@ -276,17 +185,7 @@
                                     background-color: #28a745;
                                     border-color: #28a745;
                                 "
-                                @click="uploadPdfIncident(slotProps.data)"
-                            />
-                            <Button
-                                icon="pi pi-cog"
-                                class="p-button-rounded p-button-success"
-                                style="
-                                    margin: 5px;
-                                    background-color: #17a2b8;
-                                    border-color: #17a2b8;
-                                "
-                                @click="managementIncident(slotProps.data.id)"
+                                @click="uploadPdfIncidentAction(slotProps.data)"
                             />
                         </div>
                     </template>
@@ -295,14 +194,6 @@
         </template>
     </Card>
     <!-- gestion de incidentes -->
-    <ManagementIncidentComponent
-        v-if="dialogVisible"
-        :dialogVisible="dialogVisible"
-        :selectedIncident="selectedIncident"
-        @hidden="hidden"
-        @reload="reload"
-        @reloadTable="reloadTable"
-    />
     <UploadPdfModalComponent
         v-if="dialogVisiblePdf"
         :dialogVisible="dialogVisiblePdf"
@@ -311,24 +202,13 @@
         @uploadFiles="uploadFiles"
         @deletePdf="deletePdf"
     />
-    <ManagemenIncidentActionComponent
-        v-if="dialogVisibleAction"
-        :dialogVisible="dialogVisibleAction"
-        :selectedIncidentId="selectedIncidentId"
-        :selectedIncident="selectedIncidentAction"
-        @hidden="hidden"
-        @reload="reload"
-        @reloadTable="reloadTable"
-    />
 </template>
 
 <script>
 // Importar Librerias o Modulos
 
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
-import ManagementIncidentComponent from "./management/ManagemenIncidentComponent.vue";
 import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
-import ManagemenIncidentActionComponent from "../incidentAction/management/ManagemenIncidentActionComponent.vue";
 
 export default {
     props: [],
@@ -345,7 +225,7 @@ export default {
             loading: true,
             //
             selectedIncident: null,
-            selectedIncidentId : true,
+            selectedIncidentId: true,
             selectedIncidentAction: null,
             dialogVisible: false,
             dialogVisiblePdf: false,
@@ -360,47 +240,42 @@ export default {
     components: {
         FilterMatchMode,
         FilterOperator,
-        ManagementIncidentComponent,
         UploadPdfModalComponent,
-        ManagemenIncidentActionComponent,
     },
     created() {
         this.initFilters();
     },
     mounted() {
-        this.fetchIncident();
+        this.fetchIncidentAction();
     },
     methods: {
         initFilters() {
             this.filters = {
-                description: {
+                incident_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                report_date: {
+                action_date: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                status_name: {
-                    clear: false,
-                    filterOptions: {
-                        showFilterMenu: false,
-                    },
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.EQUALS },
-                    ],
-                },
-                type_name: {
+                responsible_user_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                priority_name: {
+                action_description: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                action_cost: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -411,29 +286,28 @@ export default {
         clearFilters() {
             this.initFilters();
             this.filtroInfo = [];
-            this.fetchIncident();
+            this.fetchIncidentAction();
         },
         onPage(event) {
             this.page = event.page + 1;
             this.perPage = event.rows;
-            this.fetchIncident();
+            this.fetchIncidentAction();
         },
         onSort(event) {
             this.page = 1;
             this.sortField = event.sortField;
             this.sortOrder = event.sortOrder;
-            this.fetchIncident();
+            this.fetchIncidentAction();
         },
         onFilters(event) {
             this.page = 1;
             this.filtroInfo = [];
             for (const [key, filter] of Object.entries(event.filters)) {
                 if (filter.constraints) {
-                    console.log(filter.constraints);
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
                             this.filtroInfo.push([
-                                this.$relationTableIncident(key),
+                                this.$relationTableIncidentAction(key),
                                 constraint.matchMode,
                                 constraint.value,
                             ]);
@@ -441,20 +315,20 @@ export default {
                     }
                 }
             }
-            this.fetchIncident();
+            this.fetchIncidentAction();
         },
-        fetchIncident() {
+        fetchIncidentAction() {
             this.loading = true;
-            const property_id = $.urlParam("property_id");
+            const incident_id = $.urlParam("incident_id");
             this.$axios
-                .get("/occurrences/list", {
+                .get("/occurrences-action/list", {
                     params: {
                         page: this.page,
                         perPage: this.perPage,
                         sort: [this.sortField, this.sortOrder],
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
-                        property_id: property_id ?? null,
+                        incident_id: incident_id ?? null,
                     },
                 })
                 .then((response) => {
@@ -467,19 +341,19 @@ export default {
                     this.loading = false;
                 });
         },
-        editIncident(incident) {
+        editIncidentAction(incident) {
             this.selectedIncident = incident;
             this.dialogVisible = true;
         },
-        uploadPdfIncident(incident) {
+        uploadPdfIncidentAction(incident) {
             this.selectedIncident = incident;
             this.dialogVisiblePdf = true;
         },
-        managementIncident(id) {
+        managementIncidentAction(id) {
             this.selectedIncidentId = id;
             this.dialogVisibleAction = true;
         },
-        async deleteIncident(incidentId) {
+        async deleteIncidentAction(incidentId) {
             const result = await this.$swal.fire({
                 title: "You're sure?",
                 text: "You are about to delete this incident. Are you sure you want to continue?",
@@ -493,23 +367,23 @@ export default {
 
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`/occurrences/${incidentId}`);
+                    await axios.delete(`/occurrences-action/${incidentId}`);
                     this.$alertSuccess("Register delete");
-                    this.fetchIncident();
+                    this.fetchIncidentAction();
                 } catch (error) {
                     this.$readStatusHttp(error);
                 }
             }
         },
         reload() {
-            this.fetchIncident();
+            this.fetchIncidentAction();
             this.selectedIncident = null;
             this.selectedIncidentId = null;
             this.dialogVisible = false;
             this.dialogVisibleAction = false;
         },
         reloadTable() {
-            this.fetchIncident();
+            this.fetchIncidentAction();
             this.resetGallery();
         },
         resetGallery() {
@@ -529,14 +403,14 @@ export default {
                 pdfs: pdfs,
             };
             this.$axios
-                .post("/occurrences/document/add", data, {
+                .post("/occurrences-action/document/add", data, {
                     headers: {
                         "Content-Type": "multipart/form-data",
                     },
                 })
                 .then(() => {
                     this.$alertSuccess("Files uploaded successfully");
-                    this.fetchIncident();
+                    this.fetchIncidentAction();
                 })
                 .catch((error) => {
                     this.$readStatusHttp(error);
@@ -544,13 +418,13 @@ export default {
         },
         deletePdf(pdfField) {
             this.$axios
-                .post(`/occurrences/document/delete`, {
+                .post(`/occurrences-action/document/delete`, {
                     incident_id: this.selectedIncident.id,
                     type: pdfField,
                 })
                 .then(() => {
                     this.$alertSuccess("File deleted successfully");
-                    this.fetchIncident();
+                    this.fetchIncidentAction();
                 })
                 .catch((error) => {
                     this.$readStatusHttp(error);

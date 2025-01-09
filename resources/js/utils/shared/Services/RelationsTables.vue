@@ -89,6 +89,12 @@ export default {
                     return selector;
             }
         },
+        $relationTableIncidentAction(selector) {
+            switch (selector) {
+                default:
+                    return selector;
+            }
+        },
         $relationTableProvider(selector) {
             switch (selector) {
                 case "name":
