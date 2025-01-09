@@ -200,3 +200,7 @@ h3 {
     font-size: 0.75em;
     display: block;
 }
+
+.p-galleria-thumbnails .p-galleria-thumbnails-content {
+    display: none;
+}
