@@ -260,3 +260,7 @@ h3 {
     background-color: #f7601a !important;
     border-color: #f7601a !important;
 }
+
+.p-galleria-thumbnails .p-galleria-thumbnails-content {
+    display: none;
+}
