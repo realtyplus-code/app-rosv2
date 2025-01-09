@@ -14,6 +14,7 @@ class IncidentAction extends Model
         'incident_id',
         'action_date',
         'responsible_user_id',
+        'responsible_user_type',
         'action_description',
         'action_cost',
         'photo',

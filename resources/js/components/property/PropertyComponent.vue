@@ -32,7 +32,6 @@
                     rounded
                     raised
                     @click="exportToExcel"
-                    v-if="false"
                     style="
                         margin-right: 10px;
                         background-color: #28a745 !important;
@@ -45,7 +44,6 @@
                     rounded
                     raised
                     @click="exportToPDF"
-                    v-if="false"
                     style="
                         background-color: #dc3545 !important;
                         border-color: #dc3545;

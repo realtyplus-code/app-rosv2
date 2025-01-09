@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\IncidentAction;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,12 @@ class IncidentActionController extends Controller
     public function index(Request $request)
     {
         try {
+            
+            $role = Auth::user()->getRoleNames()[0];
+            if ($role !== 'admin' && !$request->has('incident_id')) {
+                return Response::sendError('The property field is required for non-admin users', 400);
+            }
+
             $query = $this->incidentActionService->getIncidentActionQuery($request->all());
             return renderDataTable(
                 $query,
@@ -37,6 +44,12 @@ class IncidentActionController extends Controller
                 [],
                 [
                     'incident_actions.id',
+                    'users.id as user_id',
+                    'users.name as user_name',
+                    'providers.id as provider_id',
+                    'providers.name as provider_name',
+                    'incident_actions.responsible_user_type as responsible_type',
+                    'incidents.id as incident_id',
                     'incidents.description as incident_name',
                     'incident_actions.action_description',
                     'incident_actions.action_date',

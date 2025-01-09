@@ -15,3 +15,7 @@
 .swal2-container {
     z-index: 9999 !important;
 }
+
+.p-galleria-items{
+    margin-top: 10px !important;
+}

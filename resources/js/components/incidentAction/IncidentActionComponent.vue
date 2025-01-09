@@ -88,23 +88,20 @@
                     </template>
                 </Column>
                 <Column
-                    field="responsible_user_name"
+                    field="responsible_type"
                     header="Responsible by"
                     sortable
                     style="min-width: 180px"
                 >
                     <template #body="{ data }">
-                        {{ data.responsible_user_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <InputText
-                            v-model="filterModel.value"
-                            type="text"
-                            class="p-column-filter"
-                            placeholder="Search by responsible"
-                        />
+                        <span v-if="data.user_name">{{ data.user_name }}</span>
+                        <span v-else-if="data.provider_name">{{
+                            data.provider_name
+                        }}</span>
+                        <span v-else>No Responsible</span>
                     </template>
                 </Column>
+
                 <Column
                     field="action_cost"
                     header="Cost"
@@ -194,6 +191,14 @@
         </template>
     </Card>
     <!-- gestion de incidentes -->
+    <ManagemenIncidentActionComponent
+        v-if="dialogVisible"
+        :dialogVisible="dialogVisible"
+        :selectedIncident="selectedIncident"
+        @hidden="hidden"
+        @reload="reload"
+        @reloadTable="reloadTable"
+    />
     <UploadPdfModalComponent
         v-if="dialogVisiblePdf"
         :dialogVisible="dialogVisiblePdf"
@@ -209,6 +214,7 @@
 
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
+import ManagemenIncidentActionComponent from "./management/ManagemenIncidentActionComponent.vue";
 
 export default {
     props: [],
@@ -225,11 +231,8 @@ export default {
             loading: true,
             //
             selectedIncident: null,
-            selectedIncidentId: true,
-            selectedIncidentAction: null,
             dialogVisible: false,
             dialogVisiblePdf: false,
-            dialogVisibleAction: false,
             statuses: [
                 { value: "Open", name: "Open" },
                 { value: "Closed", name: "Closed" },
@@ -241,6 +244,7 @@ export default {
         FilterMatchMode,
         FilterOperator,
         UploadPdfModalComponent,
+        ManagemenIncidentActionComponent,
     },
     created() {
         this.initFilters();
@@ -258,12 +262,6 @@ export default {
                     ],
                 },
                 action_date: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-                responsible_user_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -306,11 +304,30 @@ export default {
                 if (filter.constraints) {
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
-                            this.filtroInfo.push([
-                                this.$relationTableIncidentAction(key),
-                                constraint.matchMode,
-                                constraint.value,
-                            ]);
+                            if (key == "responsible_type") {
+                                this.filtroInfo.push(
+                                    [
+                                        this.$relationTableIncidentAction(
+                                            "user_name"
+                                        ),
+                                        constraint.matchMode,
+                                        constraint.value,
+                                    ],
+                                    [
+                                        this.$relationTableIncidentAction(
+                                            "provider_name"
+                                        ),
+                                        constraint.matchMode,
+                                        constraint.value,
+                                    ]
+                                );
+                            } else {
+                                this.filtroInfo.push([
+                                    this.$relationTableIncidentAction(key),
+                                    constraint.matchMode,
+                                    constraint.value,
+                                ]);
+                            }
                         }
                     }
                 }
@@ -349,14 +366,10 @@ export default {
             this.selectedIncident = incident;
             this.dialogVisiblePdf = true;
         },
-        managementIncidentAction(id) {
-            this.selectedIncidentId = id;
-            this.dialogVisibleAction = true;
-        },
         async deleteIncidentAction(incidentId) {
             const result = await this.$swal.fire({
                 title: "You're sure?",
-                text: "You are about to delete this incident. Are you sure you want to continue?",
+                text: "You are about to delete this action incident. Are you sure you want to continue?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -378,9 +391,7 @@ export default {
         reload() {
             this.fetchIncidentAction();
             this.selectedIncident = null;
-            this.selectedIncidentId = null;
             this.dialogVisible = false;
-            this.dialogVisibleAction = false;
         },
         reloadTable() {
             this.fetchIncidentAction();

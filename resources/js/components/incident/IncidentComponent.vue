@@ -214,6 +214,38 @@
                         </div>
                     </template>
                 </Column>
+                <Column
+                    field="incidents"
+                    header="Incidents"
+                    style="min-width: 120px"
+                >
+                    <template #body="{ data }">
+                        <div
+                            class="size-insurances"
+                            style="justify-content: center"
+                        >
+                            <i
+                                class="size-insurance"
+                                :class="$parsePreview(data.incidents)"
+                                :title="
+                                    data.incidents > 0
+                                        ? 'View incidents'
+                                        : 'No incidents available'
+                                "
+                                :style="{
+                                    fontSize: '1.5rem',
+                                    color:
+                                        data.incidents > 0 ? 'green' : 'red',
+                                    cursor:
+                                        data.incidents > 0 ? 'pointer' : '',
+                                }"
+                                @click="
+                                    viewPanelIncidents(data.incidents, data.id)
+                                "
+                            ></i>
+                        </div>
+                    </template>
+                </Column>
                 <Column header="Photo">
                     <template #body="{ data }">
                         <div style="text-align: center">
@@ -555,6 +587,11 @@ export default {
                 .catch((error) => {
                     this.$readStatusHttp(error);
                 });
+        },
+        viewPanelIncidents(incidents, id) {
+            if (incidents == 0) return;
+            window.location.href = "/occurrences-action?incident_id=" + id;
+            return;
         },
     },
 };

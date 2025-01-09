@@ -24,7 +24,23 @@ class IncidentActionService
     public function getIncidentActionQuery($data = [])
     {
         $query = IncidentAction::query()
-            ->leftJoin('incidents', 'incidents.id', '=' , 'incident_actions.incident_id');
+            ->leftJoin('incidents', 'incidents.id', '=', 'incident_actions.incident_id');
+
+        $query->leftJoin('users', function ($join) {
+            $join->on('users.id', '=', 'incident_actions.responsible_user_id')
+                ->where('incident_actions.responsible_user_type', '=', 'USER');
+        });
+
+        $query->leftJoin('providers', function ($join) {
+            $join->on('providers.id', '=', 'incident_actions.responsible_user_id')
+                ->where('incident_actions.responsible_user_type', '=', 'PROVIDER');
+        });
+
+
+        if (isset($data['incident_id'])) {
+            $query->where('incidents.id', $data['incident_id']);
+        }
+
         return $query;
     }
 
@@ -71,6 +87,15 @@ class IncidentActionService
                 if (!empty($currentIncident->$photoField)) {
                     $this->fileService->deleteFile(
                         cleanStorageUrl($currentIncident->$photoField, '/storage_incident_action/'),
+                        'disk_incident_action'
+                    );
+                }
+            }
+            for ($i = 0; $i <= 2; $i++) {
+                $documentField = $i === 0 ? 'document' : "document{$i}";
+                if (!empty($currentIncident->$documentField)) {
+                    $this->fileService->deleteFile(
+                        cleanStorageUrl($currentIncident->$documentField, '/storage_incident_action/'),
                         'disk_incident_action'
                     );
                 }

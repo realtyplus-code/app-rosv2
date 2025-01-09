@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('incident_id');
             $table->date('action_date');
             $table->unsignedBigInteger('responsible_user_id');
+            $table->string('responsible_user_type');
             $table->string('action_description', 1000)->nullable();
             $table->decimal('action_cost', 10, 2);
             $table->string('photo')->nullable();
@@ -27,7 +28,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('incident_id')->references('id')->on('incidents');
-            $table->foreign('responsible_user_id')->references('id')->on('users');
         });
     }
 

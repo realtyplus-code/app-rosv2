@@ -31,6 +31,7 @@ class IncidentService
     {
         $query = Incident::query()
             ->leftJoin('incident_provider', 'incident_provider.incident_id', '=', 'incidents.id')
+            ->leftJoin('incident_actions', 'incident_actions.incident_id', '=', 'incidents.id')
             ->leftJoin('providers', 'providers.id', '=', 'incident_provider.provider_id')
             ->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
             ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.incident_type_id')
@@ -154,6 +155,15 @@ class IncidentService
                 if (!empty($currentIncident->$photoField)) {
                     $this->fileService->deleteFile(
                         cleanStorageUrl($currentIncident->$photoField, '/storage_incident/'),
+                        'disk_incident'
+                    );
+                }
+            }
+            for ($i = 0; $i <= 2; $i++) {
+                $documentField = $i === 0 ? 'document' : "document{$i}";
+                if (!empty($currentIncident->$documentField)) {
+                    $this->fileService->deleteFile(
+                        cleanStorageUrl($currentIncident->$documentField, '/storage_incident/'),
                         'disk_incident'
                     );
                 }

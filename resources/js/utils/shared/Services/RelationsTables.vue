@@ -91,6 +91,18 @@ export default {
         },
         $relationTableIncidentAction(selector) {
             switch (selector) {
+                case "incident_name":
+                    return "incidents.description";
+                case "action_description":
+                    return "incident_actions.action_description";
+                case "action_date":
+                    return "incident_actions.action_date";
+                case "cost":
+                    return "incident_actions.action_cost";
+                case "user_name":
+                    return "users.name";
+                case "provider_name":
+                    return "providers.name";
                 default:
                     return selector;
             }

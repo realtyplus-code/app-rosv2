@@ -226,6 +226,7 @@ export default {
                 incident_id: null,
                 action_date: null,
                 responsible_user_id: null,
+                responsible_user_type: null,
                 action_description: null,
                 action_cost: null,
                 photos: [],
@@ -247,9 +248,46 @@ export default {
     },
     watch: {
         async isTypeUser(status) {
+            await this.checkTypeUser(status);
+        },
+    },
+    mounted() {
+        this.$nextTick(async () => {
+            if (this.selectedIncident) {
+                this.formIncident.id = this.selectedIncident.id;
+                this.formIncident.incident_id =
+                    this.selectedIncident.incident_id;
+                this.formIncident.action_date = new Date(
+                    this.selectedIncident.action_date
+                );
+                this.formIncident.action_description =
+                    this.selectedIncident.action_description;
+                this.formIncident.action_cost =
+                    this.selectedIncident.action_cost;
+                this.formIncident.responsible_user_type =
+                    this.selectedIncident.responsible_type;
+
+                this.isTypeUser =
+                    this.selectedIncident.responsible_type === "USER";
+                this.formIncident.responsible_user_id = this.isTypeUser
+                    ? this.selectedIncident.user_id
+                    : this.selectedIncident.provider_id;
+
+                await this.checkTypeUser(this.isTypeUser);
+                this.setPhotos();
+            }
+        });
+    },
+    created() {
+        this.initServices();
+    },
+    methods: {
+        async checkTypeUser(status) {
+            console.log(status);
             this.listOtherUsers = [];
             this.listProviders = [];
             if (status) {
+                this.formIncident.responsible_user_type = "USER";
                 // obtenemos los usuarios
                 const { data: owners } = await this.getUsers("owners");
                 let listOwners = owners;
@@ -265,22 +303,13 @@ export default {
                     a.name.localeCompare(b.name)
                 );
             } else {
+                this.formIncident.responsible_user_type = "PROVIDER";
                 const { data: provider } = await this.getProviders();
                 this.listProviders = provider;
             }
         },
-    },
-    mounted() {
-        this.$nextTick(() => {
-            if (this.selectedIncident) {
-            }
-        });
-    },
-    created() {
-        this.initServices();
-    },
-    methods: {
         async initServices() {
+            this.formIncident.responsible_user_type = "PROVIDER";
             const { data: provider } = await this.getProviders();
             this.listProviders = provider;
         },
