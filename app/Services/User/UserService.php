@@ -10,19 +10,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Interfaces\Role\RoleRepositoryInterface;
 use App\Interfaces\User\UserRepositoryInterface;
+use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
 
 class UserService
 {
     protected $userRepository;
     protected $roleRepository;
     protected $fileService;
+    protected $userRelationRepository;
     private $listPhotos = ['photo'];
 
-    public function __construct(UserRepositoryInterface $userRepository, RoleRepositoryInterface $roleRepository, FileService $fileService)
+    public function __construct(UserRepositoryInterface $userRepository, RoleRepositoryInterface $roleRepository, UserRelationRepositoryInterface $userRelationRepository, FileService $fileService)
     {
         $this->fileService = $fileService;
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+        $this->userRelationRepository = $userRelationRepository;
     }
 
     public function getUsersQuery($role = null)
@@ -70,6 +73,14 @@ class UserService
             $role = $this->roleRepository->findById($data['role']);
             $this->assignedPhoto($user, $photos);
 
+            foreach ($data['ros_clients'] as $client) {
+                $this->userRelationRepository->create([
+                    'user_id_related' => $user['id'],
+                    'type' => 'CLIENT',
+                    'user_id' => $client
+                ]);
+            }
+
             if ($role && $user) {
                 $user->assignRole($role);
                 if ($user->save()) {
@@ -101,6 +112,16 @@ class UserService
                 $user->roles()->detach();
                 $role = $this->roleRepository->findById($data['role']);
                 $user->assignRole($role);
+            }
+            if(isset($data['ros_clients'])){
+                $this->userRelationRepository->deleteByManagement($id);
+                foreach ($data['ros_clients'] as $client) {
+                    $this->userRelationRepository->create([
+                        'user_id_related' => $id,
+                        'type' => 'CLIENT',
+                        'user_id' => $client
+                    ]);
+                }
             }
             DB::commit();
             return $user;
@@ -216,5 +237,12 @@ class UserService
             }
         }
         return null;
+    }
+
+    public function getUsersByRole($roleName)
+    {
+        return User::whereHas('roles', function ($query) use ($roleName) {
+            $query->where('name', $roleName);
+        })->get();
     }
 }

@@ -33,7 +33,7 @@ class UserController extends Controller
             return renderDataTable(
                 $query,
                 $request,
-                ['roles'],
+                ['roles', 'userRelations'],
                 [
                     'users.id',
                     'users.name',
@@ -120,6 +120,16 @@ class UserController extends Controller
         try {
             $this->userService->deletePhotoUser($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
+        } catch (\Exception $ex) {
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function getUsersByRole($roleName)
+    {
+        try {
+            $users = $this->userService->getUsersByRole($roleName);
+            return Response::sendResponse($users, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }

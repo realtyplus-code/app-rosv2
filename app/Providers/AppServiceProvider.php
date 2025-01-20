@@ -17,16 +17,17 @@ use App\Interfaces\Incident\IncidentRepositoryInterface;
 use App\Interfaces\Property\PropertyRepositoryInterface;
 use App\Interfaces\Provider\ProviderRepositoryInterface;
 use App\Repositories\UserProperty\UserPropertyRepository;
+use App\Repositories\UserRelation\UserRelationRepository;
 use App\Interfaces\Insurance\InsuranceRepositoryInterface;
 use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
 use App\Repositories\IncidentAction\IncidentActionRepository;
 use App\Repositories\ProviderService\ProviderServiceRepository;
 use App\Interfaces\UserProperty\UserPropertyRepositoryInterface;
+use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
 use App\Repositories\IncidentProvider\IncidentProviderRepository;
 use App\Interfaces\IncidentAction\IncidentActionRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
 use App\Interfaces\IncidentProvider\IncidentProviderRepositoryInterface;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(ProviderServiceRepositoryInterface::class, ProviderServiceRepository::class);
         $this->app->bind(IncidentProviderRepositoryInterface::class, IncidentProviderRepository::class);
+        $this->app->bind(UserRelationRepositoryInterface::class, UserRelationRepository::class);
     }
 
     /**

@@ -27,6 +27,7 @@
                     optionLabel="name"
                     optionValue="id"
                     style="width: 100%"
+                    @change="onChangeRole(formUser.role, true)"
                 />
                 <small v-if="errors.role" class="p-error">{{
                     errors.role
@@ -174,6 +175,25 @@
                 }}</small>
             </div>
         </div>
+        <div class="custom-form mt-4" v-if="isRosClientGlobal">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <MultiSelect
+                        :options="usersRosClient"
+                        v-model="formUser.ros_clients"
+                        filter
+                        :class="{ 'p-invalid': errors.ros_clients }"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label for="ros_clients">Ros Clients</label>
+                </FloatLabel>
+                <small v-if="errors.ros_clients" class="p-error">{{
+                    errors.ros_clients
+                }}</small>
+            </div>
+        </div>
         <hr />
         <div class="custom-form mt-4">
             <div v-if="!selectedUser" class="custom-form-column">
@@ -241,13 +261,13 @@
                             />
                         </div>
                     </div>
+                    <small
+                        v-if="errors.photos"
+                        style="display: block"
+                        class="p-error"
+                        >{{ errors.photos }}</small
+                    >
                 </div>
-                <small
-                    v-if="errors.photos"
-                    style="display: block"
-                    class="p-error"
-                    >{{ errors.photos }}</small
-                >
             </div>
         </div>
         <hr />
@@ -301,6 +321,7 @@ export default {
                 code_country: null,
                 photos: [],
                 role: null,
+                ros_clients: [],
             },
             errors: {},
             phoneInput: null,
@@ -311,12 +332,15 @@ export default {
             listState: [],
             placeholderCity: "Select the state first",
             placeholderState: "Select the country first",
+            usersRosClient: [],
+            isRosClientGlobal: false,
         };
     },
     components: {},
     watch: {},
     mounted() {
         this.$nextTick(async () => {
+            this.isRosClientGlobal = false;
             if (this.selectedUser) {
                 this.formUser.id = this.selectedUser.id;
                 this.formUser.name = this.selectedUser.name;
@@ -343,6 +367,8 @@ export default {
                     }
                 }
             }
+
+            this.onChangeRole(this.formUser.role, false);
 
             const phoneInputField = document.querySelector("#countryPhone");
             if (!phoneInputField) {
@@ -386,6 +412,19 @@ export default {
                         reject(error);
                     });
             });
+        },
+        fetchUsersByRole(roleName) {
+            this.loading = true;
+            this.$axios
+                .get(`/users/role/${roleName}`)
+                .then((response) => {
+                    this.usersRosClient = response.data.data;
+                    this.loading = false;
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                    this.loading = false;
+                });
         },
         async validateForm() {
             this.dynamicRules = {};
@@ -468,7 +507,6 @@ export default {
             let tmpFormatCountry = null;
             const isValid = await this.validateForm();
             const countryData = this.phoneInput.getSelectedCountryData();
-            console.log(this.errors);
             if (!countryData.dialCode || countryData.dialCode == undefined) {
                 this.isLoad = false;
                 return this.$alertWarning("select first country phone");
@@ -554,6 +592,18 @@ export default {
                     reject(error);
                 }
             });
+        },
+        onChangeRole(value, change) {
+            let response = this.listRoles.find((item) => item.id == value);
+            if (response && response.name) {
+                if (response.name == "ros_client_manager") {
+                    this.isRosClientGlobal = true;
+                    this.fetchUsersByRole("ros_client");
+                } else {
+                    this.formUser.ros_clients = [];
+                    this.isRosClientGlobal = false;
+                }
+            }
         },
         handleDialogClose() {
             this.visible = false;

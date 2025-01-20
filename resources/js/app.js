@@ -33,7 +33,7 @@ import Password from "primevue/password";
 import ToggleButton from "primevue/togglebutton";
 
 const i18n = createI18n({
-    locale: "en", // Idioma predeterminado
+    locale: "es", // Idioma predeterminado
     fallbackLocale: "en", // Idioma de respaldo
     messages: {
         es,

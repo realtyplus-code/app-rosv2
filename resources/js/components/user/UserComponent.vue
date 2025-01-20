@@ -108,23 +108,6 @@
                     </template>
                 </Column>
                 <Column
-                    field="property_name"
-                    header="Property Name"
-                    sortable
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        <div class="size-tags">
-                            <Tag
-                                v-for="index in $parseTags(data.property_name)"
-                                :key="index.id"
-                                :value="`${index.tag}`"
-                                class="size-tag"
-                            />
-                        </div>
-                    </template>
-                </Column>
-                <Column
                     field="roles.name"
                     header="User Type"
                     style="min-width: 150px"

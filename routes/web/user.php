@@ -12,4 +12,5 @@ Route::prefix('users')->middleware(['auth'])->group(function () {
     Route::delete('/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::post('/photo/add/', [UserController::class, 'addPhoto'])->name('users.photo.add');
     Route::post('/photo/delete/', [UserController::class, 'destroyPhoto'])->name('users.photo.destroy');
+    Route::get('/role/{roleName}', [UserController::class, 'getUsersByRole'])->name('users.role');
 });

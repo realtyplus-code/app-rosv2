@@ -6,6 +6,7 @@ namespace App\Models;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
+use App\Models\UserRelation\UserRelation;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -61,5 +62,10 @@ class User extends Authenticatable
         if ($value) {
             return Storage::disk('disk_user')->url($value);
         }
+    }
+
+    public function userRelations()
+    {
+        return $this->hasMany(UserRelation::class);
     }
 }
