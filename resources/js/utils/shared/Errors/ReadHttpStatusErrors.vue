@@ -29,71 +29,44 @@ export default {
     methods: {
         $readStatusHttp(error = []) {
             const response = readStatus.getDataError(error);
-            console.log(response);
+            const $t = this.$t; // Alias para facilitar
+            const httpErrors = "httpErrors";
+
             switch (response.status) {
                 case 400:
-                    this.$alertDanger("Bad Request", this.textCodeMessage(response.data.message));
+                    this.$alertDanger(
+                        $t(`${httpErrors}.400.title`),
+                        $t(`${httpErrors}.400.message`)
+                    );
                     break;
                 case 401:
-                    this.$alertDanger("Your session has expired", "");
-                    setTimeout(() => (window.location.href = "/"), 2000);
-                    break;
-                case 402:
-                    this.$alertDanger("Bad Request");
-                    break;
-                case 403:
                     this.$alertDanger(
-                        "Process Denied",
-                        "You do not have permission to perform this process"
+                        $t(`${httpErrors}.401.title`),
+                        $t(`${httpErrors}.401.message`)
                     );
-                    break;
-                case 404:
-                    this.$alertDanger("Bad Request");
-                    break;
-                case 406:
-                    this.$alertDanger("Bad Request");
-                    break;
-                case 409:
-                    this.$alertDanger(
-                        "Unauthorized Process",
-                        "The process was not authorized, try another type of process"
-                    );
-                    break;
-                case 419:
-                    this.$alertDanger("Your session has expired", "");
                     setTimeout(() => (window.location.href = "/"), 2000);
                     break;
                 case 422:
                     this.$alertDanger(
-                        "Form Error",
+                        $t(`${httpErrors}.422.title`),
                         readStatus.validateForm(response.data)
                     );
                     break;
-                case 423:
-                    this.$alertDanger("Limit Exceeded");
-                    break;
                 case 500:
                     this.$alertDanger(
-                        "Bad Request",
-                        "An error occurred while performing the process"
+                        $t(`${httpErrors}.500.title`),
+                        $t(`${httpErrors}.500.message`)
                     );
                     break;
                 default:
                     this.$alertDanger(
-                        "Bad Request",
-                        "An unexpected error occurred"
+                        $t(`${httpErrors}.default.title`),
+                        $t(`${httpErrors}.default.message`)
                     );
             }
         },
         textCodeMessage(code) {
-            switch (code) {
-                case "FALSE EMAIL":
-                    return "The system did not recognize the email host domain";
-                    break;
-                default:
-                    return code;
-                    break;
-            }
+            return this.$t(`textCodeMessages.${code}`) || code;
         },
     },
 };

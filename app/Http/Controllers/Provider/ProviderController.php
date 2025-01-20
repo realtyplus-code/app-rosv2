@@ -50,7 +50,7 @@ class ProviderController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -65,11 +65,11 @@ class ProviderController extends Controller
                     'providers.name',
                 ]
             );
-            return Response::sendResponse($providers, 'Registros obtenidos con exito.');
+            return Response::sendResponse($providers, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -77,11 +77,11 @@ class ProviderController extends Controller
     {
         try {
             $incident = $this->incidentService->storeProvider($request->all());
-            return Response::sendResponse($incident, 'Registro creado con exito.');
+            return Response::sendResponse($incident, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -89,11 +89,11 @@ class ProviderController extends Controller
     {
         try {
             $incident = $this->incidentService->updateProvider($request->all(), $id);
-            return Response::sendResponse($incident, 'Registro actualizado con exito.');
+            return Response::sendResponse($incident, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -101,11 +101,11 @@ class ProviderController extends Controller
     {
         try {
             $this->incidentService->deleteProvider($id);
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 }

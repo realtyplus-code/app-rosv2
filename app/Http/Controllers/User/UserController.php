@@ -55,7 +55,7 @@ class UserController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -66,9 +66,9 @@ class UserController extends Controller
             if($user == 'FALSE EMAIL'){
                 return Response::sendError('FALSE EMAIL', 400);
             }
-            return Response::sendResponse($user, 'Registro creado con exito.');
+            return Response::sendResponse($user, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -76,9 +76,9 @@ class UserController extends Controller
     {
         try {
             $user = $this->userService->showUser($id);
-            return Response::sendResponse($user, 'Registro obtenido con exito.');
+            return Response::sendResponse($user, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -87,9 +87,9 @@ class UserController extends Controller
         try {
             $request->merge(['id' => $id]);
             $user = $this->userService->updateUser($request->all(), $id);
-            return Response::sendResponse($user, 'Registro actualizado con exito.');
+            return Response::sendResponse($user, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -97,11 +97,11 @@ class UserController extends Controller
     {
         try {
             $this->userService->deleteUser($id);
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -111,7 +111,7 @@ class UserController extends Controller
             $photo = $this->userService->addPhotoUser($request->all());
             return Response::sendResponse($photo, 'Foto agregada con exito.');
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -119,9 +119,9 @@ class UserController extends Controller
     {
         try {
             $this->userService->deletePhotoUser($request->all());
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 }

@@ -57,7 +57,7 @@ class PropertyController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -72,11 +72,11 @@ class PropertyController extends Controller
                 'actives' => $actives,
                 'inactives' => $inactives
             ];
-            return Response::sendResponse($response, 'Registros obtenidos con exito.');
+            return Response::sendResponse($response, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -84,11 +84,11 @@ class PropertyController extends Controller
     {
         try {
             $property = $this->propertyService->storeProperty($request->all());
-            return Response::sendResponse($property, 'Registro creado con exito.');
+            return Response::sendResponse($property, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -96,11 +96,11 @@ class PropertyController extends Controller
     {
         try {
             $property = $this->propertyService->showProperty($id);
-            return Response::sendResponse($property, 'Registro obtenido con exito.');
+            return Response::sendResponse($property, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -108,11 +108,11 @@ class PropertyController extends Controller
     {
         try {
             $property = $this->propertyService->updateProperty($request->all(), $id);
-            return Response::sendResponse($property, 'Registro actualizado con exito.');
+            return Response::sendResponse($property, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -120,11 +120,11 @@ class PropertyController extends Controller
     {
         try {
             $this->propertyService->deleteProperty($id);
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -134,7 +134,7 @@ class PropertyController extends Controller
             $photo = $this->propertyService->addPhotoProperty($request->all());
             return Response::sendResponse($photo, 'Foto agregada con exito.');
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -142,9 +142,9 @@ class PropertyController extends Controller
     {
         try {
             $this->propertyService->deletePhotoProperty($request->all());
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -173,7 +173,7 @@ class PropertyController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 

@@ -20,11 +20,11 @@ class UserPropertyController extends Controller
     {
         try {
             $property = $this->userPropertyService->showProperty($id);
-            return Response::sendResponse($property, 'Registro obtenido con exito.');
+            return Response::sendResponse($property, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 }

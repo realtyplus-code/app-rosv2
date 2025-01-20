@@ -22,7 +22,7 @@ class UsersSeeder extends Seeder
         $adminRole = Role::where('name', 'admin')->first();
         $adminUser->assignRole($adminRole);
 
-        $roles = ['owners', 'tenants', 'providers'];
+        $roles = ['owner', 'tenant', 'provider'];
         for ($i = 1; $i <= 10; $i++) {
             $user = User::create([
                 'name' => "Test User $i",

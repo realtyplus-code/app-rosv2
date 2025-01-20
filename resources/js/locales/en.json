@@ -1,0 +1,55 @@
+{
+    "httpErrors": {
+        "400": {
+            "title": "Bad Request",
+            "message": ""
+        },
+        "401": {
+            "title": "Your session has expired",
+            "message": ""
+        },
+        "402": {
+            "title": "Bad Request",
+            "message": ""
+        },
+        "403": {
+            "title": "Process Denied",
+            "message": "You do not have permission to perform this process"
+        },
+        "404": {
+            "title": "Bad Request",
+            "message": ""
+        },
+        "406": {
+            "title": "Bad Request",
+            "message": ""
+        },
+        "409": {
+            "title": "Unauthorized Process",
+            "message": "The process was not authorized, try another type of process"
+        },
+        "419": {
+            "title": "Your session has expired",
+            "message": ""
+        },
+        "422": {
+            "title": "Form Error",
+            "message": ""
+        },
+        "423": {
+            "title": "Limit Exceeded",
+            "message": ""
+        },
+        "500": {
+            "title": "Bad Request",
+            "message": "An error occurred while performing the process"
+        },
+        "default": {
+            "title": "Bad Request",
+            "message": "An unexpected error occurred"
+        }
+    },
+    "textCodeMessages": {
+        "FALSE EMAIL": "The system did not recognize the email host domain"
+    }
+}

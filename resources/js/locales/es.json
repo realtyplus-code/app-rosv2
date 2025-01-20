@@ -1,0 +1,55 @@
+{
+    "httpErrors": {
+        "400": {
+            "title": "Solicitud incorrecta",
+            "message": ""
+        },
+        "401": {
+            "title": "Su sesión ha expirado",
+            "message": ""
+        },
+        "402": {
+            "title": "Solicitud incorrecta",
+            "message": ""
+        },
+        "403": {
+            "title": "Proceso denegado",
+            "message": "No tiene permiso para realizar este proceso"
+        },
+        "404": {
+            "title": "Solicitud incorrecta",
+            "message": ""
+        },
+        "406": {
+            "title": "Solicitud incorrecta",
+            "message": ""
+        },
+        "409": {
+            "title": "Proceso no autorizado",
+            "message": "El proceso no fue autorizado, intente con otro tipo de proceso"
+        },
+        "419": {
+            "title": "Su sesión ha expirado",
+            "message": ""
+        },
+        "422": {
+            "title": "Error en el formulario",
+            "message": ""
+        },
+        "423": {
+            "title": "Límite excedido",
+            "message": ""
+        },
+        "500": {
+            "title": "Solicitud incorrecta",
+            "message": "Ocurrió un error al realizar el proceso"
+        },
+        "default": {
+            "title": "Solicitud incorrecta",
+            "message": "Ocurrió un error inesperado"
+        }
+    },
+    "textCodeMessages": {
+        "FALSE EMAIL": "El sistema no reconoció el dominio del correo electrónico"
+    }
+}

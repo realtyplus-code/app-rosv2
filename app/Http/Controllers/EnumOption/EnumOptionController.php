@@ -37,7 +37,7 @@ class EnumOptionController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -46,9 +46,9 @@ class EnumOptionController extends Controller
     {
         try {
             $enum = $this->enumService->storeEnum($request->all());
-            return Response::sendResponse($enum, 'Registro creado con exito.');
+            return Response::sendResponse($enum, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -56,9 +56,9 @@ class EnumOptionController extends Controller
     {
         try {
             $enum = $this->enumService->updateEnum($request->all(), $id);
-            return Response::sendResponse($enum, 'Registro actualizado con exito.');
+            return Response::sendResponse($enum, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -66,9 +66,9 @@ class EnumOptionController extends Controller
     {
         try {
             $this->enumService->deleteEnum($id);
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -79,9 +79,9 @@ class EnumOptionController extends Controller
                 ['is_father', '=', true],
                 ['name', '!=', 'master padre'],
             ]);
-            return Response::sendResponse($enums, 'Registro obtenido con exito.');
+            return Response::sendResponse($enums, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -89,9 +89,9 @@ class EnumOptionController extends Controller
     {
         try {
             $enums = $this->enumService->listChildrens($name);
-            return Response::sendResponse($enums, 'Registro obtenido con exito.');
+            return Response::sendResponse($enums, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -99,9 +99,9 @@ class EnumOptionController extends Controller
     {
         try {
             $enums = $this->enumService->getOptionById($id);
-            return Response::sendResponse($enums, 'Registro obtenido con exito.');
+            return Response::sendResponse($enums, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -109,9 +109,9 @@ class EnumOptionController extends Controller
     {
         try {
             $enums = $this->enumService->getBrotherById($id);
-            return Response::sendResponse($enums, 'Registros obtenidos con exito.');
+            return Response::sendResponse($enums, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 }

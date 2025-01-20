@@ -64,7 +64,7 @@ class InsuranceController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -72,11 +72,11 @@ class InsuranceController extends Controller
     {
         try {
             $insurance = $this->insuranceService->storeInsurance($request->all());
-            return Response::sendResponse($insurance, 'Registro creado con exito.');
+            return Response::sendResponse($insurance, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -84,11 +84,11 @@ class InsuranceController extends Controller
     {
         try {
             $insurance = $this->insuranceService->showInsurance($id);
-            return Response::sendResponse($insurance, 'Registro obtenido con exito.');
+            return Response::sendResponse($insurance, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -96,11 +96,11 @@ class InsuranceController extends Controller
     {
         try {
             $insurance = $this->insuranceService->updateInsurance($request->all(), $id);
-            return Response::sendResponse($insurance, 'Registro actualizado con exito.');
+            return Response::sendResponse($insurance, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 
@@ -108,11 +108,11 @@ class InsuranceController extends Controller
     {
         try {
             $this->insuranceService->deleteInsurance($id);
-            return Response::sendResponse(true, 'Registro eliminado con exito.');
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 }

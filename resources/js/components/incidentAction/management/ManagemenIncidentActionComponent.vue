@@ -289,9 +289,9 @@ export default {
             if (status) {
                 this.formIncident.responsible_user_type = "USER";
                 // obtenemos los usuarios
-                const { data: owners } = await this.getUsers("owners");
+                const { data: owners } = await this.getUsers("owner");
                 let listOwners = owners;
-                const { data: tenants } = await this.getUsers("tenants");
+                const { data: tenants } = await this.getUsers("tenant");
                 let listTenants = tenants;
                 const combinedList = [...listOwners, ...listTenants].map(
                     (user) => ({

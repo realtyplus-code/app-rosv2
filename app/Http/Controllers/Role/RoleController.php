@@ -19,9 +19,9 @@ class RoleController extends Controller
     {
         try {
             $roles = $this->roleService->getRolsQuery()->toArray();
-            return Response::sendResponse($roles, 'Registro obtenido con exito.');
+            return Response::sendResponse($roles, __('messages.controllers.success.record_fetched_successfully'));
         } catch (\Exception $ex) {
-            return Response::sendError('Ocurrio un error inesperado al intentar procesar la solicitud', 500);
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
 }
