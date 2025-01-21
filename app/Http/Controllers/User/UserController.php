@@ -33,7 +33,7 @@ class UserController extends Controller
             return renderDataTable(
                 $query,
                 $request,
-                ['roles', 'userRelations'],
+                ['roles', 'relatedUsers'],
                 [
                     'users.id',
                     'users.name',

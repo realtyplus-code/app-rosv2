@@ -64,8 +64,8 @@ class User extends Authenticatable
         }
     }
 
-    public function userRelations()
+    public function relatedUsers()
     {
-        return $this->hasMany(UserRelation::class);
+        return $this->hasMany(UserRelation::class, 'user_id_related');
     }
 }

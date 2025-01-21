@@ -40,7 +40,7 @@ class RoleRepository implements RoleRepositoryInterface
 
     public function findAll()
     {
-        return $this->model->where('name', '!=', 'admin')->where('name', '!=', 'providers')->get();
+        return $this->model->where('name', '!=', 'admin')->where('name', '!=', 'provider')->get();
     }
 
     public function all()

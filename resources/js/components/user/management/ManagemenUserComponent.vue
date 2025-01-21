@@ -342,34 +342,9 @@ export default {
         this.$nextTick(async () => {
             this.isRosClientGlobal = false;
             if (this.selectedUser) {
-                this.formUser.id = this.selectedUser.id;
-                this.formUser.name = this.selectedUser.name;
-                this.formUser.email = this.selectedUser.email;
-                this.formUser.phone = this.selectedUser.phone;
-                this.formUser.address = this.selectedUser.address;
-                this.formUser.country = parseInt(this.selectedUser.country_id);
-                this.formUser.state = parseInt(this.selectedUser.state_id);
-                this.formUser.city = parseInt(this.selectedUser.city_id);
-                this.formUser.code_number = this.selectedUser.code_number;
-                this.formUser.code_country = this.selectedUser.code_country;
-                this.formUser.role = this.selectedUser.roles[0].id;
-                this.setPhotos();
-                if (this.selectedUser.country_id) {
-                    await this.onChangeCountry(
-                        this.selectedUser.country_id,
-                        false
-                    );
-                    if (this.selectedUser.state_id) {
-                        await this.onChangeState(
-                            this.selectedUser.state_id,
-                            false
-                        );
-                    }
-                }
+                await this.setFormUser();
             }
-
             this.onChangeRole(this.formUser.role, false);
-
             const phoneInputField = document.querySelector("#countryPhone");
             if (!phoneInputField) {
                 console.error("El elemento #phone no está definido.");
@@ -389,6 +364,29 @@ export default {
         this.initServices();
     },
     methods: {
+        async setFormUser() {
+            this.formUser.id = this.selectedUser.id;
+            this.formUser.name = this.selectedUser.name;
+            this.formUser.email = this.selectedUser.email;
+            this.formUser.phone = this.selectedUser.phone;
+            this.formUser.address = this.selectedUser.address;
+            this.formUser.country = parseInt(this.selectedUser.country_id);
+            this.formUser.state = parseInt(this.selectedUser.state_id);
+            this.formUser.city = parseInt(this.selectedUser.city_id);
+            this.formUser.code_number = this.selectedUser.code_number;
+            this.formUser.code_country = this.selectedUser.code_country;
+            this.formUser.role = this.selectedUser.roles[0].id;
+            this.setPhotos();
+            if (this.selectedUser.country_id) {
+                await this.onChangeCountry(this.selectedUser.country_id, false);
+                if (this.selectedUser.state_id) {
+                    await this.onChangeState(this.selectedUser.state_id, false);
+                }
+            }
+            this.formUser.ros_clients = this.selectedUser.related_users.map(
+                (user) => user.user_id
+            );
+        },
         async initServices() {
             const rols = await this.getRoles();
             if (rols) {

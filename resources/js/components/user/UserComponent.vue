@@ -2,6 +2,24 @@
     <Card>
         <template #title>User</template>
         <template #content>
+            <div class="custom-form-column col-md-3">
+                <Select
+                    filter
+                    :options="
+                        listRoles.map((role) => ({
+                            ...role,
+                            name: roleAlias(role.name),
+                        }))
+                    "
+                    v-model="selectedRole"
+                    placeholder="Filter for rol"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeSelect"
+                    showClear
+                />
+            </div>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
                     icon="pi pi-plus"
@@ -10,8 +28,8 @@
                     @click="addProperty"
                     style="
                         margin-right: 10px;
-                        background-color: #F76F31 !important;
-                        border-color: #F76F31;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
                     "
                 />
                 <Button
@@ -21,8 +39,8 @@
                     raised
                     @click="clearFilters"
                     style="
-                    background-color: #F76F31 !important;
-                    border-color: #F76F31;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
                     "
                 />
             </div>
@@ -113,7 +131,7 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.roles[0].name }}
+                        {{ roleAlias(data.roles[0].name) }}
                     </template>
                 </Column>
                 <Column
@@ -284,10 +302,13 @@ export default {
             filters: null,
             filtroInfo: [],
             loading: true,
+            filterSelect: {},
             //
             selectedUser: null,
+            selectedRole: null,
             dialogVisible: false,
             galleryKey: 0,
+            listRoles: [],
         };
     },
     components: {
@@ -300,8 +321,24 @@ export default {
     },
     mounted() {
         this.fetchUser();
+        this.initServices();
     },
     methods: {
+        async initServices() {
+            const rols = await this.getRoles();
+            if (rols) {
+                this.listRoles = rols.data;
+            }
+        },
+        async getRoles() {
+            try {
+                const response = await this.$axios.get(`/rols/list`);
+                return response.data;
+            } catch (error) {
+                this.$readStatusHttp(error);
+                throw error;
+            }
+        },
         initFilters() {
             this.filters = {
                 name: {
@@ -333,7 +370,7 @@ export default {
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
-                }, 
+                },
                 city: {
                     clear: false,
                     constraints: [
@@ -357,6 +394,7 @@ export default {
         clearFilters() {
             this.initFilters();
             this.filtroInfo = [];
+            this.selectedRole = null;
             this.fetchUser();
         },
         onPage(event) {
@@ -388,7 +426,7 @@ export default {
             }
             this.fetchUser();
         },
-        fetchUser() {
+        fetchUser(role = null) {
             this.loading = true;
             this.$axios
                 .get("/users/list", {
@@ -398,6 +436,7 @@ export default {
                         sort: [this.sortField, this.sortOrder],
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
+                        role : role ?? null
                     },
                 })
                 .then((response) => {
@@ -475,10 +514,29 @@ export default {
         hidden(status) {
             this.dialogVisible = status;
         },
+        onChangeSelect(item) {
+            if(item.value === null) {
+                this.selectedRole = null;
+                this.fetchUser();
+                return;
+            }
+            const role = this.listRoles.find((role) => role.id === item.value);
+            this.fetchUser(role.name);
+            this.resetGallery();
+        },
+        roleAlias(roleName) {
+            const aliases = {
+                owner: "Owner",
+                tenant: "Tenant",
+                provider: "Provider",
+                ros_client: "Ros Client",
+                ros_client_manager: "Ros Client Manager",
+                global_manager: "Global Manager",
+            };
+            return aliases[roleName] || roleName;
+        },
     },
 };
 </script>
 
-<style>
-
-</style>
+<style></style>
