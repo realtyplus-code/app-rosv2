@@ -19,15 +19,24 @@ return new class extends Migration
             $table->string('responsible_user_type');
             $table->string('action_description', 1000)->nullable();
             $table->decimal('action_cost', 10, 2);
+            $table->unsignedInteger('currency_id');
+            $table->decimal('cost', 10, 2);
             $table->string('photo')->nullable();
             $table->string('photo1')->nullable();
             $table->string('photo2')->nullable();
             $table->string('photo3')->nullable();
             $table->string('document')->nullable();
             $table->string('document1')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('action_type_id');
+            $table->unsignedBigInteger('status_id');
             $table->timestamps();
 
+            $table->foreign('currency_id')->references('id')->on('enum_options');
             $table->foreign('incident_id')->references('id')->on('incidents');
+            $table->foreign('action_type_id')->references('id')->on('enum_options');
+            $table->foreign('status_id')->references('id')->on('enum_options');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

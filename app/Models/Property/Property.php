@@ -18,6 +18,12 @@ class Property extends Model
         'photo1',
         'photo2',
         'photo3',
+        'document',
+        'country',
+        'state',
+        'city',
+        'user_id',
+        'expected_end_date_ros',
     ];
 
     public function getPhotoAttribute($value)
@@ -51,5 +57,10 @@ class Property extends Model
     public function propertyType()
     {
         return $this->belongsTo(EnumOption::class, 'property_type_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

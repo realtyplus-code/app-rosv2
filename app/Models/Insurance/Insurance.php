@@ -22,11 +22,17 @@ class Insurance extends Model
         'code_country',
         'country',
         'policy_number',
+        'renewal_indicator',
+        'renewal_months',
+        'policy_amount',
+        'document',
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'renewal_indicator' => 'boolean',
+        'policy_amount' => 'decimal:2',
     ];
 
     /**

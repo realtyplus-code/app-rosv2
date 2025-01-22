@@ -17,12 +17,17 @@ class IncidentAction extends Model
         'responsible_user_type',
         'action_description',
         'action_cost',
+        'currency_id',
+        'cost',
         'photo',
         'photo1',
         'photo2',
         'photo3',
         'document',
         'document1',
+        'user_id',
+        'action_type_id',
+        'status_id',
     ];
 
     /**

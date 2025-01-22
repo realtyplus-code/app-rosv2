@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('reported_by');
             $table->unsignedInteger('incident_type_id');
             $table->unsignedInteger('priority_id');
+            $table->unsignedInteger('currency_id');
             $table->decimal('cost', 10, 2);
             $table->unsignedInteger('payer_id');
             $table->string('photo')->nullable();
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->foreign('incident_type_id')->references('id')->on('enum_options');
             $table->foreign('priority_id')->references('id')->on('enum_options');
             $table->foreign('payer_id')->references('id')->on('enum_options');
+            $table->foreign('currency_id')->references('id')->on('enum_options');
 
             $table->foreign('property_id')->references('id')->on('properties');
             $table->foreign('reported_by')->references('id')->on('users');

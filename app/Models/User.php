@@ -32,6 +32,7 @@ class User extends Authenticatable
         'state',
         'city',
         'address',
+        'language_id', // Añadir este campo
     ];
 
     /**

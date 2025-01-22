@@ -7,14 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Provider extends Model
 {
     protected $fillable = [
+        'user',
+        'email',
+        'password',
         'name',
+        'country',
+        'state',
+        'city',
         'address',
-        'coverage_area',
-        'contact_phone',
+        'phone',
         'code_number',
         'code_country',
-        'contact_email',
-        'service_cost',
+        'language_id',
+        'coverage_area',
+        'website',
         'status',
+        'user_id',
     ];
 }

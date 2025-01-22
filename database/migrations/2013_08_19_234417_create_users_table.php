@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('user');
             $table->string('name');
             $table->string('phone')->nullable();
             $table->string('code_number')->nullable();
@@ -24,9 +25,12 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->unsignedInteger('language_id');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('language_id')->references('id')->on('enum_options');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

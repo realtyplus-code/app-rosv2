@@ -27,6 +27,7 @@ class Incident extends Model
         'photo3',
         'document',
         'document1',
+        'currency_id',
     ];
 
     /**
@@ -75,6 +76,14 @@ class Incident extends Model
     public function payer()
     {
         return $this->belongsTo(EnumOption::class, 'payer_id');
+    }
+
+    /**
+     * Relación: Incidente - Moneda (currency_id)
+     */
+    public function currency()
+    {
+        return $this->belongsTo(EnumOption::class, 'currency_id');
     }
 
     public function setReportDateAttribute($value)
