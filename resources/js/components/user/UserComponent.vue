@@ -81,6 +81,25 @@
                         />
                     </template>
                 </Column>
+                <!-- Name Column -->
+                <Column
+                    field="user"
+                    header="User"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.user }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by user"
+                        />
+                    </template>
+                </Column>
                 <!-- Email Column -->
                 <Column
                     field="email"
@@ -207,6 +226,25 @@
                             type="text"
                             class="p-column-filter"
                             placeholder="Search by address"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="language_name"
+                    header="Lenguage"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.language_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by language_name"
                         />
                     </template>
                 </Column>
@@ -383,6 +421,18 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
+                language_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                user: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
                 /* 'roles.name': {
                     clear: false,
                     constraints: [
@@ -436,7 +486,7 @@ export default {
                         sort: [this.sortField, this.sortOrder],
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
-                        role : role ?? null
+                        role: role ?? null,
                     },
                 })
                 .then((response) => {
@@ -515,7 +565,7 @@ export default {
             this.dialogVisible = status;
         },
         onChangeSelect(item) {
-            if(item.value === null) {
+            if (item.value === null) {
                 this.selectedRole = null;
                 this.fetchUser();
                 return;

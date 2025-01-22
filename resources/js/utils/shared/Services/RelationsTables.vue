@@ -19,6 +19,8 @@ export default {
             switch (selector) {
                 case "name":
                     return "users.name";
+                case "user":
+                    return "users.user";
                 case "email":
                     return "users.email";
                 case "phone":
@@ -31,6 +33,8 @@ export default {
                     return "es.name";
                 case "city":
                     return "eci.name";
+                case "language_name":
+                    return "el.name";
                 default:
                     return selector;
             }

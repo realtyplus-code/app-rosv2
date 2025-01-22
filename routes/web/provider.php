@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Provider\ProviderController;
 
-Route::prefix('providers')->middleware(['auth'])->group(function () {
+Route::prefix('providers')->middleware(['auth:proveedores,web'])->group(function () {
     Route::get('/', [ProviderController::class, 'view'])->name('providers.view');
     Route::get('/list', [ProviderController::class, 'index'])->name('providers.index');
     Route::get('/listByProperty', [ProviderController::class, 'byProperty'])->name('providers.by.property');

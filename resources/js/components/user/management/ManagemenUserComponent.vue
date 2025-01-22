@@ -56,6 +56,24 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
+                        id="user"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.user }"
+                        v-model="formUser.user"
+                        style="width: 100%"
+                        @input="clearError('user')"
+                    />
+                    <label for="user">User</label>
+                </FloatLabel>
+                <small v-if="errors.user" class="p-error">{{
+                    errors.user
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputText
                         id="email"
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.email }"
@@ -154,6 +172,23 @@
                 </FloatLabel>
                 <small v-if="errors.address" class="p-error">{{
                     errors.address
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listLenguage"
+                    v-model="formUser.language_id"
+                    placeholder="Select language"
+                    :class="{ 'p-invalid': errors.language_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.language_id" class="p-error">{{
+                    errors.language_id
                 }}</small>
             </div>
         </div>
@@ -310,6 +345,7 @@ export default {
             visible: this.dialogVisible,
             formUser: {
                 id: null,
+                user: null,
                 name: null,
                 email: null,
                 phone: null,
@@ -320,6 +356,7 @@ export default {
                 code_number: null,
                 code_country: null,
                 photos: [],
+                language_id: [],
                 role: null,
                 ros_clients: [],
             },
@@ -330,6 +367,7 @@ export default {
             listCity: [],
             listCountry: [],
             listState: [],
+            listLenguage: [],
             placeholderCity: "Select the state first",
             placeholderState: "Select the country first",
             usersRosClient: [],
@@ -367,12 +405,14 @@ export default {
         async setFormUser() {
             this.formUser.id = this.selectedUser.id;
             this.formUser.name = this.selectedUser.name;
+            this.formUser.user = this.selectedUser.user;
             this.formUser.email = this.selectedUser.email;
             this.formUser.phone = this.selectedUser.phone;
             this.formUser.address = this.selectedUser.address;
             this.formUser.country = parseInt(this.selectedUser.country_id);
             this.formUser.state = parseInt(this.selectedUser.state_id);
             this.formUser.city = parseInt(this.selectedUser.city_id);
+            this.formUser.language_id = parseInt(this.selectedUser.language_id);
             this.formUser.code_number = this.selectedUser.code_number;
             this.formUser.code_country = this.selectedUser.code_country;
             this.formUser.role = this.selectedUser.roles[0].id;
@@ -392,10 +432,11 @@ export default {
             if (rols) {
                 this.listRoles = rols.data;
             }
-            const comboNames = ["country"];
+            const comboNames = ["country", "language"];
             const response = await this.$getEnumsOptions(comboNames);
-            const { country: responsCountry } = response.data;
+            const { country: responsCountry, language: responsLenguaje } = response.data;
             this.listCountry = responsCountry;
+            this.listLenguage = responsLenguaje;
         },
         getRoles() {
             const vm = this;
@@ -428,6 +469,7 @@ export default {
             this.dynamicRules = {};
             let initialRules = {
                 name: Yup.string().required("Type name is required"),
+                user: Yup.string().required("Type user is required"),
                 email: Yup.string()
                     .email("The email format is not valid")
                     .required("Type email is required"),

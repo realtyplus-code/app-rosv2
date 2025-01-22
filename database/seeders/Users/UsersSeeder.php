@@ -16,7 +16,8 @@ class UsersSeeder extends Seeder
     {
         $adminUser = User::create([
             'name' => 'Admin User',
-            'email' => 'admin@rol.com',
+            'user' => 'admin',
+            'email' => 'admin@ros.com',
             'password' => bcrypt('password'),
         ]);
         $adminRole = Role::where('name', 'admin')->first();
@@ -26,6 +27,7 @@ class UsersSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             $user = User::create([
                 'name' => "Test User $i",
+                'user' => "test$i",
                 'email' => "testuser$i@example.com",
                 'password' => Hash::make('password'),
             ]);

@@ -28,8 +28,8 @@ return new class extends Migration
             $table->string('document')->nullable();
             $table->string('document1')->nullable();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('action_type_id');
-            $table->unsignedBigInteger('status_id');
+            $table->unsignedInteger('action_type_id');
+            $table->unsignedInteger('status_id');
             $table->timestamps();
 
             $table->foreign('currency_id')->references('id')->on('enum_options');

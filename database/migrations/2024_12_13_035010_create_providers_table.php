@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('coverage_area');
             $table->string('website')->nullable();
             $table->boolean('status')->default(true);
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('language_id')->references('id')->on('enum_options');
             $table->string('contact_phone')->nullable();

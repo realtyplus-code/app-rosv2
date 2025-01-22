@@ -27,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(Configuration\CoreMasterComboProviderTypeSeeder::class);
         $this->call(Configuration\CoreEnumCountryStateCitySeeder::class);
         $this->call(Configuration\CoreMasterComboInsuranceTypeSeeder::class);
+        $this->call(Configuration\CoreMasterComboLenguajeSeeder::class);
     }
 }

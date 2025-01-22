@@ -2,9 +2,9 @@
 
 namespace App\Models\Provider;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Provider extends Model
+class Provider extends Authenticatable
 {
     protected $fillable = [
         'user',
@@ -23,5 +23,11 @@ class Provider extends Model
         'website',
         'status',
         'user_id',
+    ];
+
+    // Agregar la propiedad oculta para la contraseña
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 }
