@@ -21,14 +21,13 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required_without:user', 'email'],
-            'user' => ['required_without:email'],
+            'login' => ['required'],
             'password' => ['required'],
         ]);
 
-        $loginType = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'user';
+        $loginType = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'user';
         $credentials = [
-            $loginType => $request->input($loginType),
+            $loginType => $request->input('login'),
             'password' => $request->input('password'),
         ];
 

@@ -29,12 +29,11 @@
                     <form method="POST" action="{{ route('login') }}">
                     @csrf
                         <div class="mb-3">
-                            <label for="email" class="form-label"
-                                style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 1.25rem; color: #666666;">Email
-                                Address</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="example@example.com"
-                                style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 1.25rem; color: #666666;" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                            @error('email')
+                            <label for="login" class="form-label"
+                                style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 1.25rem; color: #666666;">Email or Username</label>
+                            <input type="text" class="form-control @error('login') is-invalid @enderror" id="login" placeholder="email or username"
+                                style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: 1.25rem; color: #666666;" name="login" value="{{ old('login') }}" required autocomplete="login" autofocus>
+                            @error('login')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
