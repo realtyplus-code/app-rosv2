@@ -32,6 +32,10 @@ class StorePropertyRequest extends FormRequest
             'property_type_id' => 'required|string|max:10',
             'photos' => 'nullable|array',
             'photos.*' => 'nullable|image|max:' . config('app.upload_max_filesize'),
+            'country' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'expected_end_date_ros' => 'nullable|date',
         ];
     }
 
@@ -70,6 +74,20 @@ class StorePropertyRequest extends FormRequest
             'photos.array' => 'The photos field must be an array.',
             'photos.*.image' => 'Each photo must be an image.',
             'photos.*.max' => 'Each photo may not be greater than ' . config('app.upload_max_filesize') . ' kilobytes.',
+
+            'country.required' => 'Country is required.',
+            'country.string' => 'The country must be a string.',
+            'country.max' => 'The country may not be greater than 255 characters.',
+
+            'state.required' => 'State is required.',
+            'state.string' => 'The state must be a string.',
+            'state.max' => 'The state may not be greater than 255 characters.',
+
+            'city.required' => 'City is required.',
+            'city.string' => 'The city must be a string.',
+            'city.max' => 'The city may not be greater than 255 characters.',
+
+            'expected_end_date_ros.date' => 'The expected end date must be a valid date.',
         ];
     }
 }

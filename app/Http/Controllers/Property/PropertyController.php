@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
+use App\Http\Requests\User\ValidatePdfRequest;
 use App\Http\Requests\Property\StorePropertyRequest;
-use App\Http\Requests\Property\UpdatePropertyRequest;
 use App\Http\Requests\Property\ValidatePhotoRequest;
+use App\Http\Requests\Property\UpdatePropertyRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class PropertyController extends Controller
@@ -42,12 +43,23 @@ class PropertyController extends Controller
                     'properties.name',
                     'properties.address',
                     'properties.status',
+                    'ec.id as country_id',
+                    'es.id as state_id',
+                    'eci.id as city_id',
+                    'ec.name as country_name',
+                    'es.name as state_name',
+                    'eci.name as city_name',
                     'eo_property_type.id as property_type_id',
                     'eo_property_type.name as property_type_name',
                     'properties.photo',
                     'properties.photo1',
                     'properties.photo2',
                     'properties.photo3',
+                    'properties.document',
+                    'properties.created_at',
+                    'properties.expected_end_date_ros',
+                    'users.id as log_user_id',
+                    'users.name as log_user_name',
                     DB::raw('GROUP_CONCAT(CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                     DB::raw('GROUP_CONCAT(CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
                     DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
@@ -194,5 +206,29 @@ class PropertyController extends Controller
                 DB::raw('COUNT(DISTINCT insurances.id) as insurances')
             ]
         );
+    }
+
+    public function addPdf(ValidatePdfRequest $request)
+    {
+        try {
+            $pdf = $this->propertyService->addPdfIncident($request->all());
+            return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function destroyPdf(Request $request)
+    {
+        try {
+            $this->propertyService->deletePdfIncident($request->all());
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
     }
 }

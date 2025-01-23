@@ -127,6 +127,63 @@
                         />
                     </template>
                 </Column>
+                <Column
+                    field="country"
+                    header="Country"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.country_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by country"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="state"
+                    header="State"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.state_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by state"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="city"
+                    header="City"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.city_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by city"
+                        />
+                    </template>
+                </Column>
                 <!-- Property Type Name Column -->
                 <Column
                     field="property_type_name"
@@ -246,7 +303,44 @@
                         </div>
                     </template>
                 </Column>
-
+                <Column
+                    field="created_at"
+                    header="Crated"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.created_at }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by created"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="expected_end_date_ros"
+                    header="Expected End"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.expected_end_date_ros }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by expected end"
+                        />
+                    </template>
+                </Column>
                 <!-- Photos Column -->
                 <Column header="Photo">
                     <template #body="{ data }">
@@ -325,6 +419,16 @@
                                 "
                                 @click="deleteProperty(slotProps.data.id)"
                             />
+                            <Button
+                                icon="pi pi-upload"
+                                class="p-button-rounded p-button-success"
+                                style="
+                                    margin: 5px;
+                                    background-color: #28a745;
+                                    border-color: #28a745;
+                                "
+                                @click="uploadPdfIncidentAction(slotProps.data)"
+                            />
                         </div>
                     </template>
                 </Column>
@@ -356,11 +460,21 @@
         @hidden="hiddenIncident"
         @reload="reloadIncident"
     />
+    <UploadPdfModalComponent
+        v-if="dialogVisiblePdf"
+        :dialogVisible="dialogVisiblePdf"
+        :selectedRegister="selectedProperty"
+        :limit="1"
+        @hidden="hidden"
+        @uploadFiles="uploadFiles"
+        @deletePdf="deletePdf"
+    />
 </template>
 
 <script>
 // Importar Librerias o Modulos
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
+import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
 import ManagemenInsuranceComponent from "../insurance/management/ManagemenInsuranceComponent.vue";
 import ManagemenIncidentComponent from "../incident/management/ManagemenIncidentComponent.vue";
@@ -389,6 +503,7 @@ export default {
                 { value: "Inactive", id: 2 },
             ],
             galleryKey: 0,
+            dialogVisiblePdf: false
         };
     },
     components: {
@@ -397,6 +512,7 @@ export default {
         ManagemenPropertyComponent,
         ManagemenInsuranceComponent,
         ManagemenIncidentComponent,
+        UploadPdfModalComponent,
     },
     created() {
         this.initFilters();
@@ -441,6 +557,36 @@ export default {
                     ],
                 },
                 property_type_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                country: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                state: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                city: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                created_at: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                expected_end_date_ros: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -558,6 +704,7 @@ export default {
         },
         hidden(status) {
             this.dialogVisible = status;
+            this.dialogVisiblePdf = status;
         },
         hiddenInsurance(status) {
             this.dialogVisibleInsurance = status;
@@ -582,6 +729,10 @@ export default {
             if (insurances == 0) return;
             window.location.href = "/occurrences?property_id=" + id;
             return;
+        },
+        uploadPdfIncidentAction(item) {
+            this.selectedProperty = item;
+            this.dialogVisiblePdf = true;
         },
         async exportToExcel() {
             const params = {
@@ -626,6 +777,43 @@ export default {
             } finally {
                 this.loading = false;
             }
+        },
+        async uploadFiles(pdfs) {
+            if (pdfs.length === 0) {
+                this.$alertWarning("No files selected for upload");
+                return;
+            }
+            const data = {
+                property_id: this.selectedProperty.id,
+                pdfs: pdfs,
+            };
+            this.$axios
+                .post("/properties/document/add", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then(() => {
+                    this.$alertSuccess("Files uploaded successfully");
+                    this.fetchProperty();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
+        },
+        deletePdf(pdfField) {
+            this.$axios
+                .post(`/properties/document/delete`, {
+                    property_id: this.selectedProperty.id,
+                    type: pdfField,
+                })
+                .then(() => {
+                    this.$alertSuccess("File deleted successfully");
+                    this.fetchProperty();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
         },
     },
 };

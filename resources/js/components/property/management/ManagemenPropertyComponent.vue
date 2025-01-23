@@ -50,20 +50,50 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
-            <div class="custom-form-column">
+        <div class="custom-form mt-4">
+            <div class="custom-form-column" style="margin-top: 10px">
                 <Select
-                    filter
-                    :options="listPropertyType"
-                    v-model="formProperty.property_type_id"
-                    placeholder="Select property type"
-                    :class="{ 'p-invalid': errors.property_type_id }"
+                    :options="listCountry"
+                    v-model="formProperty.country"
+                    placeholder="Select country"
+                    :class="{ 'p-invalid': errors.country }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeCountry(formProperty.country, true)"
+                />
+                <small v-if="errors.country" class="p-error">{{
+                    errors.country
+                }}</small>
+            </div>
+            <div class="custom-form-column" style="margin-top: 10px">
+                <Select
+                    :options="listState"
+                    v-model="formProperty.state"
+                    :placeholder="placeholderState"
+                    :class="{ 'p-invalid': errors.state }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeState(formProperty.state, true)"
+                />
+                <small v-if="errors.state" class="p-error">{{
+                    errors.state
+                }}</small>
+            </div>
+            <div class="custom-form-column" style="margin-top: 10px">
+                <Select
+                    :options="listCity"
+                    v-model="formProperty.city"
+                    :placeholder="placeholderCity"
+                    :class="{ 'p-invalid': errors.city }"
                     optionLabel="name"
                     optionValue="id"
                     style="width: 100%"
                 />
-                <small v-if="errors.property_type_id" class="p-error">{{
-                    errors.property_type_id
+
+                <small v-if="errors.city" class="p-error">{{
+                    errors.city
                 }}</small>
             </div>
         </div>
@@ -81,6 +111,23 @@
                 />
                 <small v-if="errors.status" class="p-error">{{
                     errors.status
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listPropertyType"
+                    v-model="formProperty.property_type_id"
+                    placeholder="Select property type"
+                    :class="{ 'p-invalid': errors.property_type_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.property_type_id" class="p-error">{{
+                    errors.property_type_id
                 }}</small>
             </div>
         </div>
@@ -117,6 +164,23 @@
                 />
                 <small v-if="errors.tenants" class="p-error">{{
                     errors.tenants
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <DatePicker
+                        id="expected_end_date_ros"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.expected_end_date_ros }"
+                        v-model="formProperty.expected_end_date_ros"
+                        @input="clearError('expected_end_date_ros')"
+                    />
+                    <label for="expected_end_date_ros">Expected End</label>
+                </FloatLabel>
+                <small v-if="errors.expected_end_date_ros" class="p-error">{{
+                    errors.expected_end_date_ros
                 }}</small>
             </div>
         </div>
@@ -202,10 +266,7 @@
                     v-if="!selectedProperty"
                     label="Save"
                     severity="success"
-                    style="
-                        margin-right: 10px;
-                        border-color: #F76F31;
-                    "
+                    style="margin-right: 10px; border-color: #f76f31"
                     @click="save"
                 />
                 <Button
@@ -242,6 +303,10 @@ export default {
                 owners: [],
                 tenants: [],
                 photos: [],
+                country: null,
+                state: null,
+                city: null,
+                expected_end_date_ros: null,
             },
             errors: {},
             listPropertyType: [],
@@ -252,13 +317,17 @@ export default {
             limitOwners: 10,
             limitTenants: 10,
             isLoad: false,
+            listCity: [],
+            listCountry: [],
+            listState: [],
+            placeholderCity: "Select the state first",
+            placeholderState: "Select the country first",
         };
     },
-    components: {
-    },
+    components: {},
     watch: {},
     mounted() {
-        this.$nextTick(() => {
+        this.$nextTick(async () => {
             if (this.selectedProperty) {
                 const currentOwnersName = this.$parseTags(
                     this.selectedProperty.owners_name
@@ -269,6 +338,15 @@ export default {
                 this.formProperty.id = this.selectedProperty.id;
                 this.formProperty.name = this.selectedProperty.name;
                 this.formProperty.address = this.selectedProperty.address;
+                this.formProperty.country = parseInt(
+                    this.selectedProperty.country_id
+                );
+                this.formProperty.state = parseInt(
+                    this.selectedProperty.state_id
+                );
+                this.formProperty.city = parseInt(
+                    this.selectedProperty.city_id
+                );
                 this.formProperty.property_type_id =
                     this.selectedProperty.property_type_id;
                 this.formProperty.status = parseInt(
@@ -280,7 +358,20 @@ export default {
                 this.formProperty.tenants = currentTenantsName.map(
                     (tenat) => tenat.id
                 );
+                this.formProperty.expected_end_date_ros = this.selectedProperty.expected_end_date_ros;
                 this.setPhotos();
+                if (this.selectedProperty.country_id) {
+                    await this.onChangeCountry(
+                        this.selectedProperty.country_id,
+                        false
+                    );
+                    if (this.selectedProperty.state_id) {
+                        await this.onChangeState(
+                            this.selectedProperty.state_id,
+                            false
+                        );
+                    }
+                }
             }
         });
     },
@@ -293,14 +384,18 @@ export default {
                 { id: 1, name: "active" },
                 { id: 2, name: "inactive" },
             ];
-            const comboNames = ["property_type"];
+            const comboNames = ["country", "property_type"];
             const response = await this.$getEnumsOptions(comboNames);
-            const { property_type: responPropertyType } = response.data;
+            const {
+                country: responsCountry,
+                property_type: responPropertyType,
+            } = response.data;
             this.listPropertyType = responPropertyType;
+            this.listCountry = responsCountry;
             // obtenemos los usuarios
-            const { data: owners } = await this.getUsers("owners");
+            const { data: owners } = await this.getUsers("owner");
             this.listOwners = owners;
-            const { data: tenants } = await this.getUsers("tenants");
+            const { data: tenants } = await this.getUsers("tenant");
             this.listTenants = tenants;
         },
         getUsers(role = null) {
@@ -338,6 +433,10 @@ export default {
                     .min(1, "At least 1 photo is required")
                     .max(4, "You can upload up to 4 photos")
                     .required("Photo is required"),
+                country: Yup.string().required("Country is required"),
+                state: Yup.string().required("State is required"),
+                city: Yup.string().required("City is required"),
+                expected_end_date_ros: Yup.date().required("Expected end date is required"),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -406,6 +505,59 @@ export default {
             } else {
                 this.isLoad = false;
             }
+        },
+        onChangeCountry(value, change) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await this.$getBrother(value);
+                    this.listState = [];
+                    this.listCity = [];
+                    if (value && change) {
+                        this.formProperty.state_id = null;
+                        this.formProperty.city_id = null;
+                    } else {
+                        this.formProperty.state_id = this.selectedProperty
+                            ? parseInt(this.selectedProperty.state_id)
+                            : null;
+                        this.formProperty.city_id = this.selectedProperty
+                            ? parseInt(this.selectedProperty.city_id)
+                            : null;
+                    }
+
+                    this.placeholderState =
+                        response.data.length > 0
+                            ? "Select state"
+                            : "Data empty";
+                    this.listState = response.data;
+                    resolve();
+                } catch (error) {
+                    console.error("Error in onChangeCountry:", error);
+                    reject(error);
+                }
+            });
+        },
+        onChangeState(value, change) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await this.$getBrother(value);
+                    this.listCity = [];
+                    if (value && change) {
+                        this.formProperty.city_id = null;
+                    } else {
+                        this.formProperty.city_id = this.selectedProperty
+                            ? parseInt(this.selectedProperty.city_id)
+                            : null;
+                    }
+
+                    this.placeholderCity =
+                        response.data.length > 0 ? "Select city" : "Data empty";
+                    this.listCity = response.data;
+                    resolve();
+                } catch (error) {
+                    console.error("Error in onChangeState:", error);
+                    reject(error);
+                }
+            });
         },
         handleDialogClose() {
             this.visible = false;

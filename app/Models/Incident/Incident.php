@@ -91,7 +91,6 @@ class Incident extends Model
         $this->attributes['report_date'] = Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
-
     public function getReportDateAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d');

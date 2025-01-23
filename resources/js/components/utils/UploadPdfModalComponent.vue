@@ -10,67 +10,39 @@
             <h3>Upload PDF Files</h3>
         </template>
         <div class="custom-form">
-            <div class="custom-form-column custom-pdf-column">
-                <div v-if="selectedRegister && selectedRegister.document">
-                    <h4>PDF 1</h4>
+            <div
+                v-for="index in limitDouments"
+                :key="index"
+                class="custom-form-column custom-pdf-column"
+            >
+                 <div v-if="selectedRegister && selectedRegister[`document${index === 1 ? '' : index}`]">
+                    <h4>PDF {{ index }}</h4>
                     <Button
                         icon="pi pi-eye"
-                        @click="viewPdf(selectedRegister.document)"
+                        @click="viewPdf(selectedRegister[`document${index === 1 ? '' : index}`])"
                         style="margin: 20px"
                     />
                     <Button
                         icon="pi pi-trash"
                         severity="danger"
-                        @click="confirmDelete('pdf')"
+                        @click="confirmDelete(`document${index === 1 ? '' : index}`)"
                     />
                 </div>
                 <div v-else>
                     <FileUpload
-                        id="uploadPdf1"
-                        ref="fileUpload1"
+                        :id="`uploadPdf${index === 1 ? '' : index}`"
+                        :ref="`fileUpload${index === 1 ? '' : index}`"
                         accept="application/pdf"
-                        :class="{ 'p-invalid': errors.document }"
-                        @change="onFileUpload(1)"
-                        @remove="onFileRemove(1)"
+                        :class="{ 'p-invalid': errors[`document${index === 1 ? '' : index}`] }"
+                        @change="onFileUpload(index === 1 ? '' : index)"
+                        @remove="onFileRemove(index === 1 ? '' : index)"
                     >
                         <template #empty>
-                            <p>Select PDF file 1</p>
+                            <p>Select PDF file {{ index }}</p>
                         </template>
                     </FileUpload>
-                    <small v-if="errors.document" class="p-error">{{
-                        errors.document
-                    }}</small>
-                </div>
-            </div>
-            <div class="custom-form-column custom-pdf-column">
-                <div v-if="selectedRegister && selectedRegister.document1">
-                    <h4>PDF 2</h4>
-                    <Button
-                        icon="pi pi-eye"
-                        @click="viewPdf(selectedRegister.document1)"
-                        style="margin: 20px"
-                    />
-                    <Button
-                        icon="pi pi-trash"
-                        severity="danger"
-                        @click="confirmDelete('document1')"
-                    />
-                </div>
-                <div v-else>
-                    <FileUpload
-                        id="uploadPdf2"
-                        ref="fileUpload2"
-                        accept="application/pdf"
-                        :class="{ 'p-invalid': errors.document1 }"
-                        @change="onFileUpload(2)"
-                        @remove="onFileRemove(2)"
-                    >
-                        <template #empty>
-                            <p>Select PDF file 2</p>
-                        </template>
-                    </FileUpload>
-                    <small v-if="errors.document1" class="p-error">{{
-                        errors.document1
+                    <small v-if="errors[`document${index === 1 ? '' : index}`]" class="p-error">{{
+                        errors[`document${index === 1 ? '' : index}`]
                     }}</small>
                 </div>
             </div>
@@ -97,20 +69,18 @@
 import * as Yup from "yup";
 
 export default {
-    props: ["dialogVisible", "selectedRegister"],
+    props: ["dialogVisible", "selectedRegister", "limit"],
     data() {
         return {
             visible: this.dialogVisible,
-            files: {
-                document1: null,
-                document2: null,
-            },
+            files: {},
             errors: {},
+            limitDouments: this.limit ?? 0,
         };
     },
     methods: {
         onFileUpload(fileNumber) {
-            const fileUpload = this.$refs[`fileUpload${fileNumber}`];
+            const fileUpload = this.$refs[`fileUpload${fileNumber}`][0];
             if (fileUpload && fileUpload.files.length > 0) {
                 const file = fileUpload.files[0];
                 if (file.type === "application/pdf") {
@@ -131,8 +101,7 @@ export default {
         },
         async validateForm() {
             const schema = Yup.object().shape({
-                /* pdf1: Yup.mixed().required("PDF file 1 is required"),
-                pdf2: Yup.mixed().required("PDF file 2 is required"), */
+                // ...existing code...
             });
             this.errors = {};
             try {
@@ -148,10 +117,10 @@ export default {
         async uploadFiles() {
             const isValid = await this.validateForm();
             if (isValid) {
-                const pdfFiles = [
-                    this.files.document1 || null,
-                    this.files.document2 || null,
-                ];
+                const pdfFiles = [];
+                for (let i = 1; i <= this.limitDouments; i++) {
+                    pdfFiles.push(this.files[`document${i === 1 ? '' : i}`] || null);
+                }
                 this.$emit("uploadFiles", pdfFiles);
                 setTimeout(() => {
                     this.handleDialogClose();

@@ -14,4 +14,6 @@ Route::prefix('properties')->middleware(['auth'])->group(function () {
     Route::delete('/{id}', [PropertyController::class, 'destroy'])->name('properties.destroy');
     Route::post('/photo/add/', [PropertyController::class, 'addPhoto'])->name('properties.destroy.add');
     Route::post('/photo/delete/', [PropertyController::class, 'destroyPhoto'])->name('properties.destroy.photo');
+    Route::post('/document/add', [PropertyController::class, 'addPdf'])->name('properties.add.pdf');
+    Route::post('/document/delete', [PropertyController::class, 'destroyPdf'])->name('properties.destroy.pdf');
 });

@@ -2,6 +2,7 @@
 
 namespace App\Models\Property;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -52,6 +53,28 @@ class Property extends Model
         if ($value) {
             return Storage::disk('disk_property')->url($value);
         }
+    }
+
+    public function getDocumentAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_property')->url($value);
+        }
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function setExpectedEndDateRosAttribute($value)
+    {
+        $this->attributes['expected_end_date_ros'] = Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getExpectedEndDateRosAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d');
     }
 
     public function propertyType()

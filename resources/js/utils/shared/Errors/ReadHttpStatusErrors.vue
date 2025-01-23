@@ -32,6 +32,8 @@ export default {
             const $t = this.$t; // Alias para facilitar
             const httpErrors = "httpErrors";
 
+            console.log(error);
+
             switch (response.status) {
                 case 400:
                     this.$alertDanger(

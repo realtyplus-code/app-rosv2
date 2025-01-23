@@ -11,6 +11,16 @@ export default {
                     return "eo_property_type.name";
                 case "status":
                     return "properties.status";
+                case "country":
+                    return "ec.name";
+                case "state":
+                    return "es.name";
+                case "city":
+                    return "eci.name";
+                case "created_at":
+                    return "properties.created_at";
+                case "expected_end_date_ros":
+                    return "properties.expected_end_date_ros";
                 default:
                     return selector;
             }

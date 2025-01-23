@@ -17,6 +17,7 @@ class PropertyService
     protected $userPropertyRepository;
     protected $fileService;
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
+    private $listDocuments = ['document'];
 
     public function __construct(PropertyRepositoryInterface $propertyRepository, UserPropertyRepositoryInterface $userPropertyRepository, FileService $fileService)
     {
@@ -36,16 +37,20 @@ class PropertyService
                 $join->on('user_owner.id', '=', 'user_properties.user_id')
                     ->join('model_has_roles as mhr_owner', 'mhr_owner.model_id', '=', 'user_owner.id')
                     ->join('roles as r_owner', 'r_owner.id', '=', 'mhr_owner.role_id')
-                    ->where('r_owner.name', '=', 'owners')
+                    ->where('r_owner.name', '=', 'owner')
                     ->where('mhr_owner.model_type', '=', 'App\\Models\\User');
             })
             ->leftJoin('users as user_tenant', function ($join) {
                 $join->on('user_tenant.id', '=', 'user_properties.user_id')
                     ->join('model_has_roles as mhr_tenant', 'mhr_tenant.model_id', '=', 'user_tenant.id')
                     ->join('roles as r_tenant', 'r_tenant.id', '=', 'mhr_tenant.role_id')
-                    ->where('r_tenant.name', '=', 'tenants')
+                    ->where('r_tenant.name', '=', 'tenant')
                     ->where('mhr_tenant.model_type', '=', 'App\\Models\\User');
             })
+            ->leftJoin('users', 'users.id', '=', 'properties.user_id')
+            ->leftJoin('enum_options as ec', 'ec.id', '=', 'properties.country')
+            ->leftJoin('enum_options as es', 'es.id', '=', 'properties.state')
+            ->leftJoin('enum_options as eci', 'eci.id', '=', 'properties.city')
             ->groupBy([
                 'properties.id',
                 'insurances.id',
@@ -59,6 +64,17 @@ class PropertyService
                 'properties.photo1',
                 'properties.photo2',
                 'properties.photo3',
+                'properties.document',
+                'ec.id',
+                'es.id',
+                'eci.id',
+                'ec.name',
+                'es.name',
+                'eci.name',
+                'properties.created_at',
+                'properties.expected_end_date_ros',
+                'users.id',
+                'users.name',
             ]);
 
         return $query->distinct();
@@ -78,6 +94,7 @@ class PropertyService
             unset($data['photo']);
             $owners = $data['owners'];
             $tenants = $data['tenants'];
+            $data['user_id'] = Auth::id();
             $property = $this->propertyRepository->create($data);
             $this->assignedPhoto($property, $photos);
             $property->save();
@@ -145,6 +162,12 @@ class PropertyService
                         'disk_property'
                     );
                 }
+            }
+            if (!empty($currentProperty->document)) {
+                $this->fileService->deleteFile(
+                    cleanStorageUrl($currentProperty->document, '/storage_property/'),
+                    'disk_property'
+                );
             }
             $this->userPropertyRepository->deleteByProperty($id);
             $this->propertyRepository->delete($id);
@@ -241,5 +264,41 @@ class PropertyService
             }
         }
         return null;
+    }
+
+    public function addPdfIncident($data)
+    {
+        $flagColumn = null;
+        $pdfs = $data['pdfs'];
+        $property = $this->propertyRepository->findById($data['property_id']);
+        $columns = $this->listDocuments;
+        foreach ($pdfs as $key => $pdf) {
+            foreach ($columns as $column) {
+                if (empty($property->{$column})) {
+                    $property->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_property');
+                    $flagColumn = $property->{$column};
+                    $property->save();
+                    break;
+                }
+            }
+        }
+        return $flagColumn;
+    }
+
+    public function deletePdfIncident($data)
+    {
+        try {
+            $property = $this->propertyRepository->findById($data['property_id']);
+            if ($data['type'] == 'document') {
+                $this->fileService->deleteFile(cleanStorageUrl($property->document, '/storage_property/'), 'disk_property');
+                $property->document = null;
+            }
+            $property->save();
+            return $property;
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
     }
 }
