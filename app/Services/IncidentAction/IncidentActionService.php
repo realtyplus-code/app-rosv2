@@ -36,6 +36,10 @@ class IncidentActionService
                 ->where('incident_actions.responsible_user_type', '=', 'PROVIDER');
         });
 
+        $query->leftJoin('users as user_log', 'user_log.id', '=', 'incident_actions.user_id')
+            ->leftJoin('enum_options as eat', 'eat.id', '=', 'incident_actions.action_type_id')
+            ->leftJoin('enum_options as es', 'es.id', '=', 'incident_actions.status_id')
+            ->leftJoin('enum_options as ec', 'ec.id', '=', 'incident_actions.currency_id');
 
         if (isset($data['incident_id'])) {
             $query->where('incidents.id', $data['incident_id']);
@@ -50,6 +54,7 @@ class IncidentActionService
         try {
             $photos = isset($data['photos']) ? $data['photos'] : [];
             unset($data['photo']);
+            $data['user_id'] = auth()->user()->id;
             $incidentAction = $this->incidentActionRepository->create($data);
             $this->assignedPhoto($incidentAction, $photos);
             $incidentAction->save();
@@ -219,7 +224,7 @@ class IncidentActionService
     {
         try {
             $incidentAction = $this->incidentActionRepository->findById($data['incident_id']);
-            if ($data['type'] == 'pdf') {
+            if ($data['type'] == 'document') {
                 $this->fileService->deleteFile(cleanStorageUrl($incidentAction->document, '/storage_incident_action/'), 'disk_incident_action');
                 $incidentAction->document = null;
             } else {

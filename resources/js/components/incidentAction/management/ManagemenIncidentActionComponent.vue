@@ -77,8 +77,42 @@
                     errors.responsible_user_id
                 }}</small>
             </div>
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <DatePicker
+                        showIcon
+                        fluid
+                        id="action_date"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.action_date }"
+                        v-model="formIncident.action_date"
+                        @input="clearError('action_date')"
+                        :show-time="true"
+                        :hourFormat="'24'"
+                    />
+                    <label for="action_date">Report Date</label>
+                </FloatLabel>
+                <small v-if="errors.action_date" class="p-error">{{
+                    errors.action_date
+                }}</small>
+            </div>
         </div>
         <div class="custom-form">
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listCurrency"
+                    v-model="formIncident.currency_id"
+                    placeholder="Select currency"
+                    :class="{ 'p-invalid': errors.currency_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.currency_id" class="p-error">{{
+                    errors.currency_id
+                }}</small>
+            </div>
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputNumber
@@ -95,19 +129,36 @@
                     errors.action_cost
                 }}</small>
             </div>
+        </div>
+        <div class="custom-form">
             <div class="custom-form-column">
-                <FloatLabel>
-                    <DatePicker
-                        id="action_date"
-                        class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.action_date }"
-                        v-model="formIncident.action_date"
-                        @input="clearError('action_date')"
-                    />
-                    <label for="action_date">Report Date</label>
-                </FloatLabel>
-                <small v-if="errors.action_date" class="p-error">{{
-                    errors.action_date
+                <Select
+                    filter
+                    :options="listActionType"
+                    v-model="formIncident.action_type_id"
+                    placeholder="Select insurance"
+                    :class="{ 'p-invalid': errors.action_type_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.action_type_id" class="p-error">{{
+                    errors.action_type_id
+                }}</small>
+            </div>
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listActionStatus"
+                    v-model="formIncident.status_id"
+                    placeholder="Select insurance"
+                    :class="{ 'p-invalid': errors.status_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.status_id" class="p-error">{{
+                    errors.status_id
                 }}</small>
             </div>
         </div>
@@ -215,6 +266,7 @@
 
 <script>
 import * as Yup from "yup";
+import moment from "moment";
 
 export default {
     props: ["dialogVisible", "selectedIncident", "selectedIncidentId"],
@@ -230,10 +282,16 @@ export default {
                 action_description: null,
                 action_cost: null,
                 photos: [],
+                action_type_id: null,
+                status_id: null,
+                currency_id: null,
             },
             errors: {},
             listOtherUsers: [],
             listProviders: [],
+            listActionType: [],
+            listActionStatus: [],
+            listCurrency: [],
             isLoad: false,
             isTypeUser: false, //true: providers, false: others users
         };
@@ -249,6 +307,9 @@ export default {
     watch: {
         async isTypeUser(status) {
             await this.checkTypeUser(status);
+        },
+        "formIncident.action_date"(newValue) {
+            this.formIncident.action_date = moment(newValue).format("Y-MM-DD HH:mm");
         },
     },
     mounted() {
@@ -273,6 +334,12 @@ export default {
                     ? this.selectedIncident.user_id
                     : this.selectedIncident.provider_id;
 
+                this.formIncident.currency_id =
+                    this.selectedIncident.currency_id;
+                this.formIncident.action_type_id =
+                    this.selectedIncident.action_type_id;
+                this.formIncident.status_id = this.selectedIncident.status_id;
+
                 await this.checkTypeUser(this.isTypeUser);
                 this.setPhotos();
             }
@@ -283,7 +350,6 @@ export default {
     },
     methods: {
         async checkTypeUser(status) {
-            console.log(status);
             this.listOtherUsers = [];
             this.listProviders = [];
             if (status) {
@@ -312,6 +378,17 @@ export default {
             this.formIncident.responsible_user_type = "PROVIDER";
             const { data: provider } = await this.getProviders();
             this.listProviders = provider;
+
+            const comboNames = ["action_status", "action_type", "currency"];
+            const response = await this.$getEnumsOptions(comboNames);
+            const {
+                action_status: respActionStatus,
+                action_type: respActionType,
+                currency: respCurrency,
+            } = response.data;
+            this.listActionStatus = respActionStatus;
+            this.listActionType = respActionType;
+            this.listCurrency = respCurrency;
         },
         getProviders(role = null) {
             const vm = this;
@@ -353,6 +430,9 @@ export default {
                     "Description is required"
                 ),
                 action_cost: Yup.string().required("Cost is required"),
+                status_id: Yup.string().required("Status is required"),
+                action_type_id: Yup.string().required("Type is required"),
+                currency_id: Yup.string().required("Currency is required"),
             };
             const schema = Yup.object().shape({
                 ...initialRules,

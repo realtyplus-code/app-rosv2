@@ -16,9 +16,8 @@ class IncidentAction extends Model
         'responsible_user_id',
         'responsible_user_type',
         'action_description',
-        'action_cost',
         'currency_id',
-        'cost',
+        'action_cost',
         'photo',
         'photo1',
         'photo2',
@@ -53,7 +52,7 @@ class IncidentAction extends Model
 
     public function getActionDateAttribute($value)
     {
-        return Carbon::parse($value)->format('Y-m-d');
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
     public function getPhotoAttribute($value)

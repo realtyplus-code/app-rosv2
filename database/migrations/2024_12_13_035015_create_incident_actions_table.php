@@ -14,13 +14,12 @@ return new class extends Migration
         Schema::create('incident_actions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('incident_id');
-            $table->date('action_date');
+            $table->dateTime('action_date');
             $table->unsignedBigInteger('responsible_user_id');
             $table->string('responsible_user_type');
             $table->string('action_description', 1000)->nullable();
             $table->decimal('action_cost', 10, 2);
             $table->unsignedInteger('currency_id');
-            $table->decimal('cost', 10, 2);
             $table->string('photo')->nullable();
             $table->string('photo1')->nullable();
             $table->string('photo2')->nullable();

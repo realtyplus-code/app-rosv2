@@ -88,6 +88,8 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <DatePicker
+                        showIcon
+                        fluid
                         id="start_date"
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.start_date }"
@@ -104,6 +106,8 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <DatePicker
+                        showIcon
+                        fluid
                         id="end_date"
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.end_date }"

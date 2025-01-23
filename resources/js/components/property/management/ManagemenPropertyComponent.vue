@@ -171,6 +171,8 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <DatePicker
+                        showIcon
+                        fluid
                         id="expected_end_date_ros"
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.expected_end_date_ros }"

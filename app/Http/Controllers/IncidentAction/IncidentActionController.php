@@ -62,6 +62,14 @@ class IncidentActionController extends Controller
                     'incident_actions.document1',
                     'incident_actions.created_at',
                     'incident_actions.updated_at',
+                    'eat.id as action_type_id',
+                    'eat.name as action_type_name',
+                    'es.id as status_id',
+                    'es.name as status_name',
+                    'ec.id as currency_id',
+                    'ec.name as currency_name',
+                    'user_log.id as log_user_id',
+                    'user_log.name as log_user_name',
                 ]
             );
         } catch (\Exception $ex) {

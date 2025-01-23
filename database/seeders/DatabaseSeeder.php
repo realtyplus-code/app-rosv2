@@ -29,5 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call(Configuration\CoreMasterComboInsuranceTypeSeeder::class);
         $this->call(Configuration\CoreMasterComboLenguajeSeeder::class);
         $this->call(Configuration\CoreMasterComboCurrencySeeder::class);
+        $this->call(Configuration\CoreMasterComboActionTypeSeeder::class);
+        $this->call(Configuration\CoreMasterComboActionStatusSeeder::class);
     }
 }

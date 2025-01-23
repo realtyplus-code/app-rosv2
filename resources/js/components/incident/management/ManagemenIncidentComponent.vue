@@ -89,6 +89,8 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <DatePicker
+                        showIcon
+                        fluid
                         id="report_date"
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.report_date }"
@@ -285,7 +287,7 @@ export default {
                 status_id: null,
                 incident_type_id: null,
                 priority_id: null,
-                currency_id : null,
+                currency_id: null,
                 providers: [],
                 cost: null,
                 payer_id: null,

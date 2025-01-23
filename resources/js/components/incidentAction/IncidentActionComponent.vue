@@ -70,8 +70,81 @@
                     </template>
                 </Column>
                 <Column
+                    field="responsible_type"
+                    header="Responsible By"
+                    sortable
+                    style="min-width: 180px"
+                >
+                    <template #body="{ data }">
+                        <span v-if="data.user_name">{{ data.user_name }}</span>
+                        <span v-else-if="data.provider_name">{{
+                            data.provider_name
+                        }}</span>
+                        <span v-else>No Responsible</span>
+                    </template>
+                </Column>
+                <Column
+                    field="log_user_name"
+                    header="Reporty By"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.log_user_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by user"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="currency_name"
+                    header="Cost"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.currency_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by cost"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="action_cost"
+                    header="Cost"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{
+                            this.$formatCurrency(
+                                data.action_cost,
+                                data.currency_name
+                            )
+                        }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by cost"
+                        />
+                    </template>
+                </Column>
+                <Column
                     field="action_date"
-                    header="Action Date"
+                    header="Report Date"
                     sortable
                     style="min-width: 150px"
                 >
@@ -88,35 +161,38 @@
                     </template>
                 </Column>
                 <Column
-                    field="responsible_type"
-                    header="Responsible by"
-                    sortable
-                    style="min-width: 180px"
-                >
-                    <template #body="{ data }">
-                        <span v-if="data.user_name">{{ data.user_name }}</span>
-                        <span v-else-if="data.provider_name">{{
-                            data.provider_name
-                        }}</span>
-                        <span v-else>No Responsible</span>
-                    </template>
-                </Column>
-
-                <Column
-                    field="action_cost"
-                    header="Cost"
+                    field="action_type_name"
+                    header="Action"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ this.$formatCurrency(data.action_cost, "EUR") }}
+                        {{ data.action_type_name }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by cost"
+                            placeholder="Search by action"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="status_name"
+                    header="Status"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.status_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by status"
                         />
                     </template>
                 </Column>
@@ -203,6 +279,7 @@
         v-if="dialogVisiblePdf"
         :dialogVisible="dialogVisiblePdf"
         :selectedRegister="selectedIncident"
+        :limit="2"
         @hidden="hidden"
         @uploadFiles="uploadFiles"
         @deletePdf="deletePdf"
@@ -274,6 +351,30 @@ export default {
                     ],
                 },
                 action_cost: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                currency_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                action_type_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                status_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                log_user_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },

@@ -93,7 +93,7 @@ export default {
                     return selector;
             }
         },
-        
+
         $relationTableIncident(selector) {
             switch (selector) {
                 case "description":
@@ -126,6 +126,14 @@ export default {
                     return "users.name";
                 case "provider_name":
                     return "providers.name";
+                case "currency_name":
+                    return "ec.name";
+                case "status_name":
+                    return "es.name";
+                case "action_type_name":
+                    return "eat.name";
+                case "log_user_name":
+                    return "user_log.name";
                 default:
                     return selector;
             }
