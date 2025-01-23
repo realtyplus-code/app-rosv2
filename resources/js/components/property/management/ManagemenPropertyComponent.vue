@@ -358,7 +358,7 @@ export default {
                 this.formProperty.tenants = currentTenantsName.map(
                     (tenat) => tenat.id
                 );
-                this.formProperty.expected_end_date_ros = this.selectedProperty.expected_end_date_ros;
+                this.setDate();
                 this.setPhotos();
                 if (this.selectedProperty.country_id) {
                     await this.onChangeCountry(
@@ -436,7 +436,9 @@ export default {
                 country: Yup.string().required("Country is required"),
                 state: Yup.string().required("State is required"),
                 city: Yup.string().required("City is required"),
-                expected_end_date_ros: Yup.date().required("Expected end date is required"),
+                expected_end_date_ros: Yup.date().required(
+                    "Expected end date is required"
+                ),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -584,6 +586,14 @@ export default {
             });
             this.formProperty.photos = this.formProperty.photos.filter(
                 (photo) => photo !== null
+            );
+        },
+        setDate() {
+            this.formProperty.expected_end_date_ros = new Date(
+                this.selectedProperty.expected_end_date_ros
+            );
+            this.formProperty.expected_end_date_ros.setDate(
+                this.formProperty.expected_end_date_ros.getDate() + 1
             );
         },
         onFileUpload() {

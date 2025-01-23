@@ -168,10 +168,17 @@ class PropertyController extends Controller
             'Name',
             'Address',
             'Status',
+            'Country',
+            'State',
+            'City',
             'Property Type Name',
+            'Created At',
+            'Expected End Date ROS',
+            'Log User Name',
             'Owners Name',
             'Tenants Name',
-            'Insurances'
+            'Insurances',
+            'Incidents'
         ], $this->getDataToExport($request), [], ''), "User_{$currentDate}.xlsx",);
     }
 
@@ -179,7 +186,8 @@ class PropertyController extends Controller
     {
         try {
             $data = $this->getDataToExport($request);
-            $pdf = \PDF::loadView('exports.properties', ['data' => $data]);
+            $pdf = \PDF::loadView('exports.properties', ['data' => $data])
+                ->setPaper('A4', 'landscape');
             $currentDate = Carbon::now()->format('Y-m-d H:i:s');
             return $pdf->download("User_{$currentDate}.pdf");
         } catch (\Exception $ex) {
@@ -200,10 +208,17 @@ class PropertyController extends Controller
                 'properties.name',
                 'properties.address',
                 'properties.status',
+                'ec.name as country',
+                'es.name as state',
+                'eci.name as city',
                 'eo_property_type.name as property_type_name',
+                'properties.created_at',
+                'properties.expected_end_date_ros',
+                'users.name as log_user_name',
                 DB::raw('GROUP_CONCAT(user_owner.name ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                 DB::raw('GROUP_CONCAT(user_tenant.name ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                DB::raw('COUNT(DISTINCT insurances.id) as insurances')
+                DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
+                DB::raw('COUNT(DISTINCT incidents.id) as incidents')
             ]
         );
     }
