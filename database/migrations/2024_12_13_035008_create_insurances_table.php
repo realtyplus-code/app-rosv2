@@ -29,7 +29,7 @@ return new class extends Migration
             $table->integer('renewal_months');
             $table->string('policy_number');
             $table->decimal('policy_amount', 10, 2);
-            $table->string('document');
+            $table->string('document')->nullable();
             $table->timestamps();
 
             $table->foreign('property_id')->references('id')->on('properties');

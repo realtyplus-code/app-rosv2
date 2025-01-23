@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
-use App\Http\Requests\User\ValidatePdfRequest;
+use App\Http\Requests\Property\ValidatePdfRequest;
 use App\Http\Requests\Property\StorePropertyRequest;
 use App\Http\Requests\Property\ValidatePhotoRequest;
 use App\Http\Requests\Property\UpdatePropertyRequest;

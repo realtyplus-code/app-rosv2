@@ -70,6 +70,42 @@
                     </template>
                 </Column>
                 <Column
+                    field="policy_amount"
+                    header="Policy amount"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.policy_amount }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by amount"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="renewal_months"
+                    header="Renewal monthsr"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.renewal_months }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by renewal months"
+                        />
+                    </template>
+                </Column>
+                <Column
                     field="start_date"
                     header="Start Date"
                     sortable
@@ -137,8 +173,18 @@
                             v-model="filterModel.value"
                             type="text"
                             class="p-column-filter"
-                            placeholder="Search by property_name"
+                            placeholder="Search by property"
                         />
+                    </template>
+                </Column>
+                <Column
+                    field="renewal_indicator"
+                    header="Renewal indicator"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.renewal_indicator }}
                     </template>
                 </Column>
                 <Column
@@ -289,6 +335,16 @@
                                 "
                                 @click="editInsurance(slotProps.data)"
                             />
+                            <Button
+                                icon="pi pi-upload"
+                                class="p-button-rounded p-button-success"
+                                style="
+                                    margin: 5px;
+                                    background-color: #28a745;
+                                    border-color: #28a745;
+                                "
+                                @click="uploadPdfIncidentAction(slotProps.data)"
+                            />
                         </div>
                     </template>
                 </Column>
@@ -304,12 +360,22 @@
         @hidden="hiddenInsurance"
         @reload="reload"
     />
+    <UploadPdfModalComponent
+        v-if="dialogVisiblePdf"
+        :dialogVisible="dialogVisiblePdf"
+        :selectedRegister="selectedInsurance"
+        :limit="1"
+        @hidden="hidden"
+        @uploadFiles="uploadFiles"
+        @deletePdf="deletePdf"
+    />
 </template>
 
 <script>
 // Importar Librerias o Modulos
 
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
+import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenInsuranceComponent from "./management/ManagemenInsuranceComponent.vue";
 
 export default {
@@ -334,12 +400,14 @@ export default {
                 { value: "Inactive", id: 2 },
             ],
             galleryKey: 0,
+            dialogVisiblePdf: false
         };
     },
     components: {
         FilterMatchMode,
         FilterOperator,
         ManagemenInsuranceComponent,
+        UploadPdfModalComponent
     },
     created() {
         this.initFilters();
@@ -423,6 +491,18 @@ export default {
                     ],
                 },
                 updated_at: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                renewal_months: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                policy_amount: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -528,6 +608,7 @@ export default {
         },
         hidden(status) {
             this.dialogVisibleInsurance = status;
+            this.dialogVisiblePdf = status;
         },
         hiddenInsurance(status) {
             this.dialogVisibleInsurance = status;
@@ -535,6 +616,47 @@ export default {
         viewInsurance(id) {
             this.selectedInsuranceId = id;
             this.dialogVisibleInsurance = true;
+        },
+        uploadPdfIncidentAction(item) {
+            this.selectedInsurance = item;
+            this.dialogVisiblePdf = true;
+        },
+        async uploadFiles(pdfs) {
+            if (pdfs.length === 0) {
+                this.$alertWarning("No files selected for upload");
+                return;
+            }
+            const data = {
+                insurance_id: this.selectedInsurance.id,
+                pdfs: pdfs,
+            };
+            this.$axios
+                .post("/insurances/document/add", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then(() => {
+                    this.$alertSuccess("Files uploaded successfully");
+                    this.fetchInsurance();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
+        },
+        deletePdf(pdfField) {
+            this.$axios
+                .post(`/insurances/document/delete`, {
+                    insurance_id: this.selectedInsurance.id,
+                    type: pdfField,
+                })
+                .then(() => {
+                    this.$alertSuccess("File deleted successfully");
+                    this.fetchInsurance();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
         },
     },
 };

@@ -2,6 +2,7 @@
 
 namespace App\Services\Insurance;
 
+use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use App\Models\Insurance\Insurance;
 use Illuminate\Support\Facades\Log;
@@ -10,10 +11,13 @@ use App\Interfaces\Insurance\InsuranceRepositoryInterface;
 
 class InsuranceService
 {
+    protected $fileService;
     protected $insuranceRepository;
+    private $listDocuments = ['document'];
 
-    public function __construct(InsuranceRepositoryInterface $insuranceRepository)
+    public function __construct(InsuranceRepositoryInterface $insuranceRepository, FileService $fileService)
     {
+        $this->fileService = $fileService;
         $this->insuranceRepository = $insuranceRepository;
     }
 
@@ -77,6 +81,42 @@ class InsuranceService
     {
         try {
             return $this->insuranceRepository->findById($id);
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
+    }
+
+    public function addPdfInsurance($data)
+    {
+        $flagColumn = null;
+        $pdfs = $data['pdfs'];
+        $insurance = $this->insuranceRepository->findById($data['insurance_id']);
+        $columns = $this->listDocuments;
+        foreach ($pdfs as $key => $pdf) {
+            foreach ($columns as $column) {
+                if (empty($insurance->{$column})) {
+                    $insurance->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_insurance');
+                    $flagColumn = $insurance->{$column};
+                    $insurance->save();
+                    break;
+                }
+            }
+        }
+        return $flagColumn;
+    }
+
+    public function deletePdfInsurance($data)
+    {
+        try {
+            $insurance = $this->insuranceRepository->findById($data['insurance_id']);
+            if ($data['type'] == 'document') {
+                $this->fileService->deleteFile(cleanStorageUrl($insurance->document, '/storage_insurance/'), 'disk_insurance');
+                $insurance->document = null;
+            }
+            $insurance->save();
+            return $insurance;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

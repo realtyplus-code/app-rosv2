@@ -5,6 +5,7 @@ namespace App\Models\Insurance;
 use Carbon\Carbon;
 use App\Models\Property\Property;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Insurance extends Model
 {
@@ -73,5 +74,17 @@ class Insurance extends Model
     public function getUpdatedAtAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function setRenewalIndicatorAttribute($value)
+    {
+        $this->attributes['renewal_indicator'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    public function getDocumentAttribute($value)
+    {
+        if ($value) {
+            return Storage::disk('disk_insurance')->url($value);
+        }
     }
 }

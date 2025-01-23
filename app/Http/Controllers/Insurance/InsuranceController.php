@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Insurance\InsuranceService;
+use App\Http\Requests\Insurance\ValidatePdfRequest;
 use App\Http\Requests\Insurance\StoreInsuranceRequest;
 use App\Http\Controllers\ResponseController as Response;
 
@@ -59,6 +60,10 @@ class InsuranceController extends Controller
                     'e_ct.id as insurance_id',
                     'insurances.created_at',
                     'insurances.updated_at',
+                    'insurances.renewal_indicator',
+                    'insurances.renewal_months',
+                    'insurances.policy_amount',
+                    'insurances.document',
                 ]
             );
         } catch (\Exception $ex) {
@@ -108,6 +113,30 @@ class InsuranceController extends Controller
     {
         try {
             $this->insuranceService->deleteInsurance($id);
+            return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function addPdf(ValidatePdfRequest $request)
+    {
+        try {
+            $pdf = $this->insuranceService->addPdfInsurance($request->all());
+            return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function destroyPdf(Request $request)
+    {
+        try {
+            $this->insuranceService->deletePdfInsurance($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

@@ -83,10 +83,17 @@ export default {
                     return "insurances.created_at";
                 case "updated_at":
                     return "insurances.updated_at";
+                case "policy_amount":
+                    return "insurances.policy_amount";
+                case "renewal_months":
+                    return "insurances.renewal_months";
+                case "renewal_date":
+                    return "insurances.renewal_date";
                 default:
                     return selector;
             }
         },
+        
         $relationTableIncident(selector) {
             switch (selector) {
                 case "description":

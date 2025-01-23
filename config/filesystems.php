@@ -85,6 +85,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'disk_insurance' => [
+            'driver' => 'local',
+            'root' => storage_path('app/storage_insurance'),
+            'url' => env('APP_URL') . '/storage_insurance',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*
@@ -104,6 +111,7 @@ return [
         public_path('storage_user') => storage_path('app/storage_user'),
         public_path('storage_incident') => storage_path('app/storage_incident'),
         public_path('storage_incident_action') => storage_path('app/storage_incident_action'),
+        public_path('storage_insurance') => storage_path('app/storage_insurance'),
     ],
 
 ];

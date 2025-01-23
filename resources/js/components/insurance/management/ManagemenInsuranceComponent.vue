@@ -43,10 +43,44 @@
                         v-model="formInsurance.policy_number"
                         @input="clearError('policy_number')"
                     />
-                    <label for="policy_number">Policy</label>
+                    <label for="policy_number">Policy number</label>
                 </FloatLabel>
                 <small v-if="errors.policy_number" class="p-error">{{
                     errors.policy_number
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputNumber
+                        id="policy_amount"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.policy_amount }"
+                        v-model="formInsurance.policy_amount"
+                        @input="clearError('policy_amount')"
+                        :min="0"
+                    />
+                    <label for="policy_amount">Policy amount</label>
+                </FloatLabel>
+                <small v-if="errors.policy_amount" class="p-error">{{
+                    errors.policy_amount
+                }}</small>
+            </div>
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputNumber
+                        id="renewal_months"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.renewal_months }"
+                        v-model="formInsurance.renewal_months"
+                        @input="clearError('renewal_months')"
+                        :min="0"
+                    />
+                    <label for="renewal_months">Renewal months</label>
+                </FloatLabel>
+                <small v-if="errors.renewal_months" class="p-error">{{
+                    errors.renewal_months
                 }}</small>
             </div>
         </div>
@@ -99,6 +133,19 @@
                 <small v-if="errors.insurance_type_id" class="p-error">{{
                     errors.insurance_type_id
                 }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <ToggleButton
+                    v-model="formInsurance.renewal_indicator"
+                    onLabel="Keep Safe"
+                    offLabel="Discard Insurance"
+                    onIcon="pi pi-lock"
+                    offIcon="pi pi-lock-open"
+                    class="w-36"
+                    aria-label="Do you confirm"
+                />
             </div>
         </div>
         <hr />
@@ -238,6 +285,9 @@ export default {
                 insurance_type_id: null,
                 country: null,
                 policy_number: null,
+                renewal_indicator: true,
+                renewal_months: 0,
+                policy_amount: null,
             },
             errors: {},
             listInsuranceType: [],
@@ -276,6 +326,12 @@ export default {
                     this.selectedInsurance.code_country;
                 this.formInsurance.code_number =
                     this.selectedInsurance.code_number;
+                this.formInsurance.renewal_months =
+                    this.selectedInsurance.renewal_months;
+                this.formInsurance.policy_amount =
+                    this.selectedInsurance.policy_amount;
+                this.formInsurance.renewal_indicator =
+                    this.selectedInsurance.renewal_indicator;
             }
             const phoneInputField = document.querySelector("#countryPhone");
             if (!phoneInputField) {
@@ -343,6 +399,12 @@ export default {
                     "Policy number is required"
                 ),
                 country: Yup.string().required("Country is required"),
+                renewal_months: Yup.string().required(
+                    "Renewal months is required"
+                ),
+                policy_amount: Yup.string().required(
+                    "Policy amount is required"
+                ),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
