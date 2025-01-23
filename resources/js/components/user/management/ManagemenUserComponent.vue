@@ -88,8 +88,11 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form mt-4" v-if="!this.selectedUser">
-            <div class="custom-form-column">
+        <div class="custom-form-column mt-4" v-if="!this.selectedUser">
+            <InputGroup>
+                <InputGroupAddon>
+                    <Button icon="pi pi-key" @click="generateRandomPassword" />
+                </InputGroupAddon>
                 <FloatLabel>
                     <Password
                         id="password"
@@ -100,15 +103,10 @@
                     />
                     <label for="password">Password</label>
                 </FloatLabel>
-                <small v-if="errors.password" class="p-error">{{
-                    errors.password
-                }}</small>
-                <Button
-                    icon="pi pi-key"
-                    class="mt-2"
-                    @click="generateRandomPassword"
-                />
-            </div>
+            </InputGroup>
+            <small v-if="errors.password" class="p-error">{{
+                errors.password
+            }}</small>
         </div>
         <div class="custom-form mt-4">
             <div class="custom-form-column" style="margin-top: 12px">
@@ -434,7 +432,8 @@ export default {
             }
             const comboNames = ["country", "language"];
             const response = await this.$getEnumsOptions(comboNames);
-            const { country: responsCountry, language: responsLenguaje } = response.data;
+            const { country: responsCountry, language: responsLenguaje } =
+                response.data;
             this.listCountry = responsCountry;
             this.listLenguage = responsLenguaje;
         },

@@ -31,6 +31,8 @@ import Textarea from "primevue/textarea";
 import InputNumber from "primevue/inputnumber";
 import Password from "primevue/password";
 import ToggleButton from "primevue/togglebutton";
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 
 const i18n = createI18n({
     locale: "es", // Idioma predeterminado
@@ -118,6 +120,8 @@ app.component("InputNumber", InputNumber);
 app.component("Password", Password);
 app.component("VueDraggableNext", VueDraggableNext);
 app.component("ToggleButton", ToggleButton);
+app.component("InputGroup", InputGroup);
+app.component("InputGroupAddon", InputGroupAddon);
 
 // Registrar funciones compartidas
 app.mixin(shared.AlertsComponent);

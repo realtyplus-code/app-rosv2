@@ -20,7 +20,7 @@ class UpdateProviderRequest extends FormRequest
             'contact_phone' => 'required|string|max:20',
             'code_number' => 'required|string|max:10',
             'code_country' => 'required|string|max:10',
-            'contact_email' => 'required|email|max:255',
+            'email' => 'required|email|max:255',
             'service_cost' => 'required|numeric|max:99999999',
             'status' => 'required|boolean',
         ];
@@ -35,7 +35,7 @@ class UpdateProviderRequest extends FormRequest
             'contact_phone.required' => 'The contact phone is required.',
             'code_number.required' => 'The code number is required.',
             'code_country.required' => 'The country code is required.',
-            'contact_email.required' => 'The contact email is required.',
+            'email.required' => 'The contact email is required.',
             'service_cost.required' => 'The service cost is required.',
             'service_cost.numeric' => 'The service cost must be a number.',
             'service_cost.max' => 'The service cost may not be greater than 99999999.',

@@ -7,17 +7,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Provider extends Authenticatable
 {
     protected $fillable = [
-        'user',
-        'email',
-        'password',
-        'name',
+        'user',//ok
+        'email',//ok
+        'password',//ok
+        'name',//ok
         'country',
         'state',
         'city',
-        'address',
-        'phone',
-        'code_number',
-        'code_country',
+        'address',//ok
+        'phone',//ok
+        'code_number',//ok
+        'code_country',//ok
         'language_id',
         'coverage_area',
         'website',

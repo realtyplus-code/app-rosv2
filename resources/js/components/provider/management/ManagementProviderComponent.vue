@@ -33,7 +33,47 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form mt-4">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputText
+                        id="user"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.user }"
+                        v-model="formProvider.user"
+                        @input="clearError('user')"
+                    />
+                    <label for="user">User</label>
+                </FloatLabel>
+                <small v-if="errors.user" class="p-error">{{
+                    errors.user
+                }}</small>
+            </div>
+            <div class="custom-form-column">
+                <InputGroup>
+                    <InputGroupAddon>
+                        <Button
+                            icon="pi pi-key"
+                            @click="generateRandomPassword"
+                        />
+                    </InputGroupAddon>
+                    <FloatLabel>
+                        <Password
+                            id="password"
+                            :class="{ 'p-invalid': errors.password }"
+                            v-model="formProvider.password"
+                            @input="clearError('password')"
+                            toggleMask
+                        />
+                        <label for="password">Password</label>
+                    </FloatLabel>
+                </InputGroup>
+                <small v-if="errors.password" class="p-error">{{
+                    errors.password
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form" style="margin-top: 20px">
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
@@ -87,16 +127,33 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
-                        id="contact_email"
+                        id="email"
                         class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.contact_email }"
-                        v-model="formProvider.contact_email"
-                        @input="clearError('contact_email')"
+                        :class="{ 'p-invalid': errors.email }"
+                        v-model="formProvider.email"
+                        @input="clearError('email')"
                     />
-                    <label for="contact_email">Contact Email</label>
+                    <label for="email">Contact Email</label>
                 </FloatLabel>
-                <small v-if="errors.contact_email" class="p-error">{{
-                    errors.contact_email
+                <small v-if="errors.email" class="p-error">{{
+                    errors.email
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputText
+                        id="website"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.website }"
+                        v-model="formProvider.website"
+                        @input="clearError('website')"
+                    />
+                    <label for="website">Website</label>
+                </FloatLabel>
+                <small v-if="errors.website" class="p-error">{{
+                    errors.website
                 }}</small>
             </div>
         </div>
@@ -137,6 +194,21 @@
             </div>
         </div>
         <div class="custom-form">
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listLanguages"
+                    v-model="formProvider.language_id"
+                    placeholder="Select language"
+                    :class="{ 'p-invalid': errors.language_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.language_id" class="p-error">{{
+                    errors.language_id
+                }}</small>
+            </div>
             <div class="custom-form-column">
                 <Select
                     filter
@@ -199,10 +271,13 @@ export default {
                 contact_phone: null,
                 code_number: null,
                 code_country: null,
-                contact_email: null,
+                email: null,
                 service_cost: null,
                 status: null,
                 providers: [],
+                password: null, // nuevo campo
+                language_id: null, // nuevo campo
+                website: null, // nuevo campo
             },
             errors: {},
             listStatus: [],
@@ -210,6 +285,7 @@ export default {
             isLoad: false,
             limitPrivders: 10,
             listTypeProvider: [],
+            listLanguages: [], // nuevo campo
         };
     },
     components: {},
@@ -226,8 +302,8 @@ export default {
                     this.selectedProvider.coverage_area;
                 this.formProvider.contact_phone =
                     this.selectedProvider.contact_phone;
-                this.formProvider.contact_email =
-                    this.selectedProvider.contact_email;
+                this.formProvider.email =
+                    this.selectedProvider.email;
                 this.formProvider.service_cost =
                     this.selectedProvider.service_cost;
                 this.formProvider.status = this.selectedProvider.status;
@@ -263,10 +339,14 @@ export default {
                 { id: 1, name: "active" },
                 { id: 2, name: "inactive" },
             ];
-            const comboNames = ["provider_type"];
+            const comboNames = ["provider_type", "language"];
             const response = await this.$getEnumsOptions(comboNames);
-            const { provider_type: responProviderType } = response.data;
+            const {
+                provider_type: responProviderType,
+                language: responLanguages,
+            } = response.data;
             this.listTypeProvider = responProviderType;
+            this.listLanguages = responLanguages;
         },
         async validateForm() {
             let initialRules = {
@@ -278,10 +358,16 @@ export default {
                 contact_phone: Yup.string().required(
                     "Contact phone is required"
                 ),
-                contact_email: Yup.string()
+                email: Yup.string()
                     .email("The email format is not valid")
                     .required("Contact email is required"),
                 service_cost: Yup.number().required("Service cost is required"),
+                password: Yup.string().required("Password is required"), // nuevo campo
+                language_id: Yup.number().required("Language is required"), // nuevo campo
+                website: Yup.string()
+                    .url("The website format is not valid")
+                    .required("Website is required"), // nuevo campo
+                status: Yup.number().required("Status is required"), // nuevo campo
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -340,7 +426,6 @@ export default {
             let tmpFormatCountry = null;
             const isValid = await this.validateForm();
             const countryData = this.phoneInput.getSelectedCountryData();
-            console.log(this.errors);
             if (!countryData.dialCode || countryData.dialCode == undefined) {
                 this.isLoad = false;
                 return this.$alertWarning("select first country phone");
@@ -380,6 +465,17 @@ export default {
         handleDialogClose() {
             this.visible = false;
             this.$emit("hidden", this.visible);
+        },
+        generateRandomPassword() {
+            const chars =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&*";
+            let password = "";
+            for (let i = 0; i < 12; i++) {
+                password += chars.charAt(
+                    Math.floor(Math.random() * chars.length)
+                );
+            }
+            this.formProvider.password = password;
         },
     },
 };

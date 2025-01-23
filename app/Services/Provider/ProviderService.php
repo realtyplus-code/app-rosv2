@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\Provider\ProviderRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
-
+use Illuminate\Support\Facades\Hash;
 
 class ProviderService
 {
@@ -50,6 +50,8 @@ class ProviderService
         DB::beginTransaction();
         try {
             $providers = $data['providers'];
+            $data['user_id'] = auth()->user()->id;
+            $data['password'] = Hash::make($data['password']);
             $provider = $this->providerRepository->create($data);
             foreach ($providers as $key => $value) {
                 $this->providerServiceRepository->create([
