@@ -106,6 +106,8 @@ export default {
                     return "eo_incident_type.name";
                 case "priority_name":
                     return "eo_priority.name";
+                case "currency_name":
+                    return "e_cur.name";
                 default:
                     return selector;
             }

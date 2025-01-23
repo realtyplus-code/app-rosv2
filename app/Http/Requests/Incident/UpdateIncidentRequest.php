@@ -22,6 +22,7 @@ class UpdateIncidentRequest extends FormRequest
             'priority_id' => 'required|exists:enum_options,id',
             'cost' => 'required|numeric',
             'payer_id' => 'required|exists:enum_options,id',
+            'currency_id' => 'required|integer|min:1',
         ];
     }
 
@@ -39,6 +40,9 @@ class UpdateIncidentRequest extends FormRequest
             'priority_id.required' => 'The priority field is required.',
             'cost.required' => 'The cost field is required.',
             'payer_id.required' => 'The payer field is required.',
+            'currency_id.required' => 'The currency field is required.',
+            'currency_id.integer' => 'The currency must be an integer.',
+            'currency_id.min' => 'The currency must be at least 1.',
         ];
     }
 }

@@ -38,6 +38,7 @@ class IncidentService
             ->leftJoin('enum_options as e_st', 'e_st.id', '=', 'incidents.status_id')
             ->leftJoin('enum_options as e_sev', 'e_sev.id', '=', 'incidents.priority_id')
             ->leftJoin('enum_options as e_py', 'e_py.id', '=', 'incidents.payer_id')
+            ->leftJoin('enum_options as e_cur', 'e_cur.id', '=', 'incidents.currency_id')
             ->leftJoin('users', 'users.id', '=', 'incidents.reported_by')
             ->groupBy(
                 [
@@ -56,6 +57,8 @@ class IncidentService
                     'e_ct.name',
                     'e_py.id',
                     'e_py.name',
+                    'e_cur.id',
+                    'e_cur.name',
                     'incidents.cost',
                     'incidents.photo',
                     'incidents.photo1',
@@ -297,7 +300,7 @@ class IncidentService
     {
         try {
             $incident = $this->incidentRepository->findById($data['incident_id']);
-            if ($data['type'] == 'pdf') {
+            if ($data['type'] == 'document') {
                 $this->fileService->deleteFile(cleanStorageUrl($incident->document, '/storage_incident/'), 'disk_incident');
                 $incident->document = null;
             } else {

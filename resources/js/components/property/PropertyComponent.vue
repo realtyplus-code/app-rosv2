@@ -373,7 +373,7 @@
                 <!-- Actions Column -->
                 <Column
                     header="Actions"
-                    style="min-width: 120px; text-align: center"
+                    style="min-width: 180px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -386,6 +386,26 @@
                                     border-color: #f76f31;
                                 "
                                 @click="editProperty(slotProps.data)"
+                            />
+                            <Button
+                                icon="pi pi-trash"
+                                class="p-button-rounded p-button-danger"
+                                style="
+                                    margin: 5px;
+                                    background-color: #db6464;
+                                    border-color: #db6464;
+                                "
+                                @click="deleteProperty(slotProps.data.id)"
+                            />
+                            <Button
+                                icon="pi pi-upload"
+                                class="p-button-rounded p-button-success"
+                                style="
+                                    margin: 5px;
+                                    background-color: #28a745;
+                                    border-color: #28a745;
+                                "
+                                @click="uploadPdfIncidentAction(slotProps.data)"
                             />
                             <Button
                                 icon="pi pi-shield"
@@ -408,26 +428,6 @@
                                 "
                                 @click="viewIncident(slotProps.data.id)"
                                 title="Incidents"
-                            />
-                            <Button
-                                icon="pi pi-trash"
-                                class="p-button-rounded p-button-danger"
-                                style="
-                                    margin: 5px;
-                                    background-color: #db6464;
-                                    border-color: #db6464;
-                                "
-                                @click="deleteProperty(slotProps.data.id)"
-                            />
-                            <Button
-                                icon="pi pi-upload"
-                                class="p-button-rounded p-button-success"
-                                style="
-                                    margin: 5px;
-                                    background-color: #28a745;
-                                    border-color: #28a745;
-                                "
-                                @click="uploadPdfIncidentAction(slotProps.data)"
                             />
                         </div>
                     </template>
@@ -503,7 +503,7 @@ export default {
                 { value: "Inactive", id: 2 },
             ],
             galleryKey: 0,
-            dialogVisiblePdf: false
+            dialogVisiblePdf: false,
         };
     },
     components: {

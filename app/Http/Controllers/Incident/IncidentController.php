@@ -63,6 +63,8 @@ class IncidentController extends Controller
                     'e_ct.name as type_name',
                     'e_py.id as payer_id',
                     'e_py.name as payer_name',
+                    'e_cur.id as currency_id',
+                    'e_cur.name as currency_name',
                     'incidents.cost',
                     'incidents.photo',
                     'incidents.photo1',

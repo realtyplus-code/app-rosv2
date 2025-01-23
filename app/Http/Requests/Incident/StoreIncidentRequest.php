@@ -26,6 +26,7 @@ class StoreIncidentRequest extends FormRequest
             'photo.*' => 'nullable|string|max:' . config('app.upload_max_filesize'),
             'pdf' => 'nullable|array',
             'pdf.*' => 'nullable|string|max:' . config('app.upload_max_filesize'),
+            'currency_id' => 'required|integer|min:1',
         ];
     }
 
@@ -49,6 +50,9 @@ class StoreIncidentRequest extends FormRequest
             'pdf.array' => 'The pdf field must be an array.',
             'pdf.*.string' => 'Each pdf must be a string.',
             'pdf.*.max' => 'Each pdf may not be greater than :max kilobytes.',
+            'currency_id.required' => 'The currency field is required.',
+            'currency_id.integer' => 'The currency must be an integer.',
+            'currency_id.min' => 'The currency must be at least 1.',
         ];
     }
 }

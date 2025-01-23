@@ -180,13 +180,31 @@
                     </template>
                 </Column>
                 <Column
+                    field="currency_name"
+                    header="Type Currency"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.currency_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by currency"
+                        />
+                    </template>
+                </Column>
+                <Column
                     field="cost"
                     header="Cost"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ this.$formatCurrency(data.cost, "EUR") }}
+                        {{ this.$formatCurrency(data.cost, data.currency_name ?? 'USD') }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -339,6 +357,7 @@
         v-if="dialogVisiblePdf"
         :dialogVisible="dialogVisiblePdf"
         :selectedRegister="selectedIncident"
+        :limit="2"
         @hidden="hidden"
         @uploadFiles="uploadFiles"
         @deletePdf="deletePdf"
@@ -433,6 +452,12 @@ export default {
                     ],
                 },
                 priority_name: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                currency_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },

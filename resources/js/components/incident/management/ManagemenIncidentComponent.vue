@@ -56,6 +56,21 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listCurrency"
+                    v-model="formIncident.currency_id"
+                    placeholder="Select currency"
+                    :class="{ 'p-invalid': errors.currency_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.currency_id" class="p-error">{{
+                    errors.currency_id
+                }}</small>
+            </div>
+            <div class="custom-form-column">
                 <FloatLabel>
                     <InputNumber
                         id="cost"
@@ -270,6 +285,7 @@ export default {
                 status_id: null,
                 incident_type_id: null,
                 priority_id: null,
+                currency_id : null,
                 providers: [],
                 cost: null,
                 payer_id: null,
@@ -282,6 +298,7 @@ export default {
             listPayer: [],
             listOwners: [],
             listProviders: [],
+            listCurrency: [],
             isLoad: false,
             limitProviders: 10,
         };
@@ -309,6 +326,8 @@ export default {
                 this.formIncident.priority_id =
                     this.selectedIncident.priority_id;
                 this.formIncident.cost = this.selectedIncident.cost;
+                this.formIncident.currency_id =
+                    this.selectedIncident.currency_id;
                 this.formIncident.payer_id = this.selectedIncident.payer_id;
                 this.formIncident.property_id =
                     this.selectedIncident.property_id;
@@ -333,6 +352,7 @@ export default {
                 "priority",
                 "payer",
                 "incident_status",
+                "currency",
             ];
             const response = await this.$getEnumsOptions(comboNames);
             const {
@@ -340,11 +360,13 @@ export default {
                 priority: responPriority,
                 payer: responPayer,
                 incident_status: responStatus,
+                currency: responCurrency,
             } = response.data;
             this.listIncidentType = responIncidentType;
             this.listPriority = responPriority;
             this.listStatus = responStatus;
             this.listPayer = responPayer;
+            this.listCurrency = responCurrency;
             // obtenemos los usuarios
             const { data: provider } = await this.getProviders();
             this.listProviders = provider;
@@ -374,6 +396,7 @@ export default {
                 ),
                 priority_id: Yup.string().required("Priority is required"),
                 cost: Yup.number().required("Cost is required"),
+                currency_id: Yup.number().required("Currency is required"),
                 payer_id: Yup.string().required("Payer is required"),
                 report_date: Yup.string().required("Report date is required"),
                 status_id: Yup.string().required("Status is required"),

@@ -15,35 +15,63 @@
                 :key="index"
                 class="custom-form-column custom-pdf-column"
             >
-                 <div v-if="selectedRegister && selectedRegister[`document${index === 1 ? '' : index}`]">
+                <div
+                    v-if="
+                        selectedRegister &&
+                        selectedRegister[
+                            `document${index === 1 ? '' : index - 1}`
+                        ]
+                    "
+                >
                     <h4>PDF {{ index }}</h4>
                     <Button
                         icon="pi pi-eye"
-                        @click="viewPdf(selectedRegister[`document${index === 1 ? '' : index}`])"
+                        @click="
+                            viewPdf(
+                                selectedRegister[
+                                    `document${index === 1 ? '' : index - 1}`
+                                ]
+                            )
+                        "
                         style="margin: 20px"
                     />
                     <Button
                         icon="pi pi-trash"
                         severity="danger"
-                        @click="confirmDelete(`document${index === 1 ? '' : index}`)"
+                        @click="
+                            confirmDelete(
+                                `document${index === 1 ? '' : index - 1}`
+                            )
+                        "
                     />
                 </div>
                 <div v-else>
                     <FileUpload
-                        :id="`uploadPdf${index === 1 ? '' : index}`"
-                        :ref="`fileUpload${index === 1 ? '' : index}`"
+                        :id="`uploadPdf${index === 1 ? '' : index - 1}`"
+                        :ref="`fileUpload${index === 1 ? '' : index - 1}`"
                         accept="application/pdf"
-                        :class="{ 'p-invalid': errors[`document${index === 1 ? '' : index}`] }"
-                        @change="onFileUpload(index === 1 ? '' : index)"
-                        @remove="onFileRemove(index === 1 ? '' : index)"
+                        :class="{
+                            'p-invalid':
+                                errors[
+                                    `document${index === 1 ? '' : index - 1}`
+                                ],
+                        }"
+                        @change="onFileUpload(index === 1 ? '' : index - 1)"
+                        @remove="onFileRemove(index === 1 ? '' : index - 1)"
+                        :multiple="false"
+                        :fileLimit="1"
                     >
                         <template #empty>
                             <p>Select PDF file {{ index }}</p>
                         </template>
                     </FileUpload>
-                    <small v-if="errors[`document${index === 1 ? '' : index}`]" class="p-error">{{
-                        errors[`document${index === 1 ? '' : index}`]
-                    }}</small>
+                    <small
+                        v-if="errors[`document${index === 1 ? '' : index - 1}`]"
+                        class="p-error"
+                        >{{
+                            errors[`document${index === 1 ? "" : index - 1}`]
+                        }}</small
+                    >
                 </div>
             </div>
         </div>
@@ -119,7 +147,9 @@ export default {
             if (isValid) {
                 const pdfFiles = [];
                 for (let i = 1; i <= this.limitDouments; i++) {
-                    pdfFiles.push(this.files[`document${i === 1 ? '' : i}`] || null);
+                    pdfFiles.push(
+                        this.files[`document${i === 1 ? "" : i - 1}`] || null
+                    );
                 }
                 this.$emit("uploadFiles", pdfFiles);
                 setTimeout(() => {
