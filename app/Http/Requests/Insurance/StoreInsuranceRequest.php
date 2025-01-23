@@ -36,7 +36,7 @@ class StoreInsuranceRequest extends FormRequest
             'code_country' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:255',
             'policy_number' => 'nullable|string|max:255',
-            'renewal_indicator' => 'nullable|boolean',
+            'renewal_indicator' => 'nullable|string',
             'renewal_months' => 'nullable|integer|min:1',
             'policy_amount' => 'nullable|numeric|min:0',
         ];
@@ -89,7 +89,7 @@ class StoreInsuranceRequest extends FormRequest
 
             'policy_number.string' => 'The policy number must be a valid string.',
             'policy_number.max' => 'The policy number may not be greater than 255 characters.',
-            'renewal_indicator.boolean' => 'The renewal indicator must be true or false.',
+            'renewal_indicator.string' => 'The renewal number must be a valid string.',
             'renewal_months.integer' => 'The renewal months must be an integer.',
             'renewal_months.min' => 'The renewal months must be at least 1.',
             'policy_amount.numeric' => 'The policy amount must be a number.',

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\Insurance\InsuranceService;
 use App\Http\Requests\Insurance\ValidatePdfRequest;
 use App\Http\Requests\Insurance\StoreInsuranceRequest;
+use App\Http\Requests\Insurance\UpdateInsuranceRequest;
 use App\Http\Controllers\ResponseController as Response;
 
 class InsuranceController extends Controller
@@ -97,7 +98,7 @@ class InsuranceController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateInsuranceRequest $request, $id)
     {
         try {
             $insurance = $this->insuranceService->updateInsurance($request->all(), $id);
