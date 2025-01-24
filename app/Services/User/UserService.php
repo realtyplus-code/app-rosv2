@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Interfaces\Role\RoleRepositoryInterface;
 use App\Interfaces\User\UserRepositoryInterface;
 use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -73,25 +74,30 @@ class UserService
         try {
             $photos = $data['photos'];
             unset($data['photos']);
+            $data['tmp_password'] = $data['password'];
+            $data['password'] = Hash::make($data['password']);
             $user = $this->userRepository->create($data);
             $role = $this->roleRepository->findById($data['role']);
             $this->assignedPhoto($user, $photos);
 
-            foreach ($data['ros_clients'] as $client) {
-                $this->userRelationRepository->create([
-                    'user_id_related' => $user['id'],
-                    'type' => 'CLIENT',
-                    'user_id' => $client
-                ]);
+            if(isset($data['ros_clients'])){
+                foreach ($data['ros_clients'] as $client) {
+                    $this->userRelationRepository->create([
+                        'user_id_related' => $user['id'],
+                        'type' => 'CLIENT',
+                        'user_id' => $client
+                    ]);
+                }
             }
-
+            
+            $senEmail = false;
             if ($role && $user) {
                 $user->assignRole($role);
                 if ($user->save()) {
-                    $this->sendEmail($user['email'], $user);
+                    $senEmail = $this->sendEmail($user['email'], $user, $data['tmp_password']);
                 }
             }
-            if (!empty($user) && $user->email && !$this->sendEmail($user['email'], $user)) {
+            if (!empty($user) && $user->email && !$senEmail) {
                 $this->unassignPhoto($user);
                 DB::rollBack();
                 return 'FALSE EMAIL';
@@ -106,7 +112,6 @@ class UserService
             throw $ex;
         }
     }
-
 
     public function updateUser(array $data, $id)
     {
@@ -175,9 +180,10 @@ class UserService
         $this->fileService->deleteFile(cleanStorageUrl($user->photo, '/storage_user/'), 'disk_user');
     }
 
-    private function sendEmail($to, $details)
+    private function sendEmail($to, $details, $tmp_password)
     {
         try {
+            $details['password'] = $tmp_password;
             Mail::to($to)->send(new UserMail($details));
             return true;
         } catch (\Exception $ex) {

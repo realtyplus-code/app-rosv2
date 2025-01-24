@@ -63,6 +63,45 @@
                         />
                     </template>
                 </Column>
+                <!-- User Column -->
+                <Column
+                    field="user"
+                    header="User"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.user }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by user"
+                        />
+                    </template>
+                </Column>
+                <!-- User Column -->
+                <Column
+                    field="language"
+                    header="Lenguage"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.language }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by language"
+                        />
+                    </template>
+                </Column>
                 <!-- Address Column -->
                 <Column
                     field="address"
@@ -101,6 +140,63 @@
                         />
                     </template>
                 </Column>
+                <Column
+                    field="country"
+                    header="Country"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.country }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by country"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="state"
+                    header="State"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.state }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by state"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="city"
+                    header="City"
+                    sortable
+                    :showClearButton="false"
+                    style="min-width: 100px"
+                >
+                    <template #body="{ data }">
+                        {{ data.city }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by city"
+                        />
+                    </template>
+                </Column>
                 <!-- contact phone Column -->
                 <Column
                     field="contact_phone"
@@ -127,13 +223,13 @@
                 </Column>
                 <!-- Contact Email Column -->
                 <Column
-                    field="contact_email"
+                    field="email"
                     header="Contact Email"
                     sortable
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.contact_email }}
+                        {{ data.email }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -163,6 +259,25 @@
                         />
                     </template>
                 </Column>
+                <!-- Reporty By Column -->
+                <Column
+                    field="log_user_name"
+                    header="Reporty By"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.log_user_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by user"
+                        />
+                    </template>
+                </Column>
                 <!-- Status Column -->
                 <Column
                     field="status"
@@ -184,8 +299,8 @@
                         />
                     </template>
                 </Column>
-                 <!-- Provider Name Column -->
-                 <Column
+                <!-- Provider Name Column -->
+                <Column
                     field="providers_name"
                     header="Services offered"
                     sortable
@@ -200,6 +315,63 @@
                                 class="size-tag"
                             />
                         </div>
+                    </template>
+                </Column>
+                <!-- Website Column -->
+                <Column
+                    field="website"
+                    header="Website"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        <a :href="data.website" target="_blank">{{ data.website }}</a>
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by website"
+                        />
+                    </template>
+                </Column>
+                <!-- Created At Column -->
+                <Column
+                    field="created_at"
+                    header="Created At"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.created_at }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by created_at"
+                        />
+                    </template>
+                </Column>
+                <!-- Updated At Column -->
+                <Column
+                    field="updated_at"
+                    header="Updated At"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.updated_at }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by updated_at"
+                        />
                     </template>
                 </Column>
                 <!-- Actions Column -->
@@ -294,6 +466,18 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
+                user: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                language: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
                 address: {
                     clear: false,
                     constraints: [
@@ -306,7 +490,25 @@ export default {
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
                     ],
                 },
-                contact_email: {
+                country: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                state: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                city: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                email: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -333,6 +535,24 @@ export default {
                         { value: null, matchMode: FilterMatchMode.EQUALS },
                     ],
                 },
+                website: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                created_at: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                updated_at: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
             };
         },
         clearFilters() {
@@ -356,7 +576,6 @@ export default {
             this.filtroInfo = [];
             for (const [key, filter] of Object.entries(event.filters)) {
                 if (filter.constraints) {
-                    console.log(filter.constraints);
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
                             this.filtroInfo.push([

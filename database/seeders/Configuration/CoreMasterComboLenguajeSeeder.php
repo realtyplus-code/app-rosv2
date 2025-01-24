@@ -22,15 +22,15 @@ class CoreMasterComboLenguajeSeeder extends Seeder
                 'status' => true,
                 'childrens' => [
                     [
-                        'name' => 'español',
+                        'name' => 'spanish',
                         'orden' => 0,
                     ],
                     [
-                        'name' => 'ingles',
+                        'name' => 'english',
                         'orden' => 1,
                     ],
                     [
-                        'name' => 'frances',
+                        'name' => 'french',
                         'orden' => 2,
                     ]
                 ],

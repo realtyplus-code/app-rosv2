@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->string('city')->nullable();
             $table->string('address');
-            $table->string('phone')->nullable();
+            $table->string('contact_phone')->nullable();
             $table->string('code_number')->nullable();
             $table->string('code_country')->nullable();
             $table->unsignedInteger('language_id');
@@ -31,9 +31,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('language_id')->references('id')->on('enum_options');
-            $table->string('contact_phone')->nullable();
-            $table->string('contact_email')->nullable();
-            $table->decimal('service_cost', 8, 2)->nullable();
+            $table->decimal('service_cost', 10, 2)->nullable();
             $table->timestamps();
         });
     }

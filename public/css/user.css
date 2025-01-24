@@ -8,6 +8,21 @@
     font-weight: bold;
 }
 
+.custom-form {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.custom-form-column {
+    flex: 1;
+    min-width: 200px;
+    border-color: #cbd5e1 !important;
+    border-left-color: #cbd5e1 !important;
+    border-right-color: #cbd5e1 !important;
+}
+
 .size-tags {
     display: flex;
     flex-wrap: wrap;

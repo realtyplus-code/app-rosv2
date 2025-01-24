@@ -39,7 +39,6 @@ class LoginController extends Controller
 
         // Intentar autenticación para proveedores
         if (Auth::guard('proveedores')->attempt($credentials)) {
-            return;
             $request->session()->regenerate();
             return redirect()->intended('/providers');
         }

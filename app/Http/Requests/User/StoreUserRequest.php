@@ -15,13 +15,13 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:3|max:255',
-            'user' => 'required|string|min:3|max:255|unique:users,user|unique:proveedores,user',
+            'user' => 'required|string|min:3|max:255|unique:users,user|unique:providers,user',
             'phone' => 'nullable|string|min:10|max:15',
             'code_number' => 'nullable|string|max:10',
             'code_country' => 'nullable|string|max:10',
             'photos' => 'nullable|array',
             'photos.*' => 'nullable|max:255|max:' . config('app.upload_max_filesize'),
-            'email' => 'required|string|email|max:255|unique:users,email|unique:proveedores,email',
+            'email' => 'required|string|email|max:255|unique:users,email|unique:providers,email',
             'country' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',

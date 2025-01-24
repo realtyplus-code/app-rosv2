@@ -148,12 +148,28 @@ export default {
                     return "providers.coverage_area";
                 case "contact_phone":
                     return "providers.contact_phone";
-                case "contact_email":
-                    return "providers.contact_email";
+                case "email":
+                    return "providers.email";
                 case "service_cost":
                     return "providers.service_cost";
                 case "status":
                     return "providers.status";
+                case "website":
+                    return "providers.website";
+                case "country":
+                    return "ec.name";
+                case "state":
+                    return "es.name";
+                case "city":
+                    return "eci.name";
+                case "created_at":
+                    return "providers.created_at";
+                case "updated_at":
+                    return "providers.updated_at";
+                case "user":
+                    return "providers.user";
+                case "language":
+                    return "el.name";
                 default:
                     return selector;
             }

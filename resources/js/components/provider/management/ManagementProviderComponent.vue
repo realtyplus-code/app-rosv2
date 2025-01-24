@@ -49,7 +49,7 @@
                     errors.user
                 }}</small>
             </div>
-            <div class="custom-form-column">
+            <div class="custom-form-column" v-if="!selectedProvider">
                 <InputGroup>
                     <InputGroupAddon>
                         <Button
@@ -73,7 +73,7 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form" style="margin-top: 20px">
+        <div class="custom-form" style="margin-top: 30px">
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
@@ -104,6 +104,53 @@
                 </FloatLabel>
                 <small v-if="errors.coverage_area" class="p-error">{{
                     errors.coverage_area
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column" style="margin-top: 10px">
+                <Select
+                    :options="listCountry"
+                    v-model="formProvider.country"
+                    placeholder="Select country"
+                    :class="{ 'p-invalid': errors.country }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeCountry(formProvider.country, true)"
+                />
+                <small v-if="errors.country" class="p-error">{{
+                    errors.country
+                }}</small>
+            </div>
+            <div class="custom-form-column" style="margin-top: 10px">
+                <Select
+                    :options="listState"
+                    v-model="formProvider.state"
+                    :placeholder="placeholderState"
+                    :class="{ 'p-invalid': errors.state }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @change="onChangeState(formProvider.state, true)"
+                />
+                <small v-if="errors.state" class="p-error">{{
+                    errors.state
+                }}</small>
+            </div>
+            <div class="custom-form-column" style="margin-top: 10px">
+                <Select
+                    :options="listCity"
+                    v-model="formProvider.city"
+                    :placeholder="placeholderCity"
+                    :class="{ 'p-invalid': errors.city }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+
+                <small v-if="errors.city" class="p-error">{{
+                    errors.city
                 }}</small>
             </div>
         </div>
@@ -181,7 +228,7 @@
                     :options="listTypeProvider"
                     v-model="formProvider.providers"
                     filter
-                    placeholder="Select providers"
+                    placeholder="Select services offered"
                     :class="{ 'p-invalid': errors.providers }"
                     :maxSelectedLabels="limitPrivders"
                     optionLabel="name"
@@ -192,8 +239,6 @@
                     errors.providers
                 }}</small>
             </div>
-        </div>
-        <div class="custom-form">
             <div class="custom-form-column">
                 <Select
                     filter
@@ -266,6 +311,7 @@ export default {
             formProvider: {
                 id: null,
                 name: null,
+                user: null,
                 address: null,
                 coverage_area: null,
                 contact_phone: null,
@@ -275,9 +321,12 @@ export default {
                 service_cost: null,
                 status: null,
                 providers: [],
-                password: null, // nuevo campo
-                language_id: null, // nuevo campo
-                website: null, // nuevo campo
+                password: null,
+                language_id: null,
+                website: null,
+                country: null,
+                state: null,
+                city: null,
             },
             errors: {},
             listStatus: [],
@@ -285,36 +334,18 @@ export default {
             isLoad: false,
             limitPrivders: 10,
             listTypeProvider: [],
-            listLanguages: [], // nuevo campo
+            listLanguages: [],
+            listCity: [],
+            listCountry: [],
+            listState: [],
+            placeholderCity: "Select the state first",
+            placeholderState: "Select the country first",
         };
     },
     components: {},
     mounted() {
-        this.$nextTick(() => {
-            if (this.selectedProvider) {
-                const currentTypeName = this.$parseTags(
-                    this.selectedProvider.providers_name
-                );
-                this.formProvider.id = this.selectedProvider.id;
-                this.formProvider.name = this.selectedProvider.name;
-                this.formProvider.address = this.selectedProvider.address;
-                this.formProvider.coverage_area =
-                    this.selectedProvider.coverage_area;
-                this.formProvider.contact_phone =
-                    this.selectedProvider.contact_phone;
-                this.formProvider.email =
-                    this.selectedProvider.email;
-                this.formProvider.service_cost =
-                    this.selectedProvider.service_cost;
-                this.formProvider.status = this.selectedProvider.status;
-                this.formProvider.code_number =
-                    this.selectedProvider.code_number;
-                this.formProvider.code_country =
-                    this.selectedProvider.code_country;
-                this.formProvider.providers = currentTypeName.map(
-                    (type) => type.id
-                );
-            }
+        this.$nextTick(async () => {
+            await this.initForm();
             const phoneInputField = document.querySelector("#countryPhone");
             if (!phoneInputField) {
                 console.error("El elemento #phone no está definido.");
@@ -334,23 +365,78 @@ export default {
         this.initServices();
     },
     methods: {
+        async initForm() {
+            if (this.selectedProvider) {
+                const currentTypeName = this.$parseTags(
+                    this.selectedProvider.providers_name
+                );
+                this.formProvider.id = this.selectedProvider.id;
+                this.formProvider.name = this.selectedProvider.name;
+                this.formProvider.address = this.selectedProvider.address;
+                this.formProvider.user = this.selectedProvider.user;
+                this.formProvider.website = this.selectedProvider.website;
+                this.formProvider.coverage_area =
+                    this.selectedProvider.coverage_area;
+                this.formProvider.contact_phone =
+                    this.selectedProvider.contact_phone;
+                this.formProvider.email = this.selectedProvider.email;
+                this.formProvider.service_cost =
+                    this.selectedProvider.service_cost;
+                this.formProvider.status = this.selectedProvider.status;
+                this.formProvider.code_number =
+                    this.selectedProvider.code_number;
+                this.formProvider.code_country =
+                    this.selectedProvider.code_country;
+                this.formProvider.providers = currentTypeName.map(
+                    (type) => type.id
+                );
+                this.formProvider.country = parseInt(
+                    this.selectedProvider.country_id
+                );
+                this.formProvider.state = parseInt(
+                    this.selectedProvider.state_id
+                );
+                this.formProvider.city = parseInt(
+                    this.selectedProvider.city_id
+                );
+                this.formProvider.language_id = parseInt(
+                    this.selectedProvider.language_id
+                );
+                if (this.selectedProvider.country_id) {
+                    await this.onChangeCountry(
+                        this.selectedProvider.country_id,
+                        false
+                    );
+                    if (this.selectedProvider.state_id) {
+                        await this.onChangeState(
+                            this.selectedProvider.state_id,
+                            false
+                        );
+                    }
+                }
+            }
+        },
         async initServices() {
             this.listStatus = [
                 { id: 1, name: "active" },
                 { id: 2, name: "inactive" },
             ];
-            const comboNames = ["provider_type", "language"];
+            const comboNames = ["country", "provider_type", "language"];
             const response = await this.$getEnumsOptions(comboNames);
             const {
                 provider_type: responProviderType,
                 language: responLanguages,
+                country: responCountry,
             } = response.data;
             this.listTypeProvider = responProviderType;
             this.listLanguages = responLanguages;
+            this.listCountry = responCountry;
         },
         async validateForm() {
+            this.dynamicRules = {};
             let initialRules = {
                 name: Yup.string().required("Provider name is required"),
+                user: Yup.string().required("Provider user is required"),
                 address: Yup.string().required("Address is required"),
                 coverage_area: Yup.string().required(
                     "Coverage area is required"
@@ -362,15 +448,26 @@ export default {
                     .email("The email format is not valid")
                     .required("Contact email is required"),
                 service_cost: Yup.number().required("Service cost is required"),
-                password: Yup.string().required("Password is required"), // nuevo campo
-                language_id: Yup.number().required("Language is required"), // nuevo campo
+                language_id: Yup.number().required("Language is required"),
                 website: Yup.string()
-                    .url("The website format is not valid")
-                    .required("Website is required"), // nuevo campo
-                status: Yup.number().required("Status is required"), // nuevo campo
+                    .url(
+                        "The website format is not valid: https://www.example.com"
+                    )
+                    .required("Website is required: https://www.example.com"),
+                status: Yup.number().required("Status is required"),
+                providers: Yup.array().min(
+                    1,
+                    "At least one service is required"
+                ),
             };
+            if (!this.selectedProvider) {
+                this.dynamicRules.password = Yup.string().required(
+                    "Password is required"
+                );
+            }
             const schema = Yup.object().shape({
                 ...initialRules,
+                ...this.dynamicRules,
             });
             this.errors = {};
             try {
@@ -476,6 +573,59 @@ export default {
                 );
             }
             this.formProvider.password = password;
+        },
+        onChangeCountry(value, change) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await this.$getBrother(value);
+                    this.listState = [];
+                    this.listCity = [];
+                    if (value && change) {
+                        this.formProvider.state_id = null;
+                        this.formProvider.city_id = null;
+                    } else {
+                        this.formProvider.state_id = this.selectedProvider
+                            ? parseInt(this.selectedProvider.state_id)
+                            : null;
+                        this.formProvider.city_id = this.selectedProvider
+                            ? parseInt(this.selectedProvider.city_id)
+                            : null;
+                    }
+
+                    this.placeholderState =
+                        response.data.length > 0
+                            ? "Select state"
+                            : "Data empty";
+                    this.listState = response.data;
+                    resolve();
+                } catch (error) {
+                    console.error("Error in onChangeCountry:", error);
+                    reject(error);
+                }
+            });
+        },
+        onChangeState(value, change) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await this.$getBrother(value);
+                    this.listCity = [];
+                    if (value && change) {
+                        this.formProvider.city_id = null;
+                    } else {
+                        this.formProvider.city_id = this.selectedProvider
+                            ? parseInt(this.selectedProvider.city_id)
+                            : null;
+                    }
+
+                    this.placeholderCity =
+                        response.data.length > 0 ? "Select city" : "Data empty";
+                    this.listCity = response.data;
+                    resolve();
+                } catch (error) {
+                    console.error("Error in onChangeState:", error);
+                    reject(error);
+                }
+            });
         },
     },
 };

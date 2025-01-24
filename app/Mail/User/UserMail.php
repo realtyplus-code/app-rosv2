@@ -41,7 +41,7 @@ class UserMail extends Mailable
             with: [
                 'name' => $this->usuario['name'],
                 'password' => $this->usuario['password'],
-                'url' => env('APP_URL'),
+                'url' => config('app.url'),
             ],
         );
     }

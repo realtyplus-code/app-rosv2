@@ -38,24 +38,6 @@
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
-                        id="name"
-                        class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.name }"
-                        v-model="formUser.name"
-                        style="width: 100%"
-                        @input="clearError('name')"
-                    />
-                    <label for="name">Name</label>
-                </FloatLabel>
-                <small v-if="errors.name" class="p-error">{{
-                    errors.name
-                }}</small>
-            </div>
-        </div>
-        <div class="custom-form mt-4">
-            <div class="custom-form-column">
-                <FloatLabel>
-                    <InputText
                         id="user"
                         class="inputtext-custom"
                         :class="{ 'p-invalid': errors.user }"
@@ -67,6 +49,22 @@
                 </FloatLabel>
                 <small v-if="errors.user" class="p-error">{{
                     errors.user
+                }}</small>
+            </div>
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <InputText
+                        id="name"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.name }"
+                        v-model="formUser.name"
+                        style="width: 100%"
+                        @input="clearError('name')"
+                    />
+                    <label for="name">Name</label>
+                </FloatLabel>
+                <small v-if="errors.name" class="p-error">{{
+                    errors.name
                 }}</small>
             </div>
         </div>
@@ -87,26 +85,29 @@
                     errors.email
                 }}</small>
             </div>
-        </div>
-        <div class="custom-form-column mt-4" v-if="!this.selectedUser">
-            <InputGroup>
-                <InputGroupAddon>
-                    <Button icon="pi pi-key" @click="generateRandomPassword" />
-                </InputGroupAddon>
-                <FloatLabel>
-                    <Password
-                        id="password"
-                        :class="{ 'p-invalid': errors.password }"
-                        v-model="formUser.password"
-                        @input="clearError('password')"
-                        toggleMask
-                    />
-                    <label for="password">Password</label>
-                </FloatLabel>
-            </InputGroup>
-            <small v-if="errors.password" class="p-error">{{
-                errors.password
-            }}</small>
+            <div class="custom-form-column" v-if="!this.selectedUser">
+                <InputGroup>
+                    <InputGroupAddon>
+                        <Button
+                            icon="pi pi-key"
+                            @click="generateRandomPassword"
+                        />
+                    </InputGroupAddon>
+                    <FloatLabel>
+                        <Password
+                            id="password"
+                            :class="{ 'p-invalid': errors.password }"
+                            v-model="formUser.password"
+                            @input="clearError('password')"
+                            toggleMask
+                        />
+                        <label for="password">Password</label>
+                    </FloatLabel>
+                </InputGroup>
+                <small v-if="errors.password" class="p-error">{{
+                    errors.password
+                }}</small>
+            </div>
         </div>
         <div class="custom-form mt-4">
             <div class="custom-form-column" style="margin-top: 12px">
@@ -124,7 +125,7 @@
                     errors.country
                 }}</small>
             </div>
-            <div class="custom-form-column" style="margin-top: 25px">
+            <div class="custom-form-column" style="margin-top: 12px">
                 <Select
                     :options="listState"
                     v-model="formUser.state"
@@ -139,7 +140,7 @@
                     errors.state
                 }}</small>
             </div>
-            <div class="custom-form-column" style="margin-top: 25px">
+            <div class="custom-form-column" style="margin-top: 12px">
                 <Select
                     :options="listCity"
                     v-model="formUser.city"

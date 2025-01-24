@@ -36,14 +36,28 @@ class ProviderController extends Controller
                 [
                     'providers.id',
                     'providers.name',
+                    'providers.user',
                     'providers.address',
                     'providers.coverage_area',
                     'providers.contact_phone',
                     'providers.code_number',
                     'providers.code_country',
-                    'providers.contact_email',
+                    'providers.website',
+                    'providers.email',
                     'providers.service_cost',
                     'providers.status',
+                    'ec.name as country',
+                    'ec.id as country_id',
+                    'es.name as state',
+                    'es.id as state_id',
+                    'eci.name as city',
+                    'eci.id as city_id',
+                    'el.name as language',
+                    'el.id as language_id',
+                    'users.id as log_user_id',
+                    'users.name as log_user_name',
+                    'providers.created_at',
+                    'providers.updated_at',
                     DB::raw('GROUP_CONCAT(CONCAT(e_provider.id, ":", e_provider.name) ORDER BY e_provider.name ASC SEPARATOR ";") as providers_name'),
                 ]
             );
@@ -77,6 +91,9 @@ class ProviderController extends Controller
     {
         try {
             $incident = $this->incidentService->storeProvider($request->all());
+            if($incident == 'FALSE EMAIL'){
+                return Response::sendError('FALSE EMAIL', 400);
+            }
             return Response::sendResponse($incident, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

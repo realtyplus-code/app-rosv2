@@ -2,12 +2,14 @@
 
 namespace App\Services\Provider;
 
+use App\Mail\User\UserMail;
 use App\Models\Provider\Provider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Interfaces\Provider\ProviderRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
-use Illuminate\Support\Facades\Hash;
 
 class ProviderService
 {
@@ -25,18 +27,37 @@ class ProviderService
         $query = Provider::query()
             ->leftJoin('provider_service', 'provider_service.provider_id', '=', 'providers.id')
             ->leftJoin('enum_options as e_provider', 'e_provider.id', '=', 'provider_service.service_id')
-            ->groupBy(
+            ->leftJoin('enum_options as ec', 'ec.id', '=', 'providers.country')
+            ->leftJoin('enum_options as es', 'es.id', '=', 'providers.state')
+            ->leftJoin('enum_options as eci', 'eci.id', '=', 'providers.city')
+            ->leftJoin('enum_options as el', 'el.id', '=', 'providers.language_id')
+            ->leftJoin('users', 'users.id', '=', 'providers.user_id')
+            ->groupBy([
                 'providers.id',
                 'providers.name',
+                'providers.user',
                 'providers.address',
+                'providers.website',
                 'providers.coverage_area',
                 'providers.contact_phone',
                 'providers.code_number',
                 'providers.code_country',
-                'providers.contact_email',
+                'providers.email',
                 'providers.service_cost',
                 'providers.status',
-            );
+                'ec.name',
+                'ec.id',
+                'es.name',
+                'es.id',
+                'eci.name',
+                'eci.id',
+                'el.name',
+                'el.id',
+                'users.id',
+                'users.name',
+                'providers.created_at',
+                'providers.updated_at',
+            ]);
 
         if(isset($data['status']) && $data['status'] != null) {
             $query->where('providers.status', $data['status']);
@@ -51,6 +72,7 @@ class ProviderService
         try {
             $providers = $data['providers'];
             $data['user_id'] = auth()->user()->id;
+            $tmp_password = $data['password'];
             $data['password'] = Hash::make($data['password']);
             $provider = $this->providerRepository->create($data);
             foreach ($providers as $key => $value) {
@@ -58,6 +80,9 @@ class ProviderService
                     'provider_id' => $provider->id,
                     'service_id' => $value,
                 ]);
+            }
+            if ($provider) {
+                $this->sendEmail($provider['email'], $provider, $tmp_password);
             }
             DB::commit();
             return $provider;
@@ -113,6 +138,18 @@ class ProviderService
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
             throw $ex;
+        }
+    }
+
+    private function sendEmail($to, $details, $tmp_password)
+    {
+        try {
+            $details['password'] = $tmp_password;
+            Mail::to($to)->send(new UserMail($details));
+            return true;
+        } catch (\Exception $ex) {
+            Log::debug($ex->getMessage());
+            return false;
         }
     }
 }
