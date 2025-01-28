@@ -94,7 +94,7 @@ class PropertyController extends Controller
 
     public function store(StorePropertyRequest $request)
     {
-        try {
+        try { 
             $property = $this->propertyService->storeProperty($request->all());
             return Response::sendResponse($property, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {

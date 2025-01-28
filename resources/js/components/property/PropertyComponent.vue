@@ -372,8 +372,8 @@
                 </Column>
                 <!-- Actions Column -->
                 <Column
-                    header="Actions"
-                    style="min-width: 180px; text-align: center"
+                    header="Edit/Delete"
+                    style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -397,6 +397,15 @@
                                 "
                                 @click="deleteProperty(slotProps.data.id)"
                             />
+                        </div>
+                    </template>
+                </Column>
+                <Column
+                    header="Upload/Manage"
+                    style="min-width: 180px; text-align: center"
+                >
+                    <template #body="slotProps">
+                        <div class="row">
                             <Button
                                 icon="pi pi-upload"
                                 class="p-button-rounded p-button-success"

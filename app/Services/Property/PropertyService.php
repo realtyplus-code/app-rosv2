@@ -93,7 +93,10 @@ class PropertyService
             $photos = $data['photos'];
             unset($data['photo']);
             $owners = $data['owners'];
-            $tenants = $data['tenants'];
+            $tenants = [];
+            if (isset($data['tenants'])) {
+                $tenants = $data['tenants'];
+            }
             $data['user_id'] = Auth::id();
             $property = $this->propertyRepository->create($data);
             $this->assignedPhoto($property, $photos);
@@ -125,7 +128,10 @@ class PropertyService
         DB::beginTransaction();
         try {
             $owners = $data['owners'];
-            $tenants = $data['tenants'];
+            $tenants = [];
+            if (isset($data['tenants'])) {
+                $tenants = $data['tenants'];
+            }
             $property = $this->propertyRepository->update($id, $data);
             $this->userPropertyRepository->deleteByProperty($id);
             foreach ($owners as $key => $value) {

@@ -14,7 +14,7 @@ class UpdateIncidentRequest extends FormRequest
     public function rules()
     {
         return [
-            'property_id' => 'required|exists:properties,id',
+            'property_id' => 'nullable|exists:properties,id',
             'description' => 'required|string|max:1000',
             'report_date' => 'required|date',
             'status_id' => 'required|exists:enum_options,id',
@@ -29,7 +29,6 @@ class UpdateIncidentRequest extends FormRequest
     public function messages()
     {
         return [
-            'property_id.required' => 'The property field is required.',
             'property_id.exists' => 'The selected property is invalid.',
             'description.required' => 'The description is required.',
             'description.string' => 'The description must be a valid text.',

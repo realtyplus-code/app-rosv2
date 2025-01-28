@@ -4,6 +4,17 @@
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    icon="pi pi-plus"
+                    rounded
+                    raised
+                    @click="addIncident"
+                    style="
+                        margin-right: 10px;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
+                    "
+                />
+                <Button
                     icon="pi pi-filter-slash"
                     class="p-button-sm"
                     rounded
@@ -204,7 +215,12 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ this.$formatCurrency(data.cost, data.currency_name ?? 'USD') }}
+                        {{
+                            this.$formatCurrency(
+                                data.cost,
+                                data.currency_name ?? "USD"
+                            )
+                        }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -252,10 +268,8 @@
                                 "
                                 :style="{
                                     fontSize: '1.5rem',
-                                    color:
-                                        data.incidents > 0 ? 'green' : 'red',
-                                    cursor:
-                                        data.incidents > 0 ? 'pointer' : '',
+                                    color: data.incidents > 0 ? 'green' : 'red',
+                                    cursor: data.incidents > 0 ? 'pointer' : '',
                                 }"
                                 @click="
                                     viewPanelIncidents(data.incidents, data.id)
@@ -293,7 +307,7 @@
                     </template>
                 </Column>
                 <Column
-                    header="Actions"
+                    header="Edit/Delete"
                     style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
@@ -318,6 +332,15 @@
                                 "
                                 @click="deleteIncident(slotProps.data.id)"
                             />
+                        </div>
+                    </template>
+                </Column>
+                <Column
+                    header="Upload/Manage"
+                    style="min-width: 120px; text-align: center"
+                >
+                    <template #body="slotProps">
+                        <div class="row">
                             <Button
                                 icon="pi pi-upload"
                                 class="p-button-rounded p-button-success"
@@ -396,7 +419,7 @@ export default {
             loading: true,
             //
             selectedIncident: null,
-            selectedIncidentId : true,
+            selectedIncidentId: true,
             selectedIncidentAction: null,
             dialogVisible: false,
             dialogVisiblePdf: false,
@@ -523,6 +546,10 @@ export default {
                     this.$readStatusHttp(error);
                     this.loading = false;
                 });
+        },
+        addIncident() {
+            this.selectedIncident = null;
+            this.dialogVisible = true;
         },
         editIncident(incident) {
             this.selectedIncident = incident;

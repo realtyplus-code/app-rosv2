@@ -58,6 +58,25 @@
             <div class="custom-form-column">
                 <Select
                     filter
+                    showClear
+                    :options="listProperty"
+                    v-model="formIncident.property_id"
+                    placeholder="Select property"
+                    :class="{ 'p-invalid': errors.property_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                    @clear="clearProperty('property_id')"
+                />
+                <small v-if="errors.property_id" class="p-error">{{
+                    errors.property_id
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <Select
+                    filter
                     :options="listCurrency"
                     v-model="formIncident.currency_id"
                     placeholder="Select currency"
@@ -247,7 +266,7 @@
         <template #footer>
             <div class="text-center">
                 <Button
-                    v-if="selectedPropertyId"
+                    v-if="!selectedIncident"
                     label="Save"
                     severity="success"
                     style="margin-right: 10px"
@@ -301,6 +320,7 @@ export default {
             listOwners: [],
             listProviders: [],
             listCurrency: [],
+            listProperty: [],
             isLoad: false,
             limitProviders: 10,
         };
@@ -349,6 +369,7 @@ export default {
     },
     methods: {
         async initServices() {
+            await this.getProperties();
             const comboNames = [
                 "incident_type",
                 "priority",
@@ -387,6 +408,14 @@ export default {
                         reject(error);
                     });
             });
+        },
+        async getProperties() {
+            try {
+                const response = await this.$axios.get("/properties/list");
+                this.listProperty = response.data.data;
+            } catch (error) {
+                this.$readStatusHttp(error);
+            }
         },
         async validateForm() {
             let initialRules = {
@@ -431,7 +460,9 @@ export default {
             this.isLoad = true;
             const isValid = await this.validateForm();
             if (isValid) {
-                this.formIncident.property_id = this.selectedPropertyId;
+                if (this.selectedPropertyId) {
+                    this.formIncident.property_id = this.selectedPropertyId;
+                }
                 this.$axios
                     .post("/occurrences/store", this.formIncident, {
                         headers: {
@@ -578,6 +609,9 @@ export default {
                 return URL.createObjectURL(photo);
             }
             return photo;
+        },
+        clearProperty(field) {
+            this.formIncident[field] = null;
         },
     },
 };

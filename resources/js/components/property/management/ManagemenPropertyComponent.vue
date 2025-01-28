@@ -424,10 +424,6 @@ export default {
                     .of(Yup.string().required("Each owner must be a string"))
                     .min(1, "At least one owner is required")
                     .required("Owners array is required"),
-                tenants: Yup.array()
-                    .of(Yup.string().required("Each tenant must be a string"))
-                    .min(1, "At least one tenant is required")
-                    .required("Tenants array is required"),
                 property_type_id: Yup.string().required(
                     "Type property is required"
                 ),

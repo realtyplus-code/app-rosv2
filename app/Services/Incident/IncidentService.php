@@ -111,6 +111,7 @@ class IncidentService
         try {
             $data['reported_by'] = auth()->user()->id;
             $providers = $data['providers'];
+            $data['property_id'] = !isset($data['property_id']) ? null : $data['property_id'];
             $incident = $this->incidentRepository->update($id, $data);
             $this->incidentProviderRepository->deleteByIncident($id);
             foreach ($providers as $key => $value) {
