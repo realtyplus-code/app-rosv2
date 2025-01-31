@@ -240,7 +240,7 @@
         <template #footer>
             <div class="text-center">
                 <Button
-                    v-if="selectedPropertyId"
+                    v-if="!selectedInsurance"
                     label="Save"
                     severity="success"
                     style="margin-right: 10px"
@@ -431,7 +431,6 @@ export default {
             let tmpFormatNumber = null;
             let tmpFormatCountry = null;
             const isValid = await this.validateForm();
-            console.log(this.errors);
             const countryData = this.phoneInput.getSelectedCountryData();
             if (!countryData.dialCode || countryData.dialCode == undefined) {
                 this.isLoad = false;
@@ -469,7 +468,6 @@ export default {
             let tmpFormatCountry = null;
             const isValid = await this.validateForm();
             const countryData = this.phoneInput.getSelectedCountryData();
-            console.log(this.errors);
             if (!countryData.dialCode || countryData.dialCode == undefined) {
                 this.isLoad = false;
                 return this.$alertWarning("select first country phone");

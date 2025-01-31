@@ -25,4 +25,11 @@ class InsurancePropertyRepository implements InsurancePropertyRepositoryInterfac
         $insuranceProperty->delete();
         return $insuranceProperty;
     }
+
+    public function deleteByProperty($id)
+    {
+        return $this->model->where([
+            'property_id' => $id
+        ])->delete();
+    }
 }

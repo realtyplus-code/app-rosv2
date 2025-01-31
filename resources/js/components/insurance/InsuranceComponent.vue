@@ -4,6 +4,17 @@
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    icon="pi pi-plus"
+                    rounded
+                    raised
+                    @click="addInsurance"
+                    style="
+                        margin-right: 10px;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
+                    "
+                />
+                <Button
                     icon="pi pi-filter-slash"
                     class="p-button-sm"
                     rounded
@@ -319,9 +330,10 @@
                         />
                     </template>
                 </Column>
+                <!-- Actions Column -->
                 <Column
-                    header="Actions"
-                    style="min-width: 100px; text-align: center"
+                    header="Edit/Delete"
+                    style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -336,10 +348,29 @@
                                 @click="editInsurance(slotProps.data)"
                             />
                             <Button
+                                icon="pi pi-trash"
+                                class="p-button-rounded p-button-danger"
+                                style="
+                                    margin: 5px;
+                                    background-color: #db6464;
+                                    border-color: #db6464;
+                                "
+                                @click="deleteInsurance(slotProps.data.id)"
+                            />
+                        </div>
+                    </template>
+                </Column>
+                <Column
+                    header="Upload"
+                    style="min-width: 10px; text-align: center"
+                >
+                    <template #body="slotProps">
+                        <div class="row">
+                            <Button
                                 icon="pi pi-upload"
                                 class="p-button-rounded p-button-success"
                                 style="
-                                    margin: 5px;
+
                                     background-color: #28a745;
                                     border-color: #28a745;
                                 "
@@ -400,14 +431,14 @@ export default {
                 { value: "Inactive", id: 2 },
             ],
             galleryKey: 0,
-            dialogVisiblePdf: false
+            dialogVisiblePdf: false,
         };
     },
     components: {
         FilterMatchMode,
         FilterOperator,
         ManagemenInsuranceComponent,
-        UploadPdfModalComponent
+        UploadPdfModalComponent,
     },
     created() {
         this.initFilters();
@@ -568,6 +599,10 @@ export default {
                     this.loading = false;
                 });
         },
+        addInsurance() {
+            this.selectedInsurance = null;
+            this.dialogVisibleInsurance = true;
+        },
         editInsurance(aliado) {
             this.selectedInsurance = aliado;
             this.dialogVisibleInsurance = true;
@@ -644,11 +679,10 @@ export default {
                     this.$readStatusHttp(error);
                 });
         },
-        deletePdf(pdfField) {
+        deletePdf(id) {
             this.$axios
                 .post(`/insurances/document/delete`, {
-                    insurance_id: this.selectedInsurance.id,
-                    type: pdfField,
+                    attachment_id: id,
                 })
                 .then(() => {
                     this.$alertSuccess("File deleted successfully");

@@ -11,6 +11,7 @@ use App\Http\Requests\Insurance\ValidatePdfRequest;
 use App\Http\Requests\Insurance\StoreInsuranceRequest;
 use App\Http\Requests\Insurance\UpdateInsuranceRequest;
 use App\Http\Controllers\ResponseController as Response;
+use App\Models\Insurance\Insurance;
 
 class InsuranceController extends Controller
 {
@@ -34,10 +35,8 @@ class InsuranceController extends Controller
             if ($role !== 'admin' && !$request->has('property_id')) {
                 return Response::sendError('The property field is required for non-admin users', 400);
             }
-            
             $query = $this->insuranceService->getInsurancesQuery($request->all());
-
-            return renderDataTable(
+            $response = renderDataTable(
                 $query,
                 $request,
                 [],
@@ -55,7 +54,6 @@ class InsuranceController extends Controller
                     'insurances.phone',
                     'insurances.code_number',
                     'insurances.code_country',
-                    'properties.id as property_id',
                     'properties.name as property_name',
                     'e_ct.name as insurance_name',
                     'e_ct.id as insurance_id',
@@ -64,9 +62,10 @@ class InsuranceController extends Controller
                     'insurances.renewal_indicator',
                     'insurances.renewal_months',
                     'insurances.policy_amount',
-                    'insurances.document',
                 ]
             );
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], Insurance::class, 'disk_insurance');
+            return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
@@ -125,7 +124,7 @@ class InsuranceController extends Controller
     public function addPdf(ValidatePdfRequest $request)
     {
         try {
-            $pdf = $this->insuranceService->addPdfInsurance($request->all());
+            $pdf = $this->insuranceService->addPdf($request->all());
             return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -137,7 +136,7 @@ class InsuranceController extends Controller
     public function destroyPdf(Request $request)
     {
         try {
-            $this->insuranceService->deletePdfInsurance($request->all());
+            $this->insuranceService->deletePdf($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

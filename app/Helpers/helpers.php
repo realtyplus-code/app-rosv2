@@ -153,3 +153,19 @@ function cleanStorageUrl($url, $path = '/storage_property/')
     $cleanedUrl = substr($url, $position + strlen($basePath));
     return $cleanedUrl;
 }
+
+function attachFilesToProperties($response, $fileTypes, $typeClass, $disk)
+{
+    $attachmentService = app()->make('App\Services\Attachment\AttachmentService');
+    foreach ($fileTypes as $fileType => $field) {
+        $files = $attachmentService->getByFileTypeAndAttachable($fileType,  $typeClass, $disk)->toArray();
+        $response->getCollection()->transform(function ($property) use ($files, $field) {
+            $tmpData = array_values(array_filter($files, function ($file) use ($property) {
+                return $file['attachable_id'] == $property['id'];
+            }));
+            $property->{$field} = $tmpData;
+            return $property;
+        });
+    }
+    return $response;
+}

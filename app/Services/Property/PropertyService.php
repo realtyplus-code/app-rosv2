@@ -7,28 +7,37 @@ use App\Models\Property\Property;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Property\PropertyRepositoryInterface;
 use App\Interfaces\UserProperty\UserPropertyRepositoryInterface;
+use App\Interfaces\InsuranceProperty\InsurancePropertyRepositoryInterface;
 
 class PropertyService
 {
     protected $propertyRepository;
     protected $userPropertyRepository;
+    protected $insurancePropertyRepository;
     protected $attachmentService;
     protected $fileService;
     private $disk = 'disk_property';
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
     private $listDocuments = ['document'];
 
-    public function __construct(PropertyRepositoryInterface $propertyRepository, UserPropertyRepositoryInterface $userPropertyRepository, AttachmentService $attachmentService, FileService $fileService)
-    {
+    public function __construct(
+        PropertyRepositoryInterface $propertyRepository,
+        UserPropertyRepositoryInterface $userPropertyRepository,
+        InsurancePropertyRepositoryInterface $insurancePropertyRepository,
+        AttachmentService $attachmentService,
+        FileService $fileService
+    ) {
         $this->fileService = $fileService;
         $this->attachmentService = $attachmentService;
         $this->propertyRepository = $propertyRepository;
         $this->userPropertyRepository = $userPropertyRepository;
+        $this->insurancePropertyRepository = $insurancePropertyRepository;
     }
 
     public function getPropertiesQuery()
@@ -55,6 +64,8 @@ class PropertyService
             ->leftJoin('enum_options as ec', 'ec.id', '=', 'properties.country')
             ->leftJoin('enum_options as es', 'es.id', '=', 'properties.state')
             ->leftJoin('enum_options as eci', 'eci.id', '=', 'properties.city')
+            ->leftJoin('insurance_property as ip', 'ip.property_id', '=', 'properties.id')
+            ->leftJoin('insurances', 'insurances.id', '=', 'ip.insurance_id')
             ->groupBy([
                 'properties.id',
                 'incidents.id',
@@ -95,6 +106,7 @@ class PropertyService
             if (isset($data['tenants'])) {
                 $tenants = $data['tenants'];
             }
+            // proceso de creación de la propiedad
             $data['user_id'] = Auth::id();
             $property = $this->propertyRepository->create($data);
             $this->assignAttachments($property, $photos);
@@ -109,6 +121,12 @@ class PropertyService
                 $this->userPropertyRepository->create([
                     'property_id' => $property->id,
                     'user_id' => $value,
+                ]);
+            }
+            if (!empty($data['insurances'])) {
+                $this->insurancePropertyRepository->create([
+                    'property_id' => $property->id,
+                    'insurance_id' => $data['insurances']
                 ]);
             }
             DB::commit();
@@ -130,6 +148,7 @@ class PropertyService
             if (isset($data['tenants'])) {
                 $tenants = $data['tenants'];
             }
+            // proceso de actialización de la propiedad
             $property = $this->propertyRepository->update($id, $data);
             $this->userPropertyRepository->deleteByProperty($id);
             foreach ($owners as $key => $value) {
@@ -142,6 +161,13 @@ class PropertyService
                 $this->userPropertyRepository->create([
                     'property_id' => $property->id,
                     'user_id' => $value,
+                ]);
+            }
+            $this->insurancePropertyRepository->deleteByProperty($id);
+            if (!empty($data['insurances'])) {
+                $this->insurancePropertyRepository->create([
+                    'property_id' => $property->id,
+                    'insurance_id' => $data['insurances']
                 ]);
             }
             DB::commit();
@@ -157,10 +183,9 @@ class PropertyService
     public function deleteProperty($id)
     {
         try {
-            $this->attachmentService->deleteByAttachable($id, Property::class, $this->disk);
             $this->userPropertyRepository->deleteByProperty($id);
             if ($this->propertyRepository->delete($id)) {
-                
+                $this->attachmentService->deleteByAttachable($id, Property::class, $this->disk);
             }
             return true;
         } catch (\Exception $ex) {

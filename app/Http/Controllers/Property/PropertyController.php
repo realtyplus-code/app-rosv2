@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
-use App\Services\Attachment\AttachmentService;
 use App\Http\Requests\Property\ValidatePdfRequest;
 use App\Http\Requests\Property\StorePropertyRequest;
 use App\Http\Requests\Property\ValidatePhotoRequest;
@@ -20,13 +19,11 @@ use App\Models\Property\Property;
 
 class PropertyController extends Controller
 {
-    protected $attachmentService;
     protected $propertyService;
 
-    public function __construct(PropertyService $propertyService, AttachmentService $attachmentService)
+    public function __construct(PropertyService $propertyService)
     {
         $this->propertyService = $propertyService;
-        $this->attachmentService = $attachmentService;
     }
 
     public function view()
@@ -61,30 +58,17 @@ class PropertyController extends Controller
                     'users.name as log_user_name',
                     DB::raw('GROUP_CONCAT(CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                     DB::raw('GROUP_CONCAT(CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                    DB::raw('COUNT(DISTINCT incidents.id) as incidents')
+                    DB::raw('COUNT(DISTINCT incidents.id) as incidents'),
+                    DB::raw('COUNT(DISTINCT insurances.id) as insurances')
                 ]
             );
-            $response = $this->attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document']);
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], Property::class, 'disk_property');
             return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
-    }
-
-    private function attachFilesToProperties($response, $fileTypes)
-    {
-        foreach ($fileTypes as $fileType => $field) {
-            $files = $this->attachmentService->getByFileTypeAndAttachable($fileType, Property::class, 'disk_property')->toArray();
-            $response->getCollection()->transform(function ($property) use ($files, $field) {
-                $property->{$field} = array_values(array_filter($files, function ($file) use ($property) {
-                    return $file['attachable_id'] == $property['id'];
-                }));
-                return $property;
-            });
-        }
-        return $response;
     }
 
     public function byTypeCount()

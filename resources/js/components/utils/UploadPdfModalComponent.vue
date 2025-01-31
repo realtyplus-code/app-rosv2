@@ -108,6 +108,7 @@ export default {
             limitDouments: this.limit ?? 0,
         };
     },
+    
     methods: {
         onFileUpload(fileNumber) {
             const fileUpload = this.$refs[`fileUpload${fileNumber}`][0];
