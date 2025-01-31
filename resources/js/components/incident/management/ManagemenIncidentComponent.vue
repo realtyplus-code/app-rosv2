@@ -222,7 +222,7 @@
                     >
                         <div class="card p-card gallery-card">
                             <img
-                                :src="getImageSource(photo)"
+                                :src="getImageSource(photo.file_path)"
                                 alt="Image"
                                 class="gallery-image"
                             />
@@ -233,9 +233,7 @@
                                     width: 100%;
                                     border-radius: 0px 0px 10px 10px;
                                 "
-                                @click="
-                                    removePhoto(index, photo, formIncident.id)
-                                "
+                                 @click="removePhoto(index, photo.id)"
                             >
                                 Delete
                             </button>
@@ -519,24 +517,11 @@ export default {
             this.errors[field] = "";
         },
         setPhotos() {
-            this.formIncident.photos = [null, null, null, null];
-            const possiblePhotos = [
-                this.selectedIncident.photo,
-                this.selectedIncident.photo1,
-                this.selectedIncident.photo2,
-                this.selectedIncident.photo3,
-            ];
-            possiblePhotos.forEach((photo) => {
-                for (let i = 0; i < this.formIncident.photos.length; i++) {
-                    if (this.formIncident.photos[i] === null && photo) {
-                        this.formIncident.photos[i] = photo;
-                        break;
-                    }
-                }
+            let images = [];
+            this.selectedIncident.photos.forEach((item) => {
+                images.push(item);
             });
-            this.formIncident.photos = this.formIncident.photos.filter(
-                (photo) => photo !== null
-            );
+            this.formIncident.photos = images;
         },
         onFileUpload() {
             const file_upload = this.$refs.fileUpload;
@@ -580,7 +565,7 @@ export default {
                     )
                     .then((response) => {
                         this.$alertSuccess("Photo add!");
-                        this.formIncident.photos[index] = response.data.data;
+                        this.formIncident.photos.push(response.data.data);
                         this.$emit("reloadTable", true);
                     })
                     .catch((error) => {
@@ -589,11 +574,10 @@ export default {
             }
             event.target.value = "";
         },
-        removePhoto(index, name, id) {
+        removePhoto(index, idAttachment) {
             this.$axios
                 .post("/occurrences/photo/delete", {
-                    incident_id: id,
-                    photo: name,
+                    attachment_id: idAttachment,
                 })
                 .then((response) => {
                     this.$alertSuccess("Photo deleted!");

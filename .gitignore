@@ -5,6 +5,7 @@
 /public/storage_property
 /public/storage_user
 /public/storage_incident
+/public/storage_insurance
 /public/storage_incident_action
 /storage/*.key
 /storage/pail
