@@ -64,19 +64,27 @@ class PropertyController extends Controller
                     DB::raw('COUNT(DISTINCT incidents.id) as incidents')
                 ]
             );
-            $photos = $this->attachmentService->getByFileTypeAndAttachable('PHOTO', Property::class, 'disk_property')->toArray();
-            $response->getCollection()->transform(function ($property) use ($photos) {
-                $property->photos = array_values(array_filter($photos, function ($photo) use ($property) {
-                    return $photo['attachable_id'] == $property['id'];
-                }));
-                return $property;
-            });
+            $response = $this->attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document']);
             return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
+    }
+
+    private function attachFilesToProperties($response, $fileTypes)
+    {
+        foreach ($fileTypes as $fileType => $field) {
+            $files = $this->attachmentService->getByFileTypeAndAttachable($fileType, Property::class, 'disk_property')->toArray();
+            $response->getCollection()->transform(function ($property) use ($files, $field) {
+                $property->{$field} = array_values(array_filter($files, function ($file) use ($property) {
+                    return $file['attachable_id'] == $property['id'];
+                }));
+                return $property;
+            });
+        }
+        return $response;
     }
 
     public function byTypeCount()
@@ -230,7 +238,7 @@ class PropertyController extends Controller
     public function addPdf(ValidatePdfRequest $request)
     {
         try {
-            $pdf = $this->propertyService->addPdfIncident($request->all());
+            $pdf = $this->propertyService->addPdf($request->all());
             return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -242,7 +250,7 @@ class PropertyController extends Controller
     public function destroyPdf(Request $request)
     {
         try {
-            $this->propertyService->deletePdfIncident($request->all());
+            $this->propertyService->deletePdf($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

@@ -20,7 +20,7 @@
                         selectedRegister &&
                         selectedRegister[
                             `document${index === 1 ? '' : index - 1}`
-                        ]
+                        ][index - 1]
                     "
                 >
                     <h4>PDF {{ index }}</h4>
@@ -30,7 +30,7 @@
                             viewPdf(
                                 selectedRegister[
                                     `document${index === 1 ? '' : index - 1}`
-                                ]
+                                ][index - 1].file_path
                             )
                         "
                         style="margin: 20px"
@@ -40,7 +40,9 @@
                         severity="danger"
                         @click="
                             confirmDelete(
-                                `document${index === 1 ? '' : index - 1}`
+                                selectedRegister[
+                                    `document${index === 1 ? '' : index - 1}`
+                                ][index - 1].id
                             )
                         "
                     />

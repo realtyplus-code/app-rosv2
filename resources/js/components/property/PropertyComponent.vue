@@ -810,11 +810,10 @@ export default {
                     this.$readStatusHttp(error);
                 });
         },
-        deletePdf(pdfField) {
+        deletePdf(id) {
             this.$axios
                 .post(`/properties/document/delete`, {
-                    property_id: this.selectedProperty.id,
-                    type: pdfField,
+                    attachment_id: id,
                 })
                 .then(() => {
                     this.$alertSuccess("File deleted successfully");

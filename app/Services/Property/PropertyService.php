@@ -224,35 +224,29 @@ class PropertyService
         }
     }
 
-    public function addPdfIncident($data)
+    public function addPdf($data)
     {
-        $flagColumn = null;
-        $pdfs = $data['pdfs'];
-        $property = $this->propertyRepository->findById($data['property_id']);
-        $columns = $this->listDocuments;
-        foreach ($pdfs as $key => $pdf) {
-            foreach ($columns as $column) {
-                if (empty($property->{$column})) {
-                    $property->{$column} = $this->fileService->saveFile($pdf, 'pdf', $this->disk);
-                    $flagColumn = $property->{$column};
-                    $property->save();
-                    break;
-                }
+        foreach ($this->listDocuments as $key => $value) {
+            if (isset($data['pdfs'][$key])) {
+                $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $data['property_id'],
+                    'attachable_type' => Property::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PDF',
+                ]);
             }
         }
-        return $flagColumn;
     }
 
-    public function deletePdfIncident($data)
+    public function deletePdf($data)
     {
         try {
-            $property = $this->propertyRepository->findById($data['property_id']);
-            if ($data['type'] == 'document') {
-                $this->fileService->deleteFile(cleanStorageUrl($property->document, '/storage_property/'), $this->disk);
-                $property->document = null;
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
-            $property->save();
-            return $property;
+            return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
