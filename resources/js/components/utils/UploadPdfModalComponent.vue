@@ -18,9 +18,7 @@
                 <div
                     v-if="
                         selectedRegister &&
-                        selectedRegister[
-                            `document${index === 1 ? '' : index - 1}`
-                        ]
+                        selectedRegister[`document`][index - 1]
                     "
                 >
                     <h4>PDF {{ index }}</h4>
@@ -28,9 +26,8 @@
                         icon="pi pi-eye"
                         @click="
                             viewPdf(
-                                selectedRegister[
-                                    `document${index === 1 ? '' : index - 1}`
-                                ]
+                                selectedRegister[`document`][index - 1]
+                                    .file_path
                             )
                         "
                         style="margin: 20px"
@@ -40,7 +37,7 @@
                         severity="danger"
                         @click="
                             confirmDelete(
-                                `document${index === 1 ? '' : index - 1}`
+                                selectedRegister[`document`][index - 1].id
                             )
                         "
                     />
@@ -65,13 +62,9 @@
                             <p>Select PDF file {{ index }}</p>
                         </template>
                     </FileUpload>
-                    <small
-                        v-if="errors[`document${index === 1 ? '' : index - 1}`]"
-                        class="p-error"
-                        >{{
-                            errors[`document${index === 1 ? "" : index - 1}`]
-                        }}</small
-                    >
+                    <small v-if="errors[`document`]" class="p-error">{{
+                        errors[`document${index - 1}`]
+                    }}</small>
                 </div>
             </div>
         </div>
@@ -106,6 +99,7 @@ export default {
             limitDouments: this.limit ?? 0,
         };
     },
+
     methods: {
         onFileUpload(fileNumber) {
             const fileUpload = this.$refs[`fileUpload${fileNumber}`][0];

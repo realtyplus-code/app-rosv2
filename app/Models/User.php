@@ -28,7 +28,6 @@ class User extends Authenticatable
         'phone',
         'code_number',
         'code_country',
-        'photo',
         'country',
         'state',
         'city',
@@ -56,13 +55,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime'
         ];
-    }
-
-    public function getPhotoAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_user')->url($value);
-        }
     }
 
     public function relatedUsers()

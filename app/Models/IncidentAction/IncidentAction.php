@@ -18,12 +18,6 @@ class IncidentAction extends Model
         'action_description',
         'currency_id',
         'action_cost',
-        'photo',
-        'photo1',
-        'photo2',
-        'photo3',
-        'document',
-        'document1',
         'user_id',
         'action_type_id',
         'status_id',
@@ -53,47 +47,5 @@ class IncidentAction extends Model
     public function getActionDateAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d H:i:s');
-    }
-
-    public function getPhotoAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident_action')->url($value);
-        }
-    }
-
-    public function getPhoto1Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident_action')->url($value);
-        }
-    }
-
-    public function getPhoto2Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident_action')->url($value);
-        }
-    }
-
-    public function getPhoto3Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident_action')->url($value);
-        }
-    }
-
-    public function getDocumentAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident_action')->url($value);
-        }
-    }
-
-    public function getDocument1Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident_action')->url($value);
-        }
     }
 }

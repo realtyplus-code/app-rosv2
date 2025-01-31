@@ -32,8 +32,6 @@
                     errors.name
                 }}</small>
             </div>
-        </div>
-        <div class="custom-form">
             <div class="custom-form-column">
                 <FloatLabel>
                     <InputText
@@ -47,6 +45,23 @@
                 </FloatLabel>
                 <small v-if="errors.address" class="p-error">{{
                     errors.address
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
+                <Select
+                    filter
+                    :options="listInsurances"
+                    v-model="formProperty.insurances"
+                    placeholder="Select insurances"
+                    :class="{ 'p-invalid': errors.insurances }"
+                    optionLabel="insurance_company"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.insurances" class="p-error">{{
+                    errors.insurances
                 }}</small>
             </div>
         </div>
@@ -221,7 +236,7 @@
                     >
                         <div class="card p-card gallery-card">
                             <img
-                                :src="getImageSource(photo)"
+                                :src="getImageSource(photo.file_path)"
                                 alt="Image"
                                 class="gallery-image"
                             />
@@ -232,9 +247,7 @@
                                     width: 100%;
                                     border-radius: 0px 0px 10px 10px;
                                 "
-                                @click="
-                                    removePhoto(index, photo, formProperty.id)
-                                "
+                                @click="removePhoto(index, photo.id)"
                             >
                                 Delete
                             </button>
@@ -304,6 +317,7 @@ export default {
                 status: null,
                 owners: [],
                 tenants: [],
+                insurances: [],
                 photos: [],
                 country: null,
                 state: null,
@@ -322,6 +336,7 @@ export default {
             listCity: [],
             listCountry: [],
             listState: [],
+            listInsurances: [],
             placeholderCity: "Select the state first",
             placeholderState: "Select the country first",
         };
@@ -395,25 +410,34 @@ export default {
             this.listPropertyType = responPropertyType;
             this.listCountry = responsCountry;
             // obtenemos los usuarios
-            const { data: owners } = await this.getUsers("owner");
-            this.listOwners = owners;
-            const { data: tenants } = await this.getUsers("tenant");
-            this.listTenants = tenants;
+            this.getUsers("owner");
+            this.getUsers("tenant");
+            this.getInsurances();
         },
         getUsers(role = null) {
-            const vm = this;
-            return new Promise((resolve, reject) => {
-                const params = role ? { params: { role } } : {};
-                this.$axios
-                    .get(`/users/list`, params)
-                    .then(function (response) {
-                        resolve(response.data);
-                    })
-                    .catch((error) => {
-                        vm.$readStatusHttp(error);
-                        reject(error);
-                    });
-            });
+            const params = role ? { params: { role } } : {};
+            this.$axios
+                .get(`/users/list`, params)
+                .then((response) => {
+                    if (role === "owner") {
+                        this.listOwners = response.data.data;
+                    } else if (role === "tenant") {
+                        this.listTenants = response.data.data;
+                    }
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
+        },
+        getInsurances() {
+            this.$axios
+                .get(`/insurances/list`)
+                .then((response) => {
+                    this.listInsurances = response.data.data;
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
         },
         async validateForm() {
             let initialRules = {
@@ -567,24 +591,11 @@ export default {
             this.errors[field] = "";
         },
         setPhotos() {
-            this.formProperty.photos = [null, null, null, null];
-            const possiblePhotos = [
-                this.selectedProperty.photo,
-                this.selectedProperty.photo1,
-                this.selectedProperty.photo2,
-                this.selectedProperty.photo3,
-            ];
-            possiblePhotos.forEach((photo) => {
-                for (let i = 0; i < this.formProperty.photos.length; i++) {
-                    if (this.formProperty.photos[i] === null && photo) {
-                        this.formProperty.photos[i] = photo;
-                        break;
-                    }
-                }
+            let images = [];
+            this.selectedProperty.photos.forEach((item) => {
+                images.push(item);
             });
-            this.formProperty.photos = this.formProperty.photos.filter(
-                (photo) => photo !== null
-            );
+            this.formProperty.photos = images;
         },
         setDate() {
             this.formProperty.expected_end_date_ros = new Date(
@@ -636,7 +647,7 @@ export default {
                     )
                     .then((response) => {
                         this.$alertSuccess("Photo add!");
-                        this.formProperty.photos[index] = response.data.data;
+                        this.formProperty.photos.push(response.data.data);
                         this.$emit("reloadTable", true);
                     })
                     .catch((error) => {
@@ -645,11 +656,10 @@ export default {
             }
             event.target.value = "";
         },
-        removePhoto(index, name, id) {
+        removePhoto(index, idAttachment) {
             this.$axios
                 .post("/properties/photo/delete", {
-                    property_id: id,
-                    photo: name,
+                    attachment_id: idAttachment,
                 })
                 .then((response) => {
                     this.$alertSuccess("Photo deleted!");

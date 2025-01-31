@@ -12,6 +12,7 @@ use App\Repositories\Incident\IncidentRepository;
 use App\Repositories\Property\PropertyRepository;
 use App\Repositories\Provider\ProviderRepository;
 use App\Repositories\Insurance\InsuranceRepository;
+use App\Repositories\Attachment\AttachmentRepository;
 use App\Repositories\EnumOption\EnumOptionRepository;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
 use App\Interfaces\Property\PropertyRepositoryInterface;
@@ -19,15 +20,18 @@ use App\Interfaces\Provider\ProviderRepositoryInterface;
 use App\Repositories\UserProperty\UserPropertyRepository;
 use App\Repositories\UserRelation\UserRelationRepository;
 use App\Interfaces\Insurance\InsuranceRepositoryInterface;
+use App\Interfaces\Attachment\AttachmentRepositoryInterface;
 use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
 use App\Repositories\IncidentAction\IncidentActionRepository;
 use App\Repositories\ProviderService\ProviderServiceRepository;
 use App\Interfaces\UserProperty\UserPropertyRepositoryInterface;
 use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
 use App\Repositories\IncidentProvider\IncidentProviderRepository;
+use App\Repositories\InsuranceProperty\InsurancePropertyRepository;
 use App\Interfaces\IncidentAction\IncidentActionRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
 use App\Interfaces\IncidentProvider\IncidentProviderRepositoryInterface;
+use App\Interfaces\InsuranceProperty\InsurancePropertyRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProviderServiceRepositoryInterface::class, ProviderServiceRepository::class);
         $this->app->bind(IncidentProviderRepositoryInterface::class, IncidentProviderRepository::class);
         $this->app->bind(UserRelationRepositoryInterface::class, UserRelationRepository::class);
+        $this->app->bind(AttachmentRepositoryInterface::class, AttachmentRepository::class);
+        $this->app->bind(InsurancePropertyRepositoryInterface::class, InsurancePropertyRepository::class);
     }
 
     /**

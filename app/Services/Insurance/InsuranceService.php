@@ -6,30 +6,35 @@ use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use App\Models\Insurance\Insurance;
 use Illuminate\Support\Facades\Log;
+use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Insurance\InsuranceRepositoryInterface;
 
 
 class InsuranceService
 {
     protected $fileService;
+    protected $attachmentService;
     protected $insuranceRepository;
     private $listDocuments = ['document'];
+    private $disk = 'disk_insurance';
 
-    public function __construct(InsuranceRepositoryInterface $insuranceRepository, FileService $fileService)
+    public function __construct(InsuranceRepositoryInterface $insuranceRepository,  AttachmentService $attachmentService, FileService $fileService)
     {
         $this->fileService = $fileService;
+        $this->attachmentService = $attachmentService;
         $this->insuranceRepository = $insuranceRepository;
     }
 
     public function getInsurancesQuery($data)
     {
         $query = Insurance::query()
-            ->leftJoin('properties', 'properties.id', '=', 'insurances.property_id')
+            ->leftJoin('insurance_property', 'insurance_property.insurance_id', '=', 'insurances.id')
+            ->leftJoin('properties', 'properties.id', '=', 'insurance_property.property_id')
             ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'insurances.insurance_type_id')
             ->leftJoin('enum_options as ec', 'ec.id', '=', 'insurances.country');
 
         if (isset($data['property_id'])) {
-            $query->where('properties.id', $data['property_id']);
+            $query->where('insurance_property.property_id', $data['property_id']);
         }
     
         return $query->distinct();
@@ -68,7 +73,9 @@ class InsuranceService
     public function deleteInsurance($id)
     {
         try {
-            $this->insuranceRepository->delete($id);
+            if ($this->insuranceRepository->delete($id)) {
+                $this->attachmentService->deleteByAttachable($id, Insurance::class, $this->disk);
+            }
             return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -88,35 +95,29 @@ class InsuranceService
         }
     }
 
-    public function addPdfInsurance($data)
+    public function addPdf($data)
     {
-        $flagColumn = null;
-        $pdfs = $data['pdfs'];
-        $insurance = $this->insuranceRepository->findById($data['insurance_id']);
-        $columns = $this->listDocuments;
-        foreach ($pdfs as $key => $pdf) {
-            foreach ($columns as $column) {
-                if (empty($insurance->{$column})) {
-                    $insurance->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_insurance');
-                    $flagColumn = $insurance->{$column};
-                    $insurance->save();
-                    break;
-                }
+        foreach ($this->listDocuments as $key => $value) {
+            if (isset($data['pdfs'][$key])) {
+                $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $data['insurance_id'],
+                    'attachable_type' => Insurance::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PDF',
+                ]);
             }
         }
-        return $flagColumn;
     }
 
-    public function deletePdfInsurance($data)
+    public function deletePdf($data)
     {
         try {
-            $insurance = $this->insuranceRepository->findById($data['insurance_id']);
-            if ($data['type'] == 'document') {
-                $this->fileService->deleteFile(cleanStorageUrl($insurance->document, '/storage_insurance/'), 'disk_insurance');
-                $insurance->document = null;
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
-            $insurance->save();
-            return $insurance;
+            return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

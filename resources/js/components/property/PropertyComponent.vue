@@ -401,8 +401,8 @@
                     </template>
                 </Column>
                 <Column
-                    header="Upload/Manage"
-                    style="min-width: 180px; text-align: center"
+                    header="Upload/Incidents"
+                    style="min-width: 100px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
@@ -415,17 +415,6 @@
                                     border-color: #28a745;
                                 "
                                 @click="uploadPdfIncidentAction(slotProps.data)"
-                            />
-                            <Button
-                                icon="pi pi-shield"
-                                class="p-button-rounded p-button-warn"
-                                style="
-                                    margin: 5px;
-                                    background-color: #ffc107;
-                                    border-color: #ffc107;
-                                "
-                                @click="viewInsurance(slotProps.data.id)"
-                                title="Insurances"
                             />
                             <Button
                                 icon="pi pi-exclamation-circle"
@@ -453,14 +442,6 @@
         @reload="reload"
         @reloadTable="reloadTable"
     />
-    <!-- gestion de seguros -->
-    <ManagemenInsuranceComponent
-        v-if="dialogVisibleInsurance"
-        :dialogVisible="dialogVisibleInsurance"
-        :selectedPropertyId="selectedPropertyId"
-        @hidden="hiddenInsurance"
-        @reload="reloadInsurance"
-    />
     <!-- gestion de incidencias -->
     <ManagemenIncidentComponent
         v-if="dialogVisibleIncident"
@@ -485,7 +466,6 @@
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
-import ManagemenInsuranceComponent from "../insurance/management/ManagemenInsuranceComponent.vue";
 import ManagemenIncidentComponent from "../incident/management/ManagemenIncidentComponent.vue";
 
 export default {
@@ -505,7 +485,6 @@ export default {
             selectedProperty: null,
             selectedPropertyId: true,
             dialogVisible: false,
-            dialogVisibleInsurance: false,
             dialogVisibleIncident: false,
             statuses: [
                 { value: "Active", id: 1 },
@@ -519,7 +498,6 @@ export default {
         FilterMatchMode,
         FilterOperator,
         ManagemenPropertyComponent,
-        ManagemenInsuranceComponent,
         ManagemenIncidentComponent,
         UploadPdfModalComponent,
     },
@@ -694,11 +672,6 @@ export default {
             this.selectedProperty = null;
             this.dialogVisible = false;
         },
-        reloadInsurance() {
-            this.fetchProperty();
-            this.selectedPropertyId = null;
-            this.dialogVisibleInsurance = false;
-        },
         reloadIncident() {
             this.fetchProperty();
             this.selectedPropertyId = null;
@@ -715,15 +688,8 @@ export default {
             this.dialogVisible = status;
             this.dialogVisiblePdf = status;
         },
-        hiddenInsurance(status) {
-            this.dialogVisibleInsurance = status;
-        },
         hiddenIncident(status) {
             this.dialogVisibleIncident = status;
-        },
-        viewInsurance(id) {
-            this.selectedPropertyId = id;
-            this.dialogVisibleInsurance = true;
         },
         viewIncident(id) {
             this.selectedPropertyId = id;
@@ -810,11 +776,10 @@ export default {
                     this.$readStatusHttp(error);
                 });
         },
-        deletePdf(pdfField) {
+        deletePdf(id) {
             this.$axios
                 .post(`/properties/document/delete`, {
-                    property_id: this.selectedProperty.id,
-                    type: pdfField,
+                    attachment_id: id,
                 })
                 .then(() => {
                     this.$alertSuccess("File deleted successfully");

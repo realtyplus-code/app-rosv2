@@ -15,7 +15,6 @@ class Insurance extends Model
         'end_date',
         'contact_person',
         'contact_email',
-        'property_id',
         'insurance_type_id',
         'position',
         'phone',
@@ -25,8 +24,7 @@ class Insurance extends Model
         'policy_number',
         'renewal_indicator',
         'renewal_months',
-        'policy_amount',
-        'document',
+        'policy_amount'
     ];
 
     protected $casts = [
@@ -35,14 +33,6 @@ class Insurance extends Model
         'renewal_indicator' => 'boolean',
         'policy_amount' => 'decimal:2',
     ];
-
-    /**
-     * Relación: Seguro - Propiedad (property_id)
-     */
-    public function property()
-    {
-        return $this->belongsTo(Property::class, 'property_id');
-    }
 
     public function setStartDateAttribute($value)
     {
@@ -79,12 +69,5 @@ class Insurance extends Model
     public function setRenewalIndicatorAttribute($value)
     {
         $this->attributes['renewal_indicator'] = filter_var($value, FILTER_VALIDATE_BOOLEAN);
-    }
-
-    public function getDocumentAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_insurance')->url($value);
-        }
     }
 }

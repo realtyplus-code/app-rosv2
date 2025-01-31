@@ -6,6 +6,8 @@ use App\Models\Incident\Incident;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
 use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
 use App\Interfaces\IncidentProvider\IncidentProviderRepositoryInterface;
@@ -15,13 +17,21 @@ class IncidentService
     protected $incidentRepository;
     protected $incidentProviderRepository;
     protected $enumOptionRepository;
+    protected $attachmentService;
     protected $fileService;
+    private $disk = 'disk_incident';
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
     private $listDocuments = ['document', 'document1'];
 
-    public function __construct(IncidentRepositoryInterface $incidentRepository, IncidentProviderRepositoryInterface $incidentProviderRepository, EnumOptionRepositoryInterface $enumOptionRepository, FileService $fileService)
-    {
+    public function __construct(
+        IncidentRepositoryInterface $incidentRepository,
+        IncidentProviderRepositoryInterface $incidentProviderRepository,
+        EnumOptionRepositoryInterface $enumOptionRepository,
+        AttachmentService $attachmentService,
+        FileService $fileService
+    ) {
         $this->fileService = $fileService;
+        $this->attachmentService = $attachmentService;
         $this->incidentRepository = $incidentRepository;
         $this->incidentProviderRepository = $incidentProviderRepository;
         $this->enumOptionRepository = $enumOptionRepository;
@@ -60,14 +70,8 @@ class IncidentService
                     'e_cur.id',
                     'e_cur.name',
                     'incidents.cost',
-                    'incidents.photo',
-                    'incidents.photo1',
-                    'incidents.photo2',
-                    'incidents.photo3',
                     'incidents.created_at',
                     'incidents.updated_at',
-                    'incidents.document',
-                    'incidents.document1',
                 ]
             );
 
@@ -87,7 +91,7 @@ class IncidentService
             $data['reported_by'] = auth()->user()->id;
             $providers = $data['providers'];
             $incident = $this->incidentRepository->create($data);
-            $this->assignedPhoto($incident, $photos);
+            $this->assignAttachments($incident, $photos);
             $incident->save();
             foreach ($providers as $key => $value) {
                 $this->incidentProviderRepository->create([
@@ -153,27 +157,10 @@ class IncidentService
     public function deleteIncident($id)
     {
         try {
-            $currentIncident = Incident::find($id);
-            for ($i = 0; $i <= 5; $i++) {
-                $photoField = $i === 0 ? 'photo' : "photo{$i}";
-                if (!empty($currentIncident->$photoField)) {
-                    $this->fileService->deleteFile(
-                        cleanStorageUrl($currentIncident->$photoField, '/storage_incident/'),
-                        'disk_incident'
-                    );
-                }
-            }
-            for ($i = 0; $i <= 2; $i++) {
-                $documentField = $i === 0 ? 'document' : "document{$i}";
-                if (!empty($currentIncident->$documentField)) {
-                    $this->fileService->deleteFile(
-                        cleanStorageUrl($currentIncident->$documentField, '/storage_incident/'),
-                        'disk_incident'
-                    );
-                }
-            }
-            $this->incidentRepository->delete($id);
             $this->incidentProviderRepository->deleteByIncident($id);
+            if ($this->incidentRepository->delete($id)) {
+                $this->attachmentService->deleteByAttachable($id, Incident::class, $this->disk);
+            }
             return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -202,48 +189,40 @@ class IncidentService
         return $query->distinct();
     }
 
-    private function assignedPhoto(&$incident, $photos)
+    private function assignAttachments(&$incident, $photos)
     {
-        if (isset($photos[0])) {
-            $incident->photo = $this->fileService->saveFile($photos[0], 'photo', 'disk_incident');
-        }
-        if (isset($photos[1])) {
-            $incident->photo1 = $this->fileService->saveFile($photos[1], 'photo', 'disk_incident');
-        }
-        if (isset($photos[2])) {
-            $incident->photo2 = $this->fileService->saveFile($photos[2], 'photo', 'disk_incident');
-        }
-        if (isset($photos[3])) {
-            $incident->photo3 = $this->fileService->saveFile($photos[3], 'photo', 'disk_incident');
+        foreach ($this->listPhotos as $key => $value) {
+            if (isset($photos[$key])) {
+                $filePath = $this->fileService->saveFile($photos[$key], 'photo', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $incident->id,
+                    'attachable_type' => Incident::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PHOTO',
+                ]);
+            }
         }
     }
 
     public function addPhotoIncident($data)
     {
-        $flagColumn = null;
-        $incident = $this->incidentRepository->findById($data['incident_id']);
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if (empty($incident->{$column})) {
-                $incident->{$column} = $this->fileService->saveFile($data['photo'], 'photo', 'disk_incident');
-                $flagColumn = $incident->{$column};
-                $incident->save();
-                break;
-            }
-        }
-        return $flagColumn;
+        $filePath = $this->fileService->saveFile($data['photo'], 'photo', $this->disk);
+        $attachment = $this->attachmentService->store([
+            'attachable_id' => $data['incident_id'],
+            'attachable_type' => Incident::class,
+            'file_path' => $filePath,
+            'file_type' => 'PHOTO',
+        ]);
+        $attachment->file_path = Storage::disk($this->disk)->url($attachment->file_path);
+        return $attachment;
     }
 
     public function deletePhotoIncident($data)
     {
         try {
-            $matchingColumn = $this->findPhotoColumn($data['incident_id'], $data['photo']);
-            if ($matchingColumn) {
-                if ($this->fileService->deleteFile(cleanStorageUrl($matchingColumn[1][$matchingColumn[0]], '/storage_incident/'), 'disk_incident')) {
-                    Incident::where('id', $data['incident_id'])->update([
-                        $matchingColumn[0] => null
-                    ]);
-                }
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
             return true;
         } catch (\Exception $ex) {
@@ -253,63 +232,29 @@ class IncidentService
         }
     }
 
-    private function findPhotoColumn($id, $photo)
+    public function addPdf($data)
     {
-        $filename = basename($photo);
-        $incident = Incident::where('id', $id)
-            ->where(function ($query) use ($filename) {
-                $query->where('photo', 'LIKE', "%$filename%")
-                    ->orWhere('photo1', 'LIKE', "%$filename%")
-                    ->orWhere('photo2', 'LIKE', "%$filename%")
-                    ->orWhere('photo3', 'LIKE', "%$filename%");
-            })
-            ->first();
-
-        if (!$incident) {
-            return null;
-        }
-
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if ($incident->$column == $photo) {
-                return [$column, $incident->toArray()];
+        foreach ($this->listDocuments as $key => $value) {
+            if (isset($data['pdfs'][$key])) {
+                $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $data['incident_id'],
+                    'attachable_type' => Incident::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PDF',
+                ]);
             }
         }
-        return null;
     }
 
-    public function addPdfIncident($data)
-    {
-        $flagColumn = null;
-        $pdfs = $data['pdfs'];
-        $incident = $this->incidentRepository->findById($data['incident_id']);
-        $columns = $this->listDocuments;
-        foreach ($pdfs as $key => $pdf) {
-            foreach ($columns as $column) {
-                if (empty($incident->{$column})) {
-                    $incident->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_incident');
-                    $flagColumn = $incident->{$column};
-                    $incident->save();
-                    break;
-                }
-            }
-        }
-        return $flagColumn;
-    }
-
-    public function deletePdfIncident($data)
+    public function deletePdf($data)
     {
         try {
-            $incident = $this->incidentRepository->findById($data['incident_id']);
-            if ($data['type'] == 'document') {
-                $this->fileService->deleteFile(cleanStorageUrl($incident->document, '/storage_incident/'), 'disk_incident');
-                $incident->document = null;
-            } else {
-                $this->fileService->deleteFile(cleanStorageUrl($incident->document1, '/storage_incident/'), 'disk_incident');
-                $incident->document1 = null;
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
-            $incident->save();
-            return $incident;
+            return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

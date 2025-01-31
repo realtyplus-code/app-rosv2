@@ -579,7 +579,7 @@ export default {
                 try {
                     await axios.delete(`/occurrences/${incidentId}`);
                     this.$alertSuccess("Register delete");
-                    this.fetchIncident();
+                    this.reloadTable();
                 } catch (error) {
                     this.$readStatusHttp(error);
                 }
@@ -626,11 +626,10 @@ export default {
                     this.$readStatusHttp(error);
                 });
         },
-        deletePdf(pdfField) {
+        deletePdf(id) {
             this.$axios
                 .post(`/occurrences/document/delete`, {
-                    incident_id: this.selectedIncident.id,
-                    type: pdfField,
+                    attachment_id: id,
                 })
                 .then(() => {
                     this.$alertSuccess("File deleted successfully");

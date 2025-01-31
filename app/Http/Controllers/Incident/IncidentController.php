@@ -14,6 +14,7 @@ use App\Http\Requests\Incident\StoreIncidentRequest;
 use App\Http\Requests\Incident\ValidatePhotoRequest;
 use App\Http\Requests\Incident\UpdateIncidentRequest;
 use App\Http\Controllers\ResponseController as Response;
+use App\Models\Incident\Incident;
 
 class IncidentController extends Controller
 {
@@ -41,9 +42,8 @@ class IncidentController extends Controller
             if ($role !== 'admin' && !$request->has('property_id')) {
                 return Response::sendError(__('messages.controllers.warning.property_field_required'), 400);
             }
-
             $query = $this->incidentService->getIncidentsQuery($request->all());
-            return renderDataTable(
+            $response = renderDataTable(
                 $query,
                 $request,
                 [],
@@ -66,18 +66,14 @@ class IncidentController extends Controller
                     'e_cur.id as currency_id',
                     'e_cur.name as currency_name',
                     'incidents.cost',
-                    'incidents.photo',
-                    'incidents.photo1',
-                    'incidents.photo2',
-                    'incidents.photo3',
-                    'incidents.document',
-                    'incidents.document1',
                     'incidents.created_at',
                     'incidents.updated_at',
                     DB::raw('GROUP_CONCAT(CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name'),
                     DB::raw('COUNT(incident_actions.id) as incidents'),
                 ]
             );
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], Incident::class, 'disk_incident');
+            return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
@@ -185,7 +181,7 @@ class IncidentController extends Controller
     public function addPdf(ValidatePdfRequest $request)
     {
         try {
-            $pdf = $this->incidentService->addPdfIncident($request->all());
+            $pdf = $this->incidentService->addPdf($request->all());
             return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -197,7 +193,7 @@ class IncidentController extends Controller
     public function destroyPdf(Request $request)
     {
         try {
-            $this->incidentService->deletePdfIncident($request->all());
+            $this->incidentService->deletePdf($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

@@ -15,6 +15,7 @@ use App\Http\Requests\Property\StorePropertyRequest;
 use App\Http\Requests\Property\ValidatePhotoRequest;
 use App\Http\Requests\Property\UpdatePropertyRequest;
 use App\Http\Controllers\ResponseController as Response;
+use App\Models\Property\Property;
 
 class PropertyController extends Controller
 {
@@ -34,7 +35,7 @@ class PropertyController extends Controller
     {
         try {
             $query = $this->propertyService->getPropertiesQuery();
-            return renderDataTable(
+            $response = renderDataTable(
                 $query,
                 $request,
                 [],
@@ -51,21 +52,18 @@ class PropertyController extends Controller
                     'eci.name as city_name',
                     'eo_property_type.id as property_type_id',
                     'eo_property_type.name as property_type_name',
-                    'properties.photo',
-                    'properties.photo1',
-                    'properties.photo2',
-                    'properties.photo3',
-                    'properties.document',
                     'properties.created_at',
                     'properties.expected_end_date_ros',
                     'users.id as log_user_id',
                     'users.name as log_user_name',
                     DB::raw('GROUP_CONCAT(CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                     DB::raw('GROUP_CONCAT(CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                    DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
-                    DB::raw('COUNT(DISTINCT incidents.id) as incidents')
+                    DB::raw('COUNT(DISTINCT incidents.id) as incidents'),
+                    DB::raw('COUNT(DISTINCT insurances.id) as insurances')
                 ]
             );
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], Property::class, 'disk_property');
+            return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
@@ -94,7 +92,7 @@ class PropertyController extends Controller
 
     public function store(StorePropertyRequest $request)
     {
-        try { 
+        try {
             $property = $this->propertyService->storeProperty($request->all());
             return Response::sendResponse($property, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
@@ -177,7 +175,6 @@ class PropertyController extends Controller
             'Log User Name',
             'Owners Name',
             'Tenants Name',
-            'Insurances',
             'Incidents'
         ], $this->getDataToExport($request), [], ''), "User_{$currentDate}.xlsx",);
     }
@@ -217,7 +214,6 @@ class PropertyController extends Controller
                 'users.name as log_user_name',
                 DB::raw('GROUP_CONCAT(user_owner.name ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                 DB::raw('GROUP_CONCAT(user_tenant.name ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
                 DB::raw('COUNT(DISTINCT incidents.id) as incidents')
             ]
         );
@@ -226,7 +222,7 @@ class PropertyController extends Controller
     public function addPdf(ValidatePdfRequest $request)
     {
         try {
-            $pdf = $this->propertyService->addPdfIncident($request->all());
+            $pdf = $this->propertyService->addPdf($request->all());
             return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -238,7 +234,7 @@ class PropertyController extends Controller
     public function destroyPdf(Request $request)
     {
         try {
-            $this->propertyService->deletePdfIncident($request->all());
+            $this->propertyService->deletePdf($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

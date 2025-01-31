@@ -28,7 +28,6 @@ class UpdateInsuranceRequest extends FormRequest
             'contact_person' => 'required|string|max:255',
             'contact_email' => 'required|email|max:255',
             'insurance_type_id' => 'required|integer',
-            'property_id' => 'required|integer',
             'insurance_type_id' => 'required|integer',
             'position' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
@@ -38,7 +37,7 @@ class UpdateInsuranceRequest extends FormRequest
             'policy_number' => 'nullable|string|max:255',
             'renewal_indicator' => 'nullable|string',
             'renewal_months' => 'nullable|integer|min:1',
-            'policy_amount' => 'nullable|numeric|min:0',
+            'policy_amount' => 'required|numeric|min:0|max:9999999',
         ];
     }
 
@@ -66,9 +65,6 @@ class UpdateInsuranceRequest extends FormRequest
             'coverage_type_id.required' => 'The coverage type is required.',
             'coverage_type_id.integer' => 'The coverage type must be an integer.',
 
-            'property_id.required' => 'The property ID is required.',
-            'property_id.integer' => 'The property ID must be an integer.',
-
             'insurance_type_id.required' => 'The insurance type ID is required.',
             'insurance_type_id.integer' => 'The insurance type ID must be an integer.',
 
@@ -92,8 +88,10 @@ class UpdateInsuranceRequest extends FormRequest
             'renewal_indicator.string' => 'The renewal number must be a valid string.',
             'renewal_months.integer' => 'The renewal months must be an integer.',
             'renewal_months.min' => 'The renewal months must be at least 1.',
+            'policy_amount.required' => 'The policy amount is required.',
             'policy_amount.numeric' => 'The policy amount must be a number.',
             'policy_amount.min' => 'The policy amount must be at least 0.',
+            'policy_amount.max' => 'The policy amount may not be greater than 9999999.',
         ];
     }
 }

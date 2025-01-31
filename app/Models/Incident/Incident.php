@@ -21,12 +21,6 @@ class Incident extends Model
         'priority_id',
         'cost',
         'payer_id',
-        'photo',
-        'photo1',
-        'photo2',
-        'photo3',
-        'document',
-        'document1',
         'currency_id',
     ];
 
@@ -94,48 +88,6 @@ class Incident extends Model
     public function getReportDateAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d');
-    }
-
-    public function getPhotoAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident')->url($value);
-        }
-    }
-
-    public function getPhoto1Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident')->url($value);
-        }
-    }
-
-    public function getPhoto2Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident')->url($value);
-        }
-    }
-
-    public function getPhoto3Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident')->url($value);
-        }
-    }
-
-    public function getDocumentAttribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident')->url($value);
-        }
-    }
-
-    public function getDocument1Attribute($value)
-    {
-        if ($value) {
-            return Storage::disk('disk_incident')->url($value);
-        }
     }
 
 }

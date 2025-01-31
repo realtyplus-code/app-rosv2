@@ -51,7 +51,6 @@ class UserController extends Controller
                     'users.code_number',
                     'users.code_country',
                     'users.email',
-                    'users.photo',
                     DB::raw('GROUP_CONCAT(CONCAT(p.id, ":", p.name) ORDER BY p.name ASC SEPARATOR ";") as property_name'),
                 ]
             );

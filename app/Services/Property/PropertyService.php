@@ -2,28 +2,42 @@
 
 namespace App\Services\Property;
 
+use App\Models\Attachment;
 use App\Models\Property\Property;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Property\PropertyRepositoryInterface;
 use App\Interfaces\UserProperty\UserPropertyRepositoryInterface;
-
+use App\Interfaces\InsuranceProperty\InsurancePropertyRepositoryInterface;
 
 class PropertyService
 {
     protected $propertyRepository;
     protected $userPropertyRepository;
+    protected $insurancePropertyRepository;
+    protected $attachmentService;
     protected $fileService;
+    private $disk = 'disk_property';
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
     private $listDocuments = ['document'];
 
-    public function __construct(PropertyRepositoryInterface $propertyRepository, UserPropertyRepositoryInterface $userPropertyRepository, FileService $fileService)
-    {
+    public function __construct(
+        PropertyRepositoryInterface $propertyRepository,
+        UserPropertyRepositoryInterface $userPropertyRepository,
+        InsurancePropertyRepositoryInterface $insurancePropertyRepository,
+        AttachmentService $attachmentService,
+        FileService $fileService
+    ) {
         $this->fileService = $fileService;
+        $this->attachmentService = $attachmentService;
         $this->propertyRepository = $propertyRepository;
         $this->userPropertyRepository = $userPropertyRepository;
+        $this->insurancePropertyRepository = $insurancePropertyRepository;
     }
 
     public function getPropertiesQuery()
@@ -31,7 +45,6 @@ class PropertyService
         $query = Property::query()
             ->leftJoin('enum_options as eo_property_type', 'eo_property_type.id', '=', 'properties.property_type_id')
             ->leftJoin('user_properties', 'user_properties.property_id', '=', 'properties.id')
-            ->leftJoin('insurances', 'insurances.property_id', '=', 'properties.id')
             ->leftJoin('incidents', 'incidents.property_id', '=', 'properties.id')
             ->leftJoin('users as user_owner', function ($join) {
                 $join->on('user_owner.id', '=', 'user_properties.user_id')
@@ -51,20 +64,16 @@ class PropertyService
             ->leftJoin('enum_options as ec', 'ec.id', '=', 'properties.country')
             ->leftJoin('enum_options as es', 'es.id', '=', 'properties.state')
             ->leftJoin('enum_options as eci', 'eci.id', '=', 'properties.city')
+            ->leftJoin('insurance_property as ip', 'ip.property_id', '=', 'properties.id')
+            ->leftJoin('insurances', 'insurances.id', '=', 'ip.insurance_id')
             ->groupBy([
                 'properties.id',
-                'insurances.id',
                 'incidents.id',
                 'properties.name',
                 'properties.address',
                 'properties.status',
                 'eo_property_type.id',
                 'eo_property_type.name',
-                'properties.photo',
-                'properties.photo1',
-                'properties.photo2',
-                'properties.photo3',
-                'properties.document',
                 'ec.id',
                 'es.id',
                 'eci.id',
@@ -97,9 +106,10 @@ class PropertyService
             if (isset($data['tenants'])) {
                 $tenants = $data['tenants'];
             }
+            // proceso de creación de la propiedad
             $data['user_id'] = Auth::id();
             $property = $this->propertyRepository->create($data);
-            $this->assignedPhoto($property, $photos);
+            $this->assignAttachments($property, $photos);
             $property->save();
             foreach ($owners as $key => $value) {
                 $this->userPropertyRepository->create([
@@ -111,6 +121,12 @@ class PropertyService
                 $this->userPropertyRepository->create([
                     'property_id' => $property->id,
                     'user_id' => $value,
+                ]);
+            }
+            if (!empty($data['insurances'])) {
+                $this->insurancePropertyRepository->create([
+                    'property_id' => $property->id,
+                    'insurance_id' => $data['insurances']
                 ]);
             }
             DB::commit();
@@ -132,6 +148,7 @@ class PropertyService
             if (isset($data['tenants'])) {
                 $tenants = $data['tenants'];
             }
+            // proceso de actialización de la propiedad
             $property = $this->propertyRepository->update($id, $data);
             $this->userPropertyRepository->deleteByProperty($id);
             foreach ($owners as $key => $value) {
@@ -144,6 +161,13 @@ class PropertyService
                 $this->userPropertyRepository->create([
                     'property_id' => $property->id,
                     'user_id' => $value,
+                ]);
+            }
+            $this->insurancePropertyRepository->deleteByProperty($id);
+            if (!empty($data['insurances'])) {
+                $this->insurancePropertyRepository->create([
+                    'property_id' => $property->id,
+                    'insurance_id' => $data['insurances']
                 ]);
             }
             DB::commit();
@@ -159,24 +183,10 @@ class PropertyService
     public function deleteProperty($id)
     {
         try {
-            $currentProperty = Property::find($id);
-            for ($i = 0; $i <= 5; $i++) {
-                $photoField = $i === 0 ? 'photo' : "photo{$i}";
-                if (!empty($currentProperty->$photoField)) {
-                    $this->fileService->deleteFile(
-                        cleanStorageUrl($currentProperty->$photoField, '/storage_property/'),
-                        'disk_property'
-                    );
-                }
-            }
-            if (!empty($currentProperty->document)) {
-                $this->fileService->deleteFile(
-                    cleanStorageUrl($currentProperty->document, '/storage_property/'),
-                    'disk_property'
-                );
-            }
             $this->userPropertyRepository->deleteByProperty($id);
-            $this->propertyRepository->delete($id);
+            if ($this->propertyRepository->delete($id)) {
+                $this->attachmentService->deleteByAttachable($id, Property::class, $this->disk);
+            }
             return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -196,48 +206,40 @@ class PropertyService
         }
     }
 
-    private function assignedPhoto(&$property, $photos)
+    private function assignAttachments(&$property, $photos)
     {
-        if (isset($photos[0])) {
-            $property->photo = $this->fileService->saveFile($photos[0], 'photo', 'disk_property');
-        }
-        if (isset($photos[1])) {
-            $property->photo1 = $this->fileService->saveFile($photos[1], 'photo', 'disk_property');
-        }
-        if (isset($photos[2])) {
-            $property->photo2 = $this->fileService->saveFile($photos[2], 'photo', 'disk_property');
-        }
-        if (isset($photos[3])) {
-            $property->photo3 = $this->fileService->saveFile($photos[3], 'photo', 'disk_property');
+        foreach ($this->listPhotos as $key => $value) {
+            if (isset($photos[$key])) {
+                $filePath = $this->fileService->saveFile($photos[$key], 'photo', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $property->id,
+                    'attachable_type' => Property::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PHOTO',
+                ]);
+            }
         }
     }
 
     public function addPhotoProperty($data)
     {
-        $flagColumn = null;
-        $property = $this->propertyRepository->findById($data['property_id']);
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if (empty($property->{$column})) {
-                $property->{$column} = $this->fileService->saveFile($data['photo'], 'photo', 'disk_property');
-                $flagColumn = $property->{$column};
-                $property->save();
-                break;
-            }
-        }
-        return $flagColumn;
+        $filePath = $this->fileService->saveFile($data['photo'], 'photo', $this->disk);
+        $attachment = $this->attachmentService->store([
+            'attachable_id' => $data['property_id'],
+            'attachable_type' => Property::class,
+            'file_path' => $filePath,
+            'file_type' => 'PHOTO',
+        ]);
+        $attachment->file_path = Storage::disk($this->disk)->url($attachment->file_path);
+        return $attachment;
     }
 
     public function deletePhotoProperty($data)
     {
         try {
-            $matchingColumn = $this->findPhotoColumn($data['property_id'], $data['photo']);
-            if ($matchingColumn) {
-                if ($this->fileService->deleteFile(cleanStorageUrl($matchingColumn[1][$matchingColumn[0]], '/storage_property/'), 'disk_property')) {
-                    Property::where('id', $data['property_id'])->update([
-                        $matchingColumn[0] => null
-                    ]);
-                }
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
             return true;
         } catch (\Exception $ex) {
@@ -247,60 +249,29 @@ class PropertyService
         }
     }
 
-    private function findPhotoColumn($id, $photo)
+    public function addPdf($data)
     {
-        $filename = basename($photo);
-        $property = Property::where('id', $id)
-            ->where(function ($query) use ($filename) {
-                $query->where('photo', 'LIKE', "%$filename%")
-                    ->orWhere('photo1', 'LIKE', "%$filename%")
-                    ->orWhere('photo2', 'LIKE', "%$filename%")
-                    ->orWhere('photo3', 'LIKE', "%$filename%");
-            })
-            ->first();
-
-        if (!$property) {
-            return null;
-        }
-
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if ($property->$column == $photo) {
-                return [$column, $property->toArray()];
+        foreach ($this->listDocuments as $key => $value) {
+            if (isset($data['pdfs'][$key])) {
+                $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $data['property_id'],
+                    'attachable_type' => Property::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PDF',
+                ]);
             }
         }
-        return null;
     }
 
-    public function addPdfIncident($data)
-    {
-        $flagColumn = null;
-        $pdfs = $data['pdfs'];
-        $property = $this->propertyRepository->findById($data['property_id']);
-        $columns = $this->listDocuments;
-        foreach ($pdfs as $key => $pdf) {
-            foreach ($columns as $column) {
-                if (empty($property->{$column})) {
-                    $property->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_property');
-                    $flagColumn = $property->{$column};
-                    $property->save();
-                    break;
-                }
-            }
-        }
-        return $flagColumn;
-    }
-
-    public function deletePdfIncident($data)
+    public function deletePdf($data)
     {
         try {
-            $property = $this->propertyRepository->findById($data['property_id']);
-            if ($data['type'] == 'document') {
-                $this->fileService->deleteFile(cleanStorageUrl($property->document, '/storage_property/'), 'disk_property');
-                $property->document = null;
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
-            $property->save();
-            return $property;
+            return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

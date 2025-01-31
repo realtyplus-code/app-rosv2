@@ -20,12 +20,6 @@ return new class extends Migration
             $table->string('action_description', 1000)->nullable();
             $table->decimal('action_cost', 10, 2);
             $table->unsignedInteger('currency_id');
-            $table->string('photo')->nullable();
-            $table->string('photo1')->nullable();
-            $table->string('photo2')->nullable();
-            $table->string('photo3')->nullable();
-            $table->string('document')->nullable();
-            $table->string('document1')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('action_type_id');
             $table->unsignedInteger('status_id');
