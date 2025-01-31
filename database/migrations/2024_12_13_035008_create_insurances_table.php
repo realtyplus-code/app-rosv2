@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('code_number')->nullable();
             $table->string('code_country')->nullable();
             $table->string('country');
-            $table->unsignedBigInteger('property_id');
             $table->unsignedInteger('insurance_type_id');
             $table->boolean('renewal_indicator');
             $table->integer('renewal_months');
@@ -32,7 +31,6 @@ return new class extends Migration
             $table->string('document')->nullable();
             $table->timestamps();
 
-            $table->foreign('property_id')->references('id')->on('properties');
             $table->foreign('insurance_type_id')->references('id')->on('enum_options');
         });
     }

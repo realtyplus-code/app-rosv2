@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('code_number')->nullable();
             $table->string('code_country')->nullable();
-            $table->string('photo')->nullable();
             $table->string('email')->unique();
             $table->string('country')->nullable();
             $table->string('state')->nullable();

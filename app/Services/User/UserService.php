@@ -60,7 +60,6 @@ class UserService
                 'users.code_number',
                 'users.code_country',
                 'users.email',
-                'users.photo',
                 'users.address',
                 'users.user',
             ]);

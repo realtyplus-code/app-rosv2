@@ -221,7 +221,7 @@
                     >
                         <div class="card p-card gallery-card">
                             <img
-                                :src="getImageSource(photo)"
+                                :src="getImageSource(photo.file_path)"
                                 alt="Image"
                                 class="gallery-image"
                             />
@@ -233,7 +233,7 @@
                                     border-radius: 0px 0px 10px 10px;
                                 "
                                 @click="
-                                    removePhoto(index, photo, formProperty.id)
+                                    removePhoto(index, photo.id)
                                 "
                             >
                                 Delete
@@ -566,25 +566,12 @@ export default {
         clearError(field) {
             this.errors[field] = "";
         },
-        setPhotos() {
-            this.formProperty.photos = [null, null, null, null];
-            const possiblePhotos = [
-                this.selectedProperty.photo,
-                this.selectedProperty.photo1,
-                this.selectedProperty.photo2,
-                this.selectedProperty.photo3,
-            ];
-            possiblePhotos.forEach((photo) => {
-                for (let i = 0; i < this.formProperty.photos.length; i++) {
-                    if (this.formProperty.photos[i] === null && photo) {
-                        this.formProperty.photos[i] = photo;
-                        break;
-                    }
-                }
+        setPhotos(){
+            let images = [];
+            this.selectedProperty.photos.forEach(item => {
+                images.push(item);
             });
-            this.formProperty.photos = this.formProperty.photos.filter(
-                (photo) => photo !== null
-            );
+            this.formProperty.photos = images;
         },
         setDate() {
             this.formProperty.expected_end_date_ros = new Date(
@@ -636,7 +623,7 @@ export default {
                     )
                     .then((response) => {
                         this.$alertSuccess("Photo add!");
-                        this.formProperty.photos[index] = response.data.data;
+                        this.formProperty.photos.push(response.data.data);
                         this.$emit("reloadTable", true);
                     })
                     .catch((error) => {
@@ -645,11 +632,10 @@ export default {
             }
             event.target.value = "";
         },
-        removePhoto(index, name, id) {
+        removePhoto(index, idAttachment) {
             this.$axios
                 .post("/properties/photo/delete", {
-                    property_id: id,
-                    photo: name,
+                    attachment_id: idAttachment,
                 })
                 .then((response) => {
                     this.$alertSuccess("Photo deleted!");

@@ -10,19 +10,23 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
+use App\Services\Attachment\AttachmentService;
 use App\Http\Requests\Property\ValidatePdfRequest;
 use App\Http\Requests\Property\StorePropertyRequest;
 use App\Http\Requests\Property\ValidatePhotoRequest;
 use App\Http\Requests\Property\UpdatePropertyRequest;
 use App\Http\Controllers\ResponseController as Response;
+use App\Models\Property\Property;
 
 class PropertyController extends Controller
 {
+    protected $attachmentService;
     protected $propertyService;
 
-    public function __construct(PropertyService $propertyService)
+    public function __construct(PropertyService $propertyService, AttachmentService $attachmentService)
     {
         $this->propertyService = $propertyService;
+        $this->attachmentService = $attachmentService;
     }
 
     public function view()
@@ -34,7 +38,7 @@ class PropertyController extends Controller
     {
         try {
             $query = $this->propertyService->getPropertiesQuery();
-            return renderDataTable(
+            $response = renderDataTable(
                 $query,
                 $request,
                 [],
@@ -51,21 +55,23 @@ class PropertyController extends Controller
                     'eci.name as city_name',
                     'eo_property_type.id as property_type_id',
                     'eo_property_type.name as property_type_name',
-                    'properties.photo',
-                    'properties.photo1',
-                    'properties.photo2',
-                    'properties.photo3',
-                    'properties.document',
                     'properties.created_at',
                     'properties.expected_end_date_ros',
                     'users.id as log_user_id',
                     'users.name as log_user_name',
                     DB::raw('GROUP_CONCAT(CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                     DB::raw('GROUP_CONCAT(CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                    DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
                     DB::raw('COUNT(DISTINCT incidents.id) as incidents')
                 ]
             );
+            $photos = $this->attachmentService->getByFileTypeAndAttachable('PHOTO', Property::class, 'disk_property')->toArray();
+            $response->getCollection()->transform(function ($property) use ($photos) {
+                $property->photos = array_values(array_filter($photos, function ($photo) use ($property) {
+                    return $photo['attachable_id'] == $property['id'];
+                }));
+                return $property;
+            });
+            return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
@@ -94,7 +100,7 @@ class PropertyController extends Controller
 
     public function store(StorePropertyRequest $request)
     {
-        try { 
+        try {
             $property = $this->propertyService->storeProperty($request->all());
             return Response::sendResponse($property, __('messages.controllers.success.record_created_successfully'));
         } catch (\Exception $ex) {
@@ -177,7 +183,6 @@ class PropertyController extends Controller
             'Log User Name',
             'Owners Name',
             'Tenants Name',
-            'Insurances',
             'Incidents'
         ], $this->getDataToExport($request), [], ''), "User_{$currentDate}.xlsx",);
     }
@@ -217,7 +222,6 @@ class PropertyController extends Controller
                 'users.name as log_user_name',
                 DB::raw('GROUP_CONCAT(user_owner.name ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                 DB::raw('GROUP_CONCAT(user_tenant.name ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
-                DB::raw('COUNT(DISTINCT insurances.id) as insurances'),
                 DB::raw('COUNT(DISTINCT incidents.id) as incidents')
             ]
         );

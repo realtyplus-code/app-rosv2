@@ -58,10 +58,11 @@ export default {
         },
         $getImages(data) {
             let images = [];
-            if (data.photo) images.push(data.photo);
-            if (data.photo1) images.push(data.photo1);
-            if (data.photo2) images.push(data.photo2);
-            if (data.photo3) images.push(data.photo3);
+            if (Array.isArray(data.photos)) {
+                data.photos.forEach(item => {
+                    images.push(item.file_path);
+                });
+            }
             return images;
         },
         $exportToExcel(exportPath, filterData, name) {

@@ -16,11 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('status');
-            $table->string('photo')->nullable();
-            $table->string('photo1')->nullable();
-            $table->string('photo2')->nullable();
-            $table->string('photo3')->nullable();
-            $table->string('document')->nullable();
             $table->string('country')->nullable();
             $table->string('state')->nullable();
             $table->string('city')->nullable();
