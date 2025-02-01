@@ -242,7 +242,7 @@
                 <!-- Insurances Type Name Column -->
                 <Column
                     field="insurances"
-                    header="Insurances"
+                    header="Insurance"
                     style="min-width: 120px"
                 >
                     <template #body="{ data }">

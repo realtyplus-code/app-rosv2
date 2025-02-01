@@ -84,6 +84,7 @@ class PropertyService
                 'properties.expected_end_date_ros',
                 'users.id',
                 'users.name',
+                'insurances.id'
             ]);
 
         return $query->distinct();

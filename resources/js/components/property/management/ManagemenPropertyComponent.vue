@@ -375,6 +375,7 @@ export default {
                 this.formProperty.tenants = currentTenantsName.map(
                     (tenat) => tenat.id
                 );
+                this.formProperty.insurances = this.selectedProperty.insurances_id;
                 this.setDate();
                 this.setPhotos();
                 if (this.selectedProperty.country_id) {
