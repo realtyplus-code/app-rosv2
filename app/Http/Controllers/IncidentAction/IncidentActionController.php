@@ -13,6 +13,7 @@ use App\Http\Requests\IncidentAction\ValidatePdfRequest;
 use App\Http\Requests\IncidentAction\ValidatePhotoRequest;
 use App\Http\Requests\IncidentAction\StoreIncidentActionRequest;
 use App\Http\Requests\IncidentAction\UpdateIncidentActionRequest;
+use App\Models\IncidentAction\IncidentAction;
 
 class IncidentActionController extends Controller
 {
@@ -31,14 +32,13 @@ class IncidentActionController extends Controller
     public function index(Request $request)
     {
         try {
-            
+
             $role = Auth::user()->getRoleNames()[0];
             if ($role !== 'admin' && !$request->has('incident_id')) {
                 return Response::sendError(__('messages.controllers.warning.incident_field_required'), 400);
             }
-
             $query = $this->incidentActionService->getIncidentActionQuery($request->all());
-            return renderDataTable(
+            $response = renderDataTable(
                 $query,
                 $request,
                 [],
@@ -54,12 +54,6 @@ class IncidentActionController extends Controller
                     'incident_actions.action_description',
                     'incident_actions.action_date',
                     'incident_actions.action_cost',
-                    'incident_actions.photo',
-                    'incident_actions.photo1',
-                    'incident_actions.photo2',
-                    'incident_actions.photo3',
-                    'incident_actions.document',
-                    'incident_actions.document1',
                     'incident_actions.created_at',
                     'incident_actions.updated_at',
                     'eat.id as action_type_id',
@@ -72,6 +66,8 @@ class IncidentActionController extends Controller
                     'user_log.name as log_user_name',
                 ]
             );
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], IncidentAction::class, 'disk_incident_action');
+            return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
@@ -155,7 +151,7 @@ class IncidentActionController extends Controller
     public function addPdf(ValidatePdfRequest $request)
     {
         try {
-            $pdf = $this->incidentActionService->addPdfIncident($request->all());
+            $pdf = $this->incidentActionService->addPdf($request->all());
             return Response::sendResponse($pdf, __('messages.controllers.success.record_added_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -167,7 +163,7 @@ class IncidentActionController extends Controller
     public function destroyPdf(Request $request)
     {
         try {
-            $this->incidentActionService->deletePdfIncident($request->all());
+            $this->incidentActionService->deletePdf($request->all());
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

@@ -528,11 +528,10 @@ export default {
                     this.$readStatusHttp(error);
                 });
         },
-        deletePdf(pdfField) {
+        deletePdf(id) {
             this.$axios
                 .post(`/occurrences-action/document/delete`, {
-                    incident_id: this.selectedIncident.id,
-                    type: pdfField,
+                    attachment_id: id,
                 })
                 .then(() => {
                     this.$alertSuccess("File deleted successfully");

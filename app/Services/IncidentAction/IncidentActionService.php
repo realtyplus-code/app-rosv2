@@ -5,19 +5,24 @@ namespace App\Services\IncidentAction;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Models\IncidentAction\IncidentAction;
+use App\Services\Attachment\AttachmentService;
 use App\Interfaces\IncidentAction\IncidentActionRepositoryInterface;
 
 class IncidentActionService
 {
     protected $incidentActionRepository;
     protected $fileService;
+    protected $attachmentService;
+    private $disk = 'disk_incident_action';
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
     private $listDocuments = ['document', 'document1'];
 
-    public function __construct(IncidentActionRepositoryInterface $incidentActionRepository, FileService $fileService)
+    public function __construct(IncidentActionRepositoryInterface $incidentActionRepository, AttachmentService $attachmentService, FileService $fileService)
     {
         $this->fileService = $fileService;
+        $this->attachmentService = $attachmentService;
         $this->incidentActionRepository = $incidentActionRepository;
     }
 
@@ -56,7 +61,7 @@ class IncidentActionService
             unset($data['photo']);
             $data['user_id'] = auth()->user()->id;
             $incidentAction = $this->incidentActionRepository->create($data);
-            $this->assignedPhoto($incidentAction, $photos);
+            $this->assignAttachments($incidentAction, $photos);
             $incidentAction->save();
             DB::commit();
             return $incidentAction;
@@ -86,26 +91,9 @@ class IncidentActionService
     public function deleteIncident($id)
     {
         try {
-            $currentIncident = IncidentAction::find($id);
-            for ($i = 0; $i <= 5; $i++) {
-                $photoField = $i === 0 ? 'photo' : "photo{$i}";
-                if (!empty($currentIncident->$photoField)) {
-                    $this->fileService->deleteFile(
-                        cleanStorageUrl($currentIncident->$photoField, '/storage_incident_action/'),
-                        'disk_incident_action'
-                    );
-                }
+            if ($this->incidentActionRepository->delete($id)) {
+                $this->attachmentService->deleteByAttachable($id, IncidentAction::class, $this->disk);
             }
-            for ($i = 0; $i <= 2; $i++) {
-                $documentField = $i === 0 ? 'document' : "document{$i}";
-                if (!empty($currentIncident->$documentField)) {
-                    $this->fileService->deleteFile(
-                        cleanStorageUrl($currentIncident->$documentField, '/storage_incident_action/'),
-                        'disk_incident_action'
-                    );
-                }
-            }
-            $this->incidentActionRepository->delete($id);
             return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -125,48 +113,40 @@ class IncidentActionService
         }
     }
 
-    private function assignedPhoto(&$incidentAction, $photos)
+    private function assignAttachments(&$incidentAction, $photos)
     {
-        if (isset($photos[0])) {
-            $incidentAction->photo = $this->fileService->saveFile($photos[0], 'photo', 'disk_incident_action');
-        }
-        if (isset($photos[1])) {
-            $incidentAction->photo1 = $this->fileService->saveFile($photos[1], 'photo', 'disk_incident_action');
-        }
-        if (isset($photos[2])) {
-            $incidentAction->photo2 = $this->fileService->saveFile($photos[2], 'photo', 'disk_incident_action');
-        }
-        if (isset($photos[3])) {
-            $incidentAction->photo3 = $this->fileService->saveFile($photos[3], 'photo', 'disk_incident_action');
+        foreach ($this->listPhotos as $key => $value) {
+            if (isset($photos[$key])) {
+                $filePath = $this->fileService->saveFile($photos[$key], 'photo', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $incidentAction->id,
+                    'attachable_type' => IncidentAction::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PHOTO',
+                ]);
+            }
         }
     }
 
     public function addPhotoIncident($data)
     {
-        $flagColumn = null;
-        $incidentAction = $this->incidentActionRepository->findById($data['incident_id']);
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if (empty($incidentAction->{$column})) {
-                $incidentAction->{$column} = $this->fileService->saveFile($data['photo'], 'photo', 'disk_incident_action');
-                $flagColumn = $incidentAction->{$column};
-                $incidentAction->save();
-                break;
-            }
-        }
-        return $flagColumn;
+        $filePath = $this->fileService->saveFile($data['photo'], 'photo', $this->disk);
+        $attachment = $this->attachmentService->store([
+            'attachable_id' => $data['incident_id'],
+            'attachable_type' => IncidentAction::class,
+            'file_path' => $filePath,
+            'file_type' => 'PHOTO',
+        ]);
+        $attachment->file_path = Storage::disk($this->disk)->url($attachment->file_path);
+        return $attachment;
     }
 
     public function deletePhotoIncident($data)
     {
         try {
-            $matchingColumn = $this->findPhotoColumn($data['incident_id'], $data['photo']);
-            if ($matchingColumn) {
-                if ($this->fileService->deleteFile(cleanStorageUrl($matchingColumn[1][$matchingColumn[0]], '/storage_incident_action/'), 'disk_incident_action')) {
-                    IncidentAction::where('id', $data['incident_id'])->update([
-                        $matchingColumn[0] => null
-                    ]);
-                }
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
             return true;
         } catch (\Exception $ex) {
@@ -176,63 +156,29 @@ class IncidentActionService
         }
     }
 
-    private function findPhotoColumn($id, $photo)
+    public function addPdf($data)
     {
-        $filename = basename($photo);
-        $incidentAction = IncidentAction::where('id', $id)
-            ->where(function ($query) use ($filename) {
-                $query->where('photo', 'LIKE', "%$filename%")
-                    ->orWhere('photo1', 'LIKE', "%$filename%")
-                    ->orWhere('photo2', 'LIKE', "%$filename%")
-                    ->orWhere('photo3', 'LIKE', "%$filename%");
-            })
-            ->first();
-
-        if (!$incidentAction) {
-            return null;
-        }
-
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if ($incidentAction->$column == $photo) {
-                return [$column, $incidentAction->toArray()];
+        foreach ($this->listDocuments as $key => $value) {
+            if (isset($data['pdfs'][$key])) {
+                $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $data['incident_id'],
+                    'attachable_type' => IncidentAction::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PDF',
+                ]);
             }
         }
-        return null;
     }
 
-    public function addPdfIncident($data)
-    {
-        $flagColumn = null;
-        $pdfs = $data['pdfs'];
-        $incidentAction = $this->incidentActionRepository->findById($data['incident_id']);
-        $columns = $this->listDocuments;
-        foreach ($pdfs as $key => $pdf) {
-            foreach ($columns as $column) {
-                if (empty($incidentAction->{$column})) {
-                    $incidentAction->{$column} = $this->fileService->saveFile($pdf, 'pdf', 'disk_incident_action');
-                    $flagColumn = $incidentAction->{$column};
-                    $incidentAction->save();
-                    break;
-                }
-            }
-        }
-        return $flagColumn;
-    }
-
-    public function deletePdfIncident($data)
+    public function deletePdf($data)
     {
         try {
-            $incidentAction = $this->incidentActionRepository->findById($data['incident_id']);
-            if ($data['type'] == 'document') {
-                $this->fileService->deleteFile(cleanStorageUrl($incidentAction->document, '/storage_incident_action/'), 'disk_incident_action');
-                $incidentAction->document = null;
-            } else {
-                $this->fileService->deleteFile(cleanStorageUrl($incidentAction->document1, '/storage_incident_action/'), 'disk_incident_action');
-                $incidentAction->document1 = null;
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
-            $incidentAction->save();
-            return $incidentAction;
+            return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
