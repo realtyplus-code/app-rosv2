@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\User\UserService;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,7 @@ class UserController extends Controller
         try {
             $role = $request->query('role');
             $query = $this->userService->getUsersQuery($role);
-            return renderDataTable(
+            $response = renderDataTable(
                 $query,
                 $request,
                 ['roles', 'relatedUsers'],
@@ -54,6 +55,8 @@ class UserController extends Controller
                     DB::raw('GROUP_CONCAT(CONCAT(p.id, ":", p.name) ORDER BY p.name ASC SEPARATOR ";") as property_name'),
                 ]
             );
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], User::class, 'disk_user');
+            return $response;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

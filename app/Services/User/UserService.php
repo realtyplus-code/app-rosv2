@@ -7,11 +7,13 @@ use App\Mail\User\UserMail;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Role\RoleRepositoryInterface;
 use App\Interfaces\User\UserRepositoryInterface;
 use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
-use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -19,13 +21,21 @@ class UserService
     protected $roleRepository;
     protected $fileService;
     protected $userRelationRepository;
+    protected $attachmentService;
+    private $disk = 'disk_user';
     private $listPhotos = ['photo'];
 
-    public function __construct(UserRepositoryInterface $userRepository, RoleRepositoryInterface $roleRepository, UserRelationRepositoryInterface $userRelationRepository, FileService $fileService)
-    {
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        RoleRepositoryInterface $roleRepository,
+        UserRelationRepositoryInterface $userRelationRepository,
+        AttachmentService $attachmentService,
+        FileService $fileService
+    ) {
         $this->fileService = $fileService;
         $this->userRepository = $userRepository;
         $this->roleRepository = $roleRepository;
+        $this->attachmentService = $attachmentService;
         $this->userRelationRepository = $userRelationRepository;
     }
 
@@ -77,9 +87,9 @@ class UserService
             $data['password'] = Hash::make($data['password']);
             $user = $this->userRepository->create($data);
             $role = $this->roleRepository->findById($data['role']);
-            $this->assignedPhoto($user, $photos);
+            $this->assignAttachments($user, $photos);
 
-            if(isset($data['ros_clients'])){
+            if (isset($data['ros_clients'])) {
                 foreach ($data['ros_clients'] as $client) {
                     $this->userRelationRepository->create([
                         'user_id_related' => $user['id'],
@@ -88,7 +98,7 @@ class UserService
                     ]);
                 }
             }
-            
+
             $senEmail = false;
             if ($role && $user) {
                 $user->assignRole($role);
@@ -121,7 +131,7 @@ class UserService
                 $role = $this->roleRepository->findById($data['role']);
                 $user->assignRole($role);
             }
-            if(isset($data['ros_clients'])){
+            if (isset($data['ros_clients'])) {
                 $this->userRelationRepository->deleteByManagement($id);
                 foreach ($data['ros_clients'] as $client) {
                     $this->userRelationRepository->create([
@@ -144,9 +154,8 @@ class UserService
     public function deleteUser($id)
     {
         try {
-            $currentUser = User::find($id);
-            if ($this->fileService->deleteFile(cleanStorageUrl($currentUser->photo, '/storage_user/'), 'disk_user')) {
-                $this->userRepository->delete($id);
+            if ($this->userRepository->delete($id)) {
+                $this->attachmentService->deleteByAttachable($id, User::class, $this->disk);
             }
             return true;
         } catch (\Exception $ex) {
@@ -167,10 +176,18 @@ class UserService
         }
     }
 
-    private function assignedPhoto(&$user, $photos)
+    private function assignAttachments(&$user, $photos)
     {
-        if (isset($photos[0])) {
-            $user->photo = $this->fileService->saveFile($photos[0], 'photo', 'disk_user');
+        foreach ($this->listPhotos as $key => $value) {
+            if (isset($photos[$key])) {
+                $filePath = $this->fileService->saveFile($photos[$key], 'photo', $this->disk);
+                $this->attachmentService->store([
+                    'attachable_id' => $user->id,
+                    'attachable_type' => User::class,
+                    'file_path' => $filePath,
+                    'file_type' => 'PHOTO',
+                ]);
+            }
         }
     }
 
@@ -193,30 +210,23 @@ class UserService
 
     public function addPhotoUser($data)
     {
-        $flagColumn = null;
-        $user = $this->userRepository->findById($data['user_id']);
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if (empty($user->{$column})) {
-                $user->{$column} = $this->fileService->saveFile($data['photo'], 'photo', 'disk_user');
-                $flagColumn = $user->{$column};
-                $user->save();
-                break;
-            }
-        }
-        return $flagColumn;
+        $filePath = $this->fileService->saveFile($data['photo'], 'photo', $this->disk);
+        $attachment = $this->attachmentService->store([
+            'attachable_id' => $data['user_id'],
+            'attachable_type' => User::class,
+            'file_path' => $filePath,
+            'file_type' => 'PHOTO',
+        ]);
+        $attachment->file_path = Storage::disk($this->disk)->url($attachment->file_path);
+        return $attachment;
     }
 
     public function deletePhotoUser($data)
     {
         try {
-            $matchingColumn = $this->findPhotoColumn($data['user_id'], $data['photo']);
-            if ($matchingColumn) {
-                if ($this->fileService->deleteFile(cleanStorageUrl($matchingColumn[1][$matchingColumn[0]], '/storage_user/'), 'disk_user')) {
-                    User::where('id', $data['user_id'])->update([
-                        $matchingColumn[0] => null
-                    ]);
-                }
+            $attachment = $this->attachmentService->getById($data['attachment_id']);
+            if ($this->fileService->deleteFile($attachment->file_path, $this->disk)) {
+                $this->attachmentService->delete($data['attachment_id']);
             }
             return true;
         } catch (\Exception $ex) {
@@ -224,28 +234,6 @@ class UserService
             Log::info($ex->getMessage());
             throw $ex;
         }
-    }
-
-    private function findPhotoColumn($id, $photo)
-    {
-        $filename = basename($photo);
-        $user = User::where('id', $id)
-            ->where(function ($query) use ($filename) {
-                $query->where('photo', 'LIKE', "%$filename%");
-            })
-            ->first();
-
-        if (!$user) {
-            return null;
-        }
-
-        $columns = $this->listPhotos;
-        foreach ($columns as $column) {
-            if ($user->$column == $photo) {
-                return [$column, $user->toArray()];
-            }
-        }
-        return null;
     }
 
     public function getUsersByRole($roleName)
