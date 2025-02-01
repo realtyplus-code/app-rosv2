@@ -78,6 +78,9 @@ app.component("incident-action-component", IncidentActionComponent);
 import IncidentKanbanComponent from "./components/incident/IncidentKanbanComponent.vue";
 app.component("incident-kanban-component", IncidentKanbanComponent);
 
+import IncidentTemplateComponent from "./components/layout/IncidentTemplateComponent.vue";
+app.component("incident-template-component", IncidentTemplateComponent);
+
 // importacion de provider
 import ProviderComponent from "./components/provider/ProviderComponent.vue";
 app.component("provider-component", ProviderComponent);

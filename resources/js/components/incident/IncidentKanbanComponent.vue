@@ -1,8 +1,27 @@
 <template>
     <Card>
-        <template #title>Incident Kanban</template>
+        <template #title
+            ><h3 style="display: inline">Incident Kanban</h3>
+            <ProgressSpinner
+                style="width: 30px; height: 30px; margin-left: 20px"
+                strokeWidth="8"
+                fill="transparent"
+                animationDuration=".5s"
+                v-show="isLoad"
+        /></template>
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
+                <Button
+                    icon="pi pi-plus"
+                    rounded
+                    raised
+                    @click="addIncident"
+                    style="
+                        margin-right: 10px;
+                        background-color: #f76f31 !important;
+                        border-color: #f76f31;
+                    "
+                />
                 <Button
                     icon="pi pi-filter-slash"
                     class="p-button-sm"
@@ -66,7 +85,17 @@
                                 {{ incident.payer_name }}
                             </div>
                             <div class="incident-cost">
-                                {{ this.$formatCurrency(incident.cost, "EUR") }}
+                                <strong>Cost:</strong>
+                                {{
+                                    this.$formatCurrency(
+                                        incident.cost,
+                                        incident.currency_name ?? "USD"
+                                    )
+                                }}
+                            </div>
+                            <div class="incident-currency">
+                                <strong>Currency:</strong>
+                                {{ incident.currency_name }}
                             </div>
                             <div class="size-tags">
                                 <Tag
@@ -80,6 +109,16 @@
                             </div>
                             <!-- Acciones -->
                             <div class="row" style="margin-right: 10px">
+                                <Button
+                                    icon="pi pi-upload"
+                                    class="p-button-rounded p-button-success"
+                                    style="
+                                        margin: 5px;
+                                        background-color: #28a745;
+                                        border-color: #28a745;
+                                    "
+                                    @click="uploadPdfIncident(incident)"
+                                />
                                 <Button
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-primary"
@@ -116,6 +155,15 @@
         @reload="reload"
         @reloadTable="reloadTable"
     />
+    <UploadPdfModalComponent
+        v-if="dialogVisiblePdf"
+        :dialogVisible="dialogVisiblePdf"
+        :selectedRegister="selectedIncident"
+        :limit="2"
+        @hidden="hidden"
+        @uploadFiles="uploadFiles"
+        @deletePdf="deletePdf"
+    />
 </template>
 
 <script>
@@ -123,6 +171,7 @@
 
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagementIncidentComponent from "./management/ManagemenIncidentComponent.vue";
+import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 
 export default {
     props: [],
@@ -140,64 +189,27 @@ export default {
             //
             selectedIncident: null,
             dialogVisible: false,
+            dialogVisiblePdf: false,
             statuses: [
                 { value: "Opened", name: "opened", incidents: [] },
                 { value: "In Progress", name: "in progress", incidents: [] },
                 { value: "Closed", name: "closed", incidents: [] },
             ],
+            isLoad: false,
         };
     },
     components: {
         FilterMatchMode,
         FilterOperator,
         ManagementIncidentComponent,
+        UploadPdfModalComponent,
     },
-    created() {
-        this.initFilters();
-    },
+    created() {},
     mounted() {
         this.fetchIncident();
     },
     methods: {
-        initFilters() {
-            this.filters = {
-                description: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-                report_date: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-                status_name: {
-                    clear: false,
-                    filterOptions: {
-                        showFilterMenu: false,
-                    },
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.EQUALS },
-                    ],
-                },
-                type_name: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-                priority_name: {
-                    clear: false,
-                    constraints: [
-                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-                    ],
-                },
-            };
-        },
         clearFilters() {
-            this.initFilters();
             this.filtroInfo = [];
             this.fetchIncident();
         },
@@ -261,9 +273,17 @@ export default {
                 );
             });
         },
+        addIncident() {
+            this.selectedIncident = null;
+            this.dialogVisible = true;
+        },
         editIncident(incident) {
             this.selectedIncident = incident;
             this.dialogVisible = true;
+        },
+        uploadPdfIncident(incident) {
+            this.selectedIncident = incident;
+            this.dialogVisiblePdf = true;
         },
         async deleteIncident(incidentId) {
             const result = await this.$swal.fire({
@@ -297,8 +317,10 @@ export default {
         },
         hidden(status) {
             this.dialogVisible = status;
+            this.dialogVisiblePdf = status;
         },
         async onDragEnd(event, oldStatus) {
+            this.isLoad = true;
             const incidentId = event.item.getAttribute("data-id");
             if (!incidentId) return;
             const newStatus = event.to
@@ -310,11 +332,48 @@ export default {
                     type: "status",
                     status: newStatus,
                 });
-
+                this.isLoad = false;
                 this.fetchIncident();
             } catch (error) {
+                this.isLoad = false;
                 this.$readStatusHttp(error);
             }
+        },
+        async uploadFiles(pdfs) {
+            if (pdfs.length === 0) {
+                this.$alertWarning("No files selected for upload");
+                return;
+            }
+            const data = {
+                incident_id: this.selectedIncident.id,
+                pdfs: pdfs,
+            };
+            this.$axios
+                .post("/occurrences/document/add", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                })
+                .then(() => {
+                    this.$alertSuccess("Files uploaded successfully");
+                    this.fetchIncident();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
+        },
+        deletePdf(id) {
+            this.$axios
+                .post(`/occurrences/document/delete`, {
+                    attachment_id: id,
+                })
+                .then(() => {
+                    this.$alertSuccess("File deleted successfully");
+                    this.fetchIncident();
+                })
+                .catch((error) => {
+                    this.$readStatusHttp(error);
+                });
         },
     },
 };
@@ -344,7 +403,8 @@ export default {
 .incident-type,
 .incident-priority,
 .incident-payer,
-.incident-cost {
+.incident-cost,
+.incident-currency {
     margin-bottom: 0.25rem;
 }
 .size-tags {

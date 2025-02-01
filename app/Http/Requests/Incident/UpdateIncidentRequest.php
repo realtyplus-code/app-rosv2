@@ -13,6 +13,12 @@ class UpdateIncidentRequest extends FormRequest
 
     public function rules()
     {
+        if ($this->get('type') === 'status') {
+            return [
+                'status' => 'required|string',
+            ];
+        }
+
         return [
             'property_id' => 'nullable|exists:properties,id',
             'description' => 'required|string|max:1000',
