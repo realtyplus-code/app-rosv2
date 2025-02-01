@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('incident_type_id');
             $table->unsignedInteger('priority_id');
             $table->unsignedInteger('currency_id');
-            $table->decimal('cost', 10, 2);
+            $table->decimal('cost', 10, 2)->nullable();
             $table->unsignedInteger('payer_id');
             $table->timestamps();
 

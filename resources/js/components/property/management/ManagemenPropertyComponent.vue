@@ -458,9 +458,6 @@ export default {
                 country: Yup.string().required("Country is required"),
                 state: Yup.string().required("State is required"),
                 city: Yup.string().required("City is required"),
-                expected_end_date_ros: Yup.date().required(
-                    "Expected end date is required"
-                ),
             };
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -598,12 +595,14 @@ export default {
             this.formProperty.photos = images;
         },
         setDate() {
-            this.formProperty.expected_end_date_ros = new Date(
-                this.selectedProperty.expected_end_date_ros
-            );
-            this.formProperty.expected_end_date_ros.setDate(
-                this.formProperty.expected_end_date_ros.getDate() + 1
-            );
+            if (this.selectedProperty.expected_end_date_ros) {
+                this.formProperty.expected_end_date_ros = new Date(
+                    this.selectedProperty.expected_end_date_ros
+                );
+                this.formProperty.expected_end_date_ros.setDate(
+                    this.formProperty.expected_end_date_ros.getDate() + 1
+                );
+            }
         },
         onFileUpload() {
             const file_upload = this.$refs.fileUpload;

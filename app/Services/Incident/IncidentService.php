@@ -89,7 +89,10 @@ class IncidentService
             $photos = isset($data['photos']) ? $data['photos'] : [];
             unset($data['photo']);
             $data['reported_by'] = auth()->user()->id;
-            $providers = $data['providers'];
+            $providers = $data['providers'] ?? [];
+            $data['currency_id'] = $data['currency_id'] ?? null;
+            $data['cost'] = $data['cost'] ?? null;
+            
             $incident = $this->incidentRepository->create($data);
             $this->assignAttachments($incident, $photos);
             $incident->save();
@@ -114,8 +117,11 @@ class IncidentService
         DB::beginTransaction();
         try {
             $data['reported_by'] = auth()->user()->id;
-            $providers = $data['providers'];
+            $providers = $data['providers'] ?? [];
+            $data['currency_id'] = $data['currency_id'] ?? null;
+            $data['cost'] = $data['cost'] ?? null;
             $data['property_id'] = !isset($data['property_id']) ? null : $data['property_id'];
+
             $incident = $this->incidentRepository->update($id, $data);
             $this->incidentProviderRepository->deleteByIncident($id);
             foreach ($providers as $key => $value) {

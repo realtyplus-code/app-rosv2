@@ -20,13 +20,13 @@ class StoreIncidentRequest extends FormRequest
             'status_id' => 'required|exists:enum_options,id',
             'incident_type_id' => 'required|exists:enum_options,id',
             'priority_id' => 'required|exists:enum_options,id',
-            'cost' => 'required|numeric',
+            'cost' => 'nullable|numeric|min:0|max:999999999',
             'payer_id' => 'required|exists:enum_options,id',
             'photo' => 'nullable|array',
             'photo.*' => 'nullable|string|max:' . config('app.upload_max_filesize'),
             'pdf' => 'nullable|array',
             'pdf.*' => 'nullable|string|max:' . config('app.upload_max_filesize'),
-            'currency_id' => 'required|integer|min:1',
+            'currency_id' => 'nullable|integer|min:1',
         ];
     }
 
@@ -41,7 +41,6 @@ class StoreIncidentRequest extends FormRequest
             'status_id.required' => 'The status field is required.',
             'incident_type_id.required' => 'The incident type field is required.',
             'priority_id.required' => 'The priority field is required.',
-            'cost.required' => 'The cost field is required.',
             'payer_id.required' => 'The payer field is required.',
             'photo.array' => 'The photo field must be an array.',
             'photo.*.string' => 'Each photo must be a string.',
@@ -49,9 +48,11 @@ class StoreIncidentRequest extends FormRequest
             'pdf.array' => 'The pdf field must be an array.',
             'pdf.*.string' => 'Each pdf must be a string.',
             'pdf.*.max' => 'Each pdf may not be greater than :max kilobytes.',
-            'currency_id.required' => 'The currency field is required.',
             'currency_id.integer' => 'The currency must be an integer.',
             'currency_id.min' => 'The currency must be at least 1.',
+            'cost.numeric' => 'The cost must be a number.',
+            'cost.min' => 'The cost must be at least 0.',
+            'cost.max' => 'The cost may not be greater than 999999999.',
         ];
     }
 }

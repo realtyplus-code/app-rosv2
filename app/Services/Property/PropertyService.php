@@ -108,6 +108,7 @@ class PropertyService
             }
             // proceso de creación de la propiedad
             $data['user_id'] = Auth::id();
+            $data['expected_end_date_ros'] = $data['expected_end_date_ros'] ?? null;
             $property = $this->propertyRepository->create($data);
             $this->assignAttachments($property, $photos);
             $property->save();
@@ -148,7 +149,8 @@ class PropertyService
             if (isset($data['tenants'])) {
                 $tenants = $data['tenants'];
             }
-            // proceso de actialización de la propiedad
+            // proceso de actualización de la propiedad
+            $data['expected_end_date_ros'] = $data['expected_end_date_ros'] ?? null;
             $property = $this->propertyRepository->update($id, $data);
             $this->userPropertyRepository->deleteByProperty($id);
             foreach ($owners as $key => $value) {

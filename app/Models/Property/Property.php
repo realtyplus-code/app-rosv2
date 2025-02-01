@@ -29,12 +29,20 @@ class Property extends Model
 
     public function setExpectedEndDateRosAttribute($value)
     {
-        $this->attributes['expected_end_date_ros'] = Carbon::parse($value)->format('Y-m-d');
+        if (!empty($value)) {
+            $this->attributes['expected_end_date_ros'] = Carbon::parse($value)->format('Y-m-d');
+        } else {
+            $this->attributes['expected_end_date_ros'] = null;
+        }
     }
 
     public function getExpectedEndDateRosAttribute($value)
     {
-        return Carbon::parse($value)->format('Y-m-d');
+        if (!empty($value)) {
+            return Carbon::parse($value)->format('Y-m-d');
+        } else {
+            return null;
+        }
     }
 
     public function propertyType()

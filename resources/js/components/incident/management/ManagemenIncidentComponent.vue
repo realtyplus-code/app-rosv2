@@ -424,15 +424,13 @@ export default {
                     "Incident type is required"
                 ),
                 priority_id: Yup.string().required("Priority is required"),
-                cost: Yup.number().required("Cost is required"),
-                currency_id: Yup.number().required("Currency is required"),
                 payer_id: Yup.string().required("Payer is required"),
                 report_date: Yup.string().required("Report date is required"),
                 status_id: Yup.string().required("Status is required"),
-                providers: Yup.array().min(
+                /* providers: Yup.array().min(
                     1,
                     "At least one provider is required"
-                ),
+                ), */
                 /* photos: Yup.array()
                     .min(1, "At least 1 photo is required")
                     .max(4, "You can upload up to 4 photos")

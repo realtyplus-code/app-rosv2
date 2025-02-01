@@ -20,9 +20,9 @@ class UpdateIncidentRequest extends FormRequest
             'status_id' => 'required|exists:enum_options,id',
             'incident_type_id' => 'required|exists:enum_options,id',
             'priority_id' => 'required|exists:enum_options,id',
-            'cost' => 'required|numeric',
+            'cost' => 'nullable|numeric|min:0|max:999999999',
             'payer_id' => 'required|exists:enum_options,id',
-            'currency_id' => 'required|integer|min:1',
+            'currency_id' => 'nullable|integer|min:1',
         ];
     }
 
@@ -37,9 +37,10 @@ class UpdateIncidentRequest extends FormRequest
             'status_id.required' => 'The status field is required.',
             'incident_type_id.required' => 'The incident type field is required.',
             'priority_id.required' => 'The priority field is required.',
-            'cost.required' => 'The cost field is required.',
+            'cost.numeric' => 'The cost must be a number.',
+            'cost.min' => 'The cost must be at least 0.',
+            'cost.max' => 'The cost may not be greater than 999999999.',
             'payer_id.required' => 'The payer field is required.',
-            'currency_id.required' => 'The currency field is required.',
             'currency_id.integer' => 'The currency must be an integer.',
             'currency_id.min' => 'The currency must be at least 1.',
         ];
