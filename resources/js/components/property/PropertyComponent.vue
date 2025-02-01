@@ -401,7 +401,7 @@
                     </template>
                 </Column>
                 <Column
-                    header="Upload/Incidents"
+                    header="Upload"
                     style="min-width: 100px; text-align: center"
                 >
                     <template #body="slotProps">
@@ -414,18 +414,7 @@
                                     background-color: #28a745;
                                     border-color: #28a745;
                                 "
-                                @click="uploadPdfIncidentAction(slotProps.data)"
-                            />
-                            <Button
-                                icon="pi pi-exclamation-circle"
-                                class="p-button-rounded p-button-info"
-                                style="
-                                    margin: 5px;
-                                    background-color: #17a2b8;
-                                    border-color: #17a2b8;
-                                "
-                                @click="viewIncident(slotProps.data.id)"
-                                title="Incidents"
+                                @click="uploadPdf(slotProps.data)"
                             />
                         </div>
                     </template>
@@ -441,14 +430,6 @@
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
-    />
-    <!-- gestion de incidencias -->
-    <ManagemenIncidentComponent
-        v-if="dialogVisibleIncident"
-        :dialogVisible="dialogVisibleIncident"
-        :selectedPropertyId="selectedPropertyId"
-        @hidden="hiddenIncident"
-        @reload="reloadIncident"
     />
     <UploadPdfModalComponent
         v-if="dialogVisiblePdf"
@@ -466,7 +447,6 @@
 import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
-import ManagemenIncidentComponent from "../incident/management/ManagemenIncidentComponent.vue";
 
 export default {
     props: [],
@@ -485,7 +465,6 @@ export default {
             selectedProperty: null,
             selectedPropertyId: true,
             dialogVisible: false,
-            dialogVisibleIncident: false,
             statuses: [
                 { value: "Active", id: 1 },
                 { value: "Inactive", id: 2 },
@@ -498,7 +477,6 @@ export default {
         FilterMatchMode,
         FilterOperator,
         ManagemenPropertyComponent,
-        ManagemenIncidentComponent,
         UploadPdfModalComponent,
     },
     created() {
@@ -672,11 +650,6 @@ export default {
             this.selectedProperty = null;
             this.dialogVisible = false;
         },
-        reloadIncident() {
-            this.fetchProperty();
-            this.selectedPropertyId = null;
-            this.dialogVisibleIncident = false;
-        },
         reloadTable() {
             this.fetchProperty();
             this.resetGallery();
@@ -688,13 +661,6 @@ export default {
             this.dialogVisible = status;
             this.dialogVisiblePdf = status;
         },
-        hiddenIncident(status) {
-            this.dialogVisibleIncident = status;
-        },
-        viewIncident(id) {
-            this.selectedPropertyId = id;
-            this.dialogVisibleIncident = true;
-        },
         viewPanelInsurance(insurances, id) {
             if (insurances == 0) return;
             window.location.href = "/insurances?property_id=" + id;
@@ -705,7 +671,7 @@ export default {
             window.location.href = "/occurrences?property_id=" + id;
             return;
         },
-        uploadPdfIncidentAction(item) {
+        uploadPdf(item) {
             this.selectedProperty = item;
             this.dialogVisiblePdf = true;
         },
