@@ -13,11 +13,11 @@ use App\Http\Controllers\ResponseController as Response;
 
 class ProviderController extends Controller
 {
-    protected $incidentService;
+    protected $providerService;
 
-    public function __construct(ProviderService $incidentService)
+    public function __construct(ProviderService $providerService)
     {
-        $this->incidentService = $incidentService;
+        $this->providerService = $providerService;
     }
 
     public function view()
@@ -28,7 +28,7 @@ class ProviderController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = $this->incidentService->getProvidersQuery($request->all());
+            $query = $this->providerService->getProvidersQuery($request->all());
             return renderDataTable(
                 $query,
                 $request,
@@ -68,11 +68,27 @@ class ProviderController extends Controller
         }
     }
 
+    public function byTypeCount()
+    {
+        try {
+            $query = $this->providerService->getProvidersTypeQuery();
+            $response = $query->get([
+                DB::raw('CASE WHEN providers.status = 1 THEN "active" WHEN providers.status = 2 THEN "inactive" ELSE "unknown" END as type_name'),
+                DB::raw('COUNT(providers.id) as count'),
+            ]);
+            return Response::sendResponse($response, __('messages.controllers.success.records_fetched_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
     public function byProperty()
     {
         try {
             $data['status'] = 1;
-            $query = $this->incidentService->getProvidersQuery($data);
+            $query = $this->providerService->getProvidersQuery($data);
             $providers = $query->get(
                 [
                     'providers.id',
@@ -90,8 +106,8 @@ class ProviderController extends Controller
     public function store(StoreProviderRequest $request)
     {
         try {
-            $incident = $this->incidentService->storeProvider($request->all());
-            if($incident == 'FALSE EMAIL'){
+            $incident = $this->providerService->storeProvider($request->all());
+            if ($incident == 'FALSE EMAIL') {
                 return Response::sendError('FALSE EMAIL', 400);
             }
             return Response::sendResponse($incident, __('messages.controllers.success.record_created_successfully'));
@@ -105,7 +121,7 @@ class ProviderController extends Controller
     public function update(UpdateProviderRequest $request, $id)
     {
         try {
-            $incident = $this->incidentService->updateProvider($request->all(), $id);
+            $incident = $this->providerService->updateProvider($request->all(), $id);
             return Response::sendResponse($incident, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
@@ -117,7 +133,7 @@ class ProviderController extends Controller
     public function destroy($id)
     {
         try {
-            $this->incidentService->deleteProvider($id);
+            $this->providerService->deleteProvider($id);
             return Response::sendResponse(true, __('messages.controllers.success.record_deleted_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

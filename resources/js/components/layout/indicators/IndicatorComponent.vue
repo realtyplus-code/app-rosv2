@@ -1,47 +1,117 @@
 <template>
     <div class="indicator-container">
-        <h2>Dashboard</h2>
-        <p>{{ rolMessage }}</p>
         <div class="cards">
             <div class="card">
                 <div class="card-header">
                     <span class="card-title">
-                        <img src="/img/indicators/casa.png" alt="Properties" /> PROPERTIES</span
+                        <img src="/img/indicators/casa.png" alt="Properties" />
+                        PROPERTIES</span
                     >
                 </div>
                 <div class="card-body">
-                    <h3>1,685</h3>
+                    <div v-if="loadingProperties">Loading...</div>
+                    <div v-else>
+                        <h3>
+                            {{
+                                countProperties.actives + countProperties.inactives
+                            }}
+                        </h3>
+                        <div class="tag active-tag" title="Actives">
+                            <i class="pi pi-check-circle"></i>
+                            {{ countProperties.actives }}
+                        </div>
+                        <div class="tag inactive-tag" title="Inactives">
+                            <i class="pi pi-times-circle"></i>
+                            {{ countProperties.inactives }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <img
+                            src="/img/indicators/incidente.png"
+                            alt="Incidents"
+                        />
+                        INCIDENTS
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div v-if="loadingIncidents">Loading...</div>
+                    <div v-else>
+                        <h3>{{ totalIncidents }}</h3>
+                        <div
+                            v-for="incident in incidentCounts"
+                            :key="incident.type_name"
+                            :class="[
+                                'tag',
+                                incident.type_name.replace(' ', '-') + '-tag',
+                            ]"
+                            :title="incident.type_name"
+                        >
+                            <i :class="getIconClass(incident.type_name)"></i>
+                            {{ incident.count }}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-header">
                     <span class="card-title"
-                        ><img src="/img/indicators/incidente.png" alt="Incidents" />
-                        INCIDENTS</span
+                        ><img
+                            src="/img/indicators/seguro.png"
+                            alt="Insurances"
+                        />
+                        INSURANCES</span
                     >
                 </div>
                 <div class="card-body">
-                    <h3>52,368</h3>
+                    <div v-if="loadingInsurances">Loading...</div>
+                    <div v-else>
+                        <h3>{{ totalInsurances }}</h3>
+                        <div
+                            v-for="insurance in insuranceCounts"
+                            :key="insurance.type_name"
+                            :class="[
+                                'tag',
+                                insurance.type_name.replace(' ', '-') + '-tag',
+                            ]"
+                            :title="insurance.type_name"
+                        >
+                            <i :class="getIconClass(insurance.type_name)"></i>
+                            {{ insurance.count }}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-header">
                     <span class="card-title"
-                        ><img src="/img/indicators/seguro.png" alt="Insurances" /> INSURANCES</span
+                        ><img
+                            src="/img/indicators/proveedor.png"
+                            alt="Providers"
+                        />
+                        PROVIDERS</span
                     >
                 </div>
                 <div class="card-body">
-                    <h3>15.8</h3>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title"
-                        ><img src="/img/indicators/proveedor.png" alt="Providers" /> PROVIDERS</span
-                    >
-                </div>
-                <div class="card-body">
-                    <h3>2,345</h3>
+                    <div v-if="loadingProviders">Loading...</div>
+                    <div v-else>
+                        <h3>{{ totalProviders }}</h3>
+                        <div
+                            v-for="provider in providersCounts"
+                            :key="provider.type_name"
+                            :class="[
+                                'tag',
+                                provider.type_name.replace(' ', '-') + '-tag',
+                            ]"
+                            :title="provider.type_name"
+                        >
+                            <i :class="getIconClass(provider.type_name)"></i>
+                            {{ provider.count }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,40 +123,117 @@ export default {
     props: ["rol"],
     components: {},
     data() {
-        return {};
+        return {
+            countProperties: {
+                actives: 0,
+                inactives: 0,
+            },
+            incidentCounts: [],
+            totalIncidents: 0,
+            insuranceCounts: [],
+            totalInsurances: 0,
+            providersCounts: [],
+            totalProviders: 0,
+            loadingProperties: true,
+            loadingIncidents: true,
+            loadingInsurances: true,
+            loadingProviders: true,
+        };
     },
     computed: {},
-    mounted() {
-        if (Array.isArray(this.rol) && this.rol.length > 0) {
-            this.rolName = this.rol[0];
-            this.rolMessage = this.getWelcomeMessage(this.rolName);
-        }
+    mounted() {},
+    created() {
+        this.getPropertyTypeCount();
+        this.getIncidentTypeCount();
+        this.getInsuranceTypeCount();
+        this.getProvidersTypeCount();
     },
     methods: {
-        getWelcomeMessage(userRole) {
-            let message;
-            switch (userRole) {
-                case "owner":
-                    message =
-                        "Welcome back, Property Owner. Please review your properties.";
-                    break;
-                case "tenant":
-                    message =
-                        "Hello, Tenant. Please review your properties and reports.";
-                    break;
-                case "admin":
-                    message =
-                        "Welcome, Admin. You have full access to the system.";
-                    break;
-                case "providers":
-                    message =
-                        "Hello, Provider. Please review your assignments and tasks.";
-                    break;
+        getPropertyTypeCount() {
+            this.$axios
+                .get("/properties/byTypeCount")
+                .then((response) => {
+                    this.countProperties = response.data.data;
+                })
+                .catch((error) => {
+                    console.error("Error fetching properties data:", error);
+                })
+                .finally(() => {
+                    this.loadingProperties = false;
+                });
+        },
+        getIncidentTypeCount() {
+            this.$axios
+                .get("/occurrences/byTypeCount")
+                .then((response) => {
+                    this.incidentCounts = response.data.data;
+                    this.totalIncidents = this.incidentCounts.reduce(
+                        (sum, incident) => sum + incident.count,
+                        0
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching incidents data:", error);
+                })
+                .finally(() => {
+                    this.loadingIncidents = false;
+                });
+        },
+        getInsuranceTypeCount() {
+            this.$axios
+                .get("/insurances/byTypeCount")
+                .then((response) => {
+                    this.insuranceCounts = response.data.data;
+                    this.totalInsurances = this.insuranceCounts.reduce(
+                        (sum, insurance) => sum + insurance.count,
+                        0
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching insurances data:", error);
+                })
+                .finally(() => {
+                    this.loadingInsurances = false;
+                });
+        },
+        getProvidersTypeCount() {
+            this.$axios
+                .get("/providers/byTypeCount")
+                .then((response) => {
+                    this.providersCounts = response.data.data;
+                    this.totalProviders = this.providersCounts.reduce(
+                        (sum, provider) => sum + provider.count,
+                        0
+                    );
+                })
+                .catch((error) => {
+                    console.error("Error fetching insurances data:", error);
+                })
+                .finally(() => {
+                    this.loadingProviders = false;
+                });
+        },
+        getIconClass(typeName) {
+            switch (typeName.toLowerCase()) {
+                case "active":
+                    return "pi pi-check-circle";
+                case "inactive":
+                    return "pi pi-times-circle";
+                case "opened":
+                    return "pi pi-folder-open";
+                case "closed":
+                    return "pi pi-folder";
+                case "in progress":
+                    return "pi pi-spinner";
+                case "home":
+                    return "pi pi-home";
+                case "business":
+                    return "pi pi-briefcase";
+                case "rent default":
+                    return "pi pi-dollar";
                 default:
-                    message = "Welcome. Please check your profile.";
-                    break;
+                    return "pi pi-tag";
             }
-            return message;
         },
     },
 };
@@ -94,15 +241,15 @@ export default {
 <style scoped>
 .indicator-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: auto;
     text-align: left;
 }
 .cards {
     display: flex;
-    gap: 15px;
+    gap: 25px;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
 }
 .card {
     background: #f76f31;
@@ -110,7 +257,7 @@ export default {
     border-radius: 10px;
     padding: 10px;
     width: 100%;
-    max-width: 260px;
+    max-width: 300px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
 }
 .card-header {
@@ -119,7 +266,7 @@ export default {
     align-items: center;
     background-color: #f68049;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: 15px;
 }
 .card-title {
     font-weight: bold;
@@ -132,21 +279,49 @@ export default {
     text-align: center;
     margin-top: 10px;
 }
-.card-body h3 {
-    margin: 0;
-    font-size: 24px;
-}
 .card-body p {
     font-size: 12px;
 }
+.tag {
+    display: inline-block;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: black;
+    font-size: 12px;
+    margin: 5px 5px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.tag i {
+    margin-right: 5px;
+}
+.active-tag,
+.opened-tag,
+.home-tag {
+    background-color: #a4f0c8;
+}
+.inactive-tag {
+    background-color: #f6a49d;
+}
+.total-tag {
+    background-color: #d6d6d6;
+}
+.closed-tag,
+.business-tag {
+    background-color: #a4c8f0;
+}
+.in-progress-tag,
+.rent-default-tag {
+    background-color: #f6d6a4;
+}
 
-@media (max-width: 768px) {
+@media (max-width: 1400px) {
     .cards {
-        flex-direction: column;
-        align-items: center;
+        gap: 20px;
     }
     .card {
-        width: 90%;
+        max-width: 260px;
     }
 }
 </style>

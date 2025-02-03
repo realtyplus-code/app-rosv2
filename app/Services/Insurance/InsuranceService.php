@@ -25,7 +25,7 @@ class InsuranceService
         $this->insuranceRepository = $insuranceRepository;
     }
 
-    public function getInsurancesQuery($data)
+    public function getInsurancesQuery($data = [])
     {
         $query = Insurance::query()
             ->leftJoin('insurance_property', 'insurance_property.insurance_id', '=', 'insurances.id')
@@ -53,6 +53,15 @@ class InsuranceService
             Log::info($ex->getMessage());
             throw $ex;
         }
+    }
+
+    public function getIncidentsTypeQuery()
+    {
+        $query = Insurance::query()
+            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'insurances.insurance_type_id')
+            ->groupBy('e_ct.name');
+
+        return $query->distinct();
     }
 
     public function updateInsurance(array $data, $id)

@@ -4,7 +4,8 @@
             <div class="flex items-center gap-2">
                 <Avatar
                     image="/img/rentalcolorb.svg"
-                    style="width: 80%; justify-content: center"
+                    style="width: 80%; justify-content: center; cursor: pointer;"
+                    @click="route('home')"
                 />
             </div>
         </template>
@@ -135,8 +136,38 @@ export default {
         closeDrawer() {
             this.$emit("closeDrawer");
         },
-        route(path) {
-            this.$router.push({ name: path });
+        route(key) {
+            switch (key) {
+                case "user":
+                    window.location.href = "/users";
+                    break;
+                case "property":
+                    window.location.href = "/properties";
+                    break;
+                case "enum":
+                    window.location.href = "/enums";
+                    break;
+                case "home":
+                    window.location.href = "/home";
+                    break;
+                case "insurance":
+                    window.location.href = "/insurances";
+                    break;
+                case "occurrences":
+                    window.location.href = "/occurrences";
+                    break;
+                case "occurrences-kanban":
+                    window.location.href = "/occurrences/kanban";
+                    break;
+                case "occurrences-action":
+                    window.location.href = "/occurrences-action";
+                    break;
+                case "provider":
+                    window.location.href = "/providers";
+                    break;
+                default:
+                    break;
+            }
         },
     },
 };

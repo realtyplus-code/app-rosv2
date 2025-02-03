@@ -26,7 +26,7 @@ class StoreProviderRequest extends FormRequest
             'password' => 'required|string|max:255',
             'language_id' => 'required|integer',
             'website' => 'required|url|max:255',
-            'status' => 'required|boolean',
+            'status' => 'required',
             'providers' => 'required|array|min:1',
         ];
     }
@@ -59,7 +59,6 @@ class StoreProviderRequest extends FormRequest
             'website.url' => 'The website format is not valid.',
             'website.max' => 'The website may not be greater than 255 characters.',
             'status.required' => 'The status is required.',
-            'status.boolean' => 'The status must be true or false.',
             'providers.required' => 'At least one service is required.',
             'providers.array' => 'The providers must be an array.',
             'providers.min' => 'At least one provider is required.',
