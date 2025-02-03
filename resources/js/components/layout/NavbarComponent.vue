@@ -1,6 +1,13 @@
 <template>
     <Menubar class="custom-menubar">
         <template #start>
+            <Button
+                class="menu-button"
+                icon="pi pi-bars"
+                aria-label="Filter"
+                @click="toggleDrawer"
+                raised 
+            />
             <img
                 :src="logoPath"
                 alt="Logo"
@@ -15,94 +22,22 @@
         </template>
     </Menubar>
     <br /><br />
+    <DrawerComponent :visibleMenu="visibleMenu" @closeDrawer="hiddenMenu" />
 </template>
 
 <script>
 // Importar Librerias o Modulos
-
 import Menubar from "primevue/menubar";
+import DrawerComponent from "./DrawerComponent.vue";
 
 export default {
     props: [],
     data() {
         return {
+            visibleMenu: false,
             rolName: null,
             logoPath: `${window.location.origin}/img/rentalcolorb.svg`,
             menuItems: [
-                {
-                    label: "Properties",
-                    icon: "pi pi-warehouse",
-                    items: [
-                        {
-                            label: "Property",
-                            icon: "pi pi-home",
-                            command: () => {
-                                this.route("property");
-                            },
-                        },
-                        {
-                            label: "Insurance",
-                            icon: "pi pi-shield",
-                            command: () => {
-                                this.route("insurance");
-                            },
-                        },
-                        /*  {
-                            label: "Incident Kanban BETA!!!",
-                            icon: "pi pi-exclamation-triangle",
-                            command: () => {
-                                this.route("occurrences-kanban");
-                            },
-                        }, */
-                    ],
-                },
-                {
-                    label: "Incidents",
-                    icon: "pi pi-exclamation-circle",
-                    items: [
-                        {
-                            label: "Incident",
-                            icon: "pi pi-exclamation-triangle",
-                            command: () => {
-                                this.route("occurrences");
-                            },
-                        },
-                        {
-                            label: "Actions incident",
-                            icon: "pi pi-wrench",
-                            command: () => {
-                                this.route("occurrences-action");
-                            },
-                        },
-                    ],
-                },
-                {
-                    label: "Admin",
-                    icon: "pi pi-users",
-                    items: [
-                        {
-                            label: "User",
-                            icon: "pi pi-user",
-                            command: () => {
-                                this.route("user");
-                            },
-                        },
-                        {
-                            label: "Provider",
-                            icon: "pi pi-truck",
-                            command: () => {
-                                this.route("provider");
-                            },
-                        },
-                        {
-                            label: "Enum",
-                            icon: "pi pi-cog",
-                            command: () => {
-                                this.route("enum");
-                            },
-                        },
-                    ],
-                },
                 {
                     label: "Logout",
                     icon: "pi pi-sign-out",
@@ -115,6 +50,7 @@ export default {
     },
     components: {
         Menubar,
+        DrawerComponent,
     },
     created() {},
     mounted() {},
@@ -170,11 +106,27 @@ export default {
                     break;
             }
         },
+        toggleDrawer() {
+            this.visibleMenu = !this.visibleMenu;
+        },
+        hiddenMenu() {
+            this.visibleMenu = false;
+        },
     },
 };
 </script>
 
 <style scoped>
+.menu-button{
+    background-color: #f76f31;
+    border: none;
+}
+
+.menu-button:hover{
+    background-color: #fb8047 !important;
+    border: none !important;
+}
+
 .navbar-logo {
     width: 180px !important;
     margin-left: 20px !important;
@@ -188,9 +140,7 @@ export default {
 .swal2-confirm {
     background-color: #f76f31;
 }
-</style>
 
-<style>
 .menu-items {
     position: relative;
 }

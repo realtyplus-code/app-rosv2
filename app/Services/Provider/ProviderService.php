@@ -59,7 +59,7 @@ class ProviderService
                 'providers.updated_at',
             ]);
 
-        if(isset($data['status']) && $data['status'] != null) {
+        if (isset($data['status']) && $data['status'] != null) {
             $query->where('providers.status', $data['status']);
         }
 
@@ -92,6 +92,14 @@ class ProviderService
             Log::info($ex->getMessage());
             throw $ex;
         }
+    }
+
+    public function getProvidersTypeQuery()
+    {
+        $query = Provider::query()
+            ->groupBy('providers.status');
+
+        return $query->distinct();
     }
 
     public function updateProvider(array $data, $id)

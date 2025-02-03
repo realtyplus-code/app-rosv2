@@ -189,8 +189,8 @@ class IncidentService
     public function getIncidentsTypeQuery()
     {
         $query = Incident::query()
-            ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.incident_type_id')
-            ->groupBy('e_ct.name');
+            ->leftJoin('enum_options as e_st', 'e_st.id', '=', 'incidents.status_id')
+            ->groupBy('e_st.name');
 
         return $query->distinct();
     }

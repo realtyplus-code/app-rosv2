@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Insurance;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Insurance\Insurance;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +13,6 @@ use App\Http\Requests\Insurance\ValidatePdfRequest;
 use App\Http\Requests\Insurance\StoreInsuranceRequest;
 use App\Http\Requests\Insurance\UpdateInsuranceRequest;
 use App\Http\Controllers\ResponseController as Response;
-use App\Models\Insurance\Insurance;
 
 class InsuranceController extends Controller
 {
@@ -30,7 +31,6 @@ class InsuranceController extends Controller
     public function index(Request $request)
     {
         try {
-
             $role = Auth::user()->getRoleNames()[0];
             if ($role !== 'admin' && !$request->has('property_id')) {
                 return Response::sendError('The property field is required for non-admin users', 400);
@@ -66,6 +66,22 @@ class InsuranceController extends Controller
             );
             $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], Insurance::class, 'disk_insurance');
             return $response;
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function byTypeCount()
+    {
+        try {
+            $query = $this->insuranceService->getIncidentsTypeQuery();
+            $response = $query->get([
+                'e_ct.name as type_name',
+                DB::raw('COUNT(insurances.id) as count'),
+            ]);
+            return Response::sendResponse($response, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

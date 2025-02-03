@@ -9,6 +9,7 @@ Route::prefix('insurances')->middleware(['auth'])->group(function () {
     Route::post('/store', [InsuranceController::class, 'store'])->name('insurances.store');
     Route::post('/update/{id}', [InsuranceController::class, 'update'])->name('insurances.update');
     Route::delete('/{id}', [InsuranceController::class, 'destroy'])->name('insurances.destroy');
+    Route::get('/byTypeCount', [InsuranceController::class, 'byTypeCount'])->name('insurances.type.count');
     Route::post('/document/add', [InsuranceController::class, 'addPdf'])->name('insurances.add.pdf');
     Route::post('/document/delete', [InsuranceController::class, 'destroyPdf'])->name('insurances.destroy.pdf');
 });

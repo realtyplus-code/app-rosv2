@@ -86,7 +86,7 @@ class IncidentController extends Controller
         try {
             $query = $this->incidentService->getIncidentsTypeQuery();
             $response = $query->get([
-                'e_ct.name as type_name',
+                'e_st.name as type_name',
                 DB::raw('COUNT(incidents.id) as count'),
             ]);
             return Response::sendResponse($response, __('messages.controllers.success.records_fetched_successfully'));
