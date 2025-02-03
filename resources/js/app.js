@@ -33,6 +33,8 @@ import Password from "primevue/password";
 import ToggleButton from "primevue/togglebutton";
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
+import Drawer from 'primevue/drawer';
+import Avatar from "primevue/avatar";
 
 const i18n = createI18n({
     locale: "es", // Idioma predeterminado
@@ -51,6 +53,12 @@ app.component("navbar-component", NavBarComponent);
 
 import HomeComponent from "./components/layout/HomeComponent.vue";
 app.component("home-component", HomeComponent);
+
+import DrawerComponent from "./components/layout/DrawerComponent.vue";
+app.component("drawer-component", DrawerComponent);
+
+import IndicatorComponent from "./components/layout/indicators/IndicatorComponent.vue";
+app.component("indicator-component", IndicatorComponent);
 
 // importacion de properties
 import PropertyComponent from "./components/property/PropertyComponent.vue";
@@ -125,6 +133,8 @@ app.component("VueDraggableNext", VueDraggableNext);
 app.component("ToggleButton", ToggleButton);
 app.component("InputGroup", InputGroup);
 app.component("InputGroupAddon", InputGroupAddon);
+app.component("Drawer", Drawer);
+app.component("Avatar", Avatar);
 
 // Registrar funciones compartidas
 app.mixin(shared.AlertsComponent);
