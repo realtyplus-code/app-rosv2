@@ -58,7 +58,6 @@
             <div class="custom-form-column">
                 <Select
                     filter
-                    showClear
                     :options="listProperty"
                     v-model="formIncident.property_id"
                     placeholder="Select property"
@@ -423,6 +422,7 @@ export default {
                 incident_type_id: Yup.string().required(
                     "Incident type is required"
                 ),
+                property_id: Yup.string().required("Propiedad is required"),
                 priority_id: Yup.string().required("Priority is required"),
                 payer_id: Yup.string().required("Payer is required"),
                 report_date: Yup.string().required("Report date is required"),
