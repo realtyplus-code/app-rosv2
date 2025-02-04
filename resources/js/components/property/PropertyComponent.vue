@@ -1,9 +1,10 @@
 <template>
     <Card>
-        <template #title>Property</template>
+        <template #title>Property {{ roleName }}</template>
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    v-if="getPermissionsByRole('create_properties')"
                     icon="pi pi-plus"
                     rounded
                     raised
@@ -27,6 +28,7 @@
                     "
                 />
                 <Button
+                    v-if="getPermissionsByRole('export_properties')"
                     icon="pi pi-file-excel"
                     class="p-button-sm"
                     rounded
@@ -39,6 +41,7 @@
                     "
                 />
                 <Button
+                    v-if="getPermissionsByRole('export_properties')"
                     icon="pi pi-file-pdf"
                     class="p-button-sm"
                     rounded
@@ -449,9 +452,10 @@ import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenPropertyComponent from "./management/ManagemenPropertyComponent.vue";
 
 export default {
-    props: [],
+    props: ["role", "permissions"],
     data() {
         return {
+            roleName: this.role[0],
             users: [],
             perPage: 10,
             totalRecords: 0,
@@ -754,6 +758,11 @@ export default {
                 .catch((error) => {
                     this.$readStatusHttp(error);
                 });
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
         },
     },
 };

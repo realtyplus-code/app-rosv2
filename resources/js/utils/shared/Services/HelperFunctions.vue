@@ -136,6 +136,7 @@ export default {
                 currency: currency,
             }).format(value);
         },
+    
     },
 };
 </script>

@@ -12,33 +12,31 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         // Permisos
         $permissions = [
-            'view_own_properties',
+            'create_properties',
+            'edit_properties',
+            'list_properties',
+            'delete_properties',
             'create_incidents',
-            'view_own_incidents',
-            'download_incident_documents',
-            'view_incident_status',
-            'register_incidents',
-            'view_assigned_incidents',
-            'update_assigned_incident_status',
-            'upload_documents_to_incidents',
-            'access_contact_information',
-            'view_managed_properties',
-            'create_incidents_for_managed_properties',
-            'view_management_reports',
-            'download_managed_property_documents',
-            'view_assigned_ros_clients',
-            'open_manage_assign_incidents',
-            'change_incident_status',
-            'attach_files_to_incidents',
-            'generate_incident_reports',
-            'global_access',
-            'manage_global_incidents',
-            'view_global_reports',
-            'assign_managers',
-            'configure_roles_and_permissions',
-            'manage_users',
-            'manage_properties_incidents_insurances',
-            'link_ros_clients_to_managers'
+            'edit_incidents',
+            'list_incidents',
+            'delete_incidents',
+            'create_incidents_actions',
+            'edit_incidents_actions',
+            'list_incidents_actions',
+            'delete_incidents_actions',
+            'create_users',
+            'edit_users',
+            'list_users',
+            'delete_users',
+            'create_enums',
+            'edit_enums',
+            'list_enums',
+            'delete_enums',
+            'export_properties',
+            'create_providers',
+            'edit_providers',
+            'list_providers',
+            'delete_providers',
         ];
 
         foreach ($permissions as $permission) {
@@ -48,50 +46,77 @@ class RolesAndPermissionsSeeder extends Seeder
         // Roles y sus permisos
         $rolesAndPermissions = [
             'owner' => [
-                'view_own_properties',
+                'list_properties',
+                'list_incidents',
                 'create_incidents',
-                'view_own_incidents',
-                'download_incident_documents'
+                'edit_incidents',
+                'delete_incidents',
+                'export_properties',
             ],
             'tenant' => [
-                'view_incident_status',
-                'register_incidents'
+                'list_properties',
+                'list_incidents',
+                'create_incidents',
+                'edit_incidents',
+                'delete_incidents',
             ],
             'provider' => [
-                'view_assigned_incidents',
-                'update_assigned_incident_status',
-                'upload_documents_to_incidents',
-                'access_contact_information'
+                'list_incidents',
+                'edit_incidents',
+                'list_incidents_actions',
+                'create_incidents_actions',
+                'edit_incidents_actions',
+                'delete_incidents_actions',
             ],
             'ros_client' => [
-                'view_managed_properties',
-                'create_incidents_for_managed_properties',
-                'view_management_reports',
-                'download_managed_property_documents'
+                'list_properties',
+                'list_incidents',
+                'create_properties',
+                'edit_properties',
+                'delete_properties',
+                'export_properties',
             ],
             'ros_client_manager' => [
-                'view_assigned_ros_clients',
-                'open_manage_assign_incidents',
-                'change_incident_status',
-                'attach_files_to_incidents',
-                'generate_incident_reports'
+                'list_users',
+                'create_users',
+                'edit_users',
+                'delete_users',
             ],
             'global_manager' => [
-                'global_access',
-                'manage_global_incidents',
-                'view_global_reports',
-                'assign_managers'
+                'list_properties',
+                'list_incidents',
+                'list_users',
+                'create_users',
+                'edit_users',
+                'delete_users',
             ],
             'admin' => [
-                'configure_roles_and_permissions',
-                'manage_users',
-                'manage_properties_incidents_insurances',
-                'link_ros_clients_to_managers'
+                'list_properties',
+                'create_properties',
+                'edit_properties',
+                'delete_properties',
+                'list_incidents',
+                'create_incidents',
+                'edit_incidents',
+                'delete_incidents',
+                'list_incidents_actions',
+                'create_incidents_actions',
+                'edit_incidents_actions',
+                'delete_incidents_actions',
+                'list_users',
+                'create_users',
+                'edit_users',
+                'delete_users',
+                'list_enums',
+                'create_enums',
+                'edit_enums',
+                'delete_enums',
             ]
         ];
 
         foreach ($rolesAndPermissions as $roleName => $rolePermissions) {
             $role = Role::create(['name' => $roleName]);
+            //$role = Role::where(['name' => $roleName])->first();
             $role->givePermissionTo($rolePermissions);
         }
     }

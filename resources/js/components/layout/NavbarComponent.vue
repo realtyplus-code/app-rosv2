@@ -22,7 +22,7 @@
         </template>
     </Menubar>
     <br /><br />
-    <DrawerComponent :visibleMenu="visibleMenu" @closeDrawer="hiddenMenu" />
+    <DrawerComponent :visibleMenu="visibleMenu" :permissions="permissions" @closeDrawer="hiddenMenu" />
 </template>
 
 <script>
@@ -31,7 +31,7 @@ import Menubar from "primevue/menubar";
 import DrawerComponent from "./DrawerComponent.vue";
 
 export default {
-    props: [],
+    props: ["permissions"],
     data() {
         return {
             visibleMenu: false,

@@ -32,7 +32,7 @@ export default {
             const $t = this.$t; // Alias para facilitar
             const httpErrors = "httpErrors";
 
-            console.log(error);
+            console.log(response.status);
 
             switch (response.status) {
                 case 400:
@@ -47,6 +47,11 @@ export default {
                         $t(`${httpErrors}.401.message`)
                     );
                     setTimeout(() => (window.location.href = "/"), 2000);
+                    break;
+                case 403:
+                    this.$alertDanger(
+                        $t(`${httpErrors}.403.message`)
+                    );
                     break;
                 case 422:
                     this.$alertDanger(

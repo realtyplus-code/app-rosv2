@@ -38,10 +38,6 @@ class IncidentController extends Controller
     public function index(Request $request)
     {
         try {
-            $role = Auth::user()->getRoleNames()[0];
-            if ($role !== 'admin' && !$request->has('property_id')) {
-                return Response::sendError(__('messages.controllers.warning.property_field_required'), 400);
-            }
             $query = $this->incidentService->getIncidentsQuery($request->all());
             $response = renderDataTable(
                 $query,

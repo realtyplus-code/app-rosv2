@@ -34,7 +34,7 @@ class LoginController extends Controller
         // Intentar autenticación para usuarios
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/users');
+            return redirect()->intended('/properties');
         }
 
         // Intentar autenticación para proveedores
