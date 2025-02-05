@@ -12,6 +12,7 @@
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    v-if="getPermissionsByRole('create_incidents')"
                     icon="pi pi-plus"
                     rounded
                     raised
@@ -43,7 +44,7 @@
                     <h3>{{ status.name }}</h3>
                     <VueDraggableNext
                         :list="status.incidents"
-                        :group="{ name: 'incidents', pull: true, push: true }"
+                        :group="{ name: 'incidents', pull: getPermissionsByRole('edit_incidents'), push: getPermissionsByRole('edit_incidents') }"
                         class="task-list"
                         @end="onDragEnd($event, status.name)"
                     >
@@ -110,6 +111,9 @@
                             <!-- Acciones -->
                             <div class="row" style="margin-right: 10px">
                                 <Button
+                                    v-if="
+                                        getPermissionsByRole('edit_incidents')
+                                    "
                                     icon="pi pi-upload"
                                     class="p-button-rounded p-button-success"
                                     style="
@@ -120,6 +124,9 @@
                                     @click="uploadPdfIncident(incident)"
                                 />
                                 <Button
+                                    v-if="
+                                        getPermissionsByRole('edit_incidents')
+                                    "
                                     icon="pi pi-pencil"
                                     class="p-button-rounded p-button-primary"
                                     style="
@@ -130,6 +137,9 @@
                                     @click="editIncident(incident)"
                                 />
                                 <Button
+                                    v-if="
+                                        getPermissionsByRole('delete_incidents')
+                                    "
                                     icon="pi pi-trash"
                                     class="p-button-rounded p-button-danger"
                                     style="
@@ -174,7 +184,7 @@ import ManagementIncidentComponent from "./management/ManagemenIncidentComponent
 import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 
 export default {
-    props: [],
+    props: ["permissions"],
     data() {
         return {
             incidents: [],
@@ -374,6 +384,11 @@ export default {
                 .catch((error) => {
                     this.$readStatusHttp(error);
                 });
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
         },
     },
 };

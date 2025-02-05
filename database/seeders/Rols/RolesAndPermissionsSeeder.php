@@ -37,6 +37,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit_providers',
             'list_providers',
             'delete_providers',
+            'create_insurances',
+            'edit_insurances',
+            'list_insurances',
+            'delete_insurances',
         ];
 
         foreach ($permissions as $permission) {
@@ -49,16 +53,11 @@ class RolesAndPermissionsSeeder extends Seeder
                 'list_properties',
                 'list_incidents',
                 'create_incidents',
-                'edit_incidents',
-                'delete_incidents',
-                'export_properties',
             ],
             'tenant' => [
                 'list_properties',
                 'list_incidents',
                 'create_incidents',
-                'edit_incidents',
-                'delete_incidents',
             ],
             'provider' => [
                 'list_incidents',
@@ -103,6 +102,14 @@ class RolesAndPermissionsSeeder extends Seeder
                 'create_incidents_actions',
                 'edit_incidents_actions',
                 'delete_incidents_actions',
+                'create_providers',
+                'edit_providers',
+                'list_providers',
+                'delete_providers',
+                'create_insurances',
+                'edit_insurances',
+                'list_insurances',
+                'delete_insurances',
                 'list_users',
                 'create_users',
                 'edit_users',

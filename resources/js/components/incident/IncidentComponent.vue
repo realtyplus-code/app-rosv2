@@ -4,6 +4,7 @@
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    v-if="getPermissionsByRole('create_incidents')"
                     icon="pi pi-plus"
                     rounded
                     raised
@@ -307,12 +308,17 @@
                     </template>
                 </Column>
                 <Column
+                    v-if="
+                        getPermissionsByRole('edit_incidents') ||
+                        getPermissionsByRole('delete_incidents')
+                    "
                     header="Edit/Delete"
                     style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
                             <Button
+                                v-if="getPermissionsByRole('edit_incidents')"
                                 icon="pi pi-pencil"
                                 class="p-button-rounded p-button-primary"
                                 style="
@@ -323,6 +329,7 @@
                                 @click="editIncident(slotProps.data)"
                             />
                             <Button
+                                v-if="getPermissionsByRole('delete_incidents')"
                                 icon="pi pi-trash"
                                 class="p-button-rounded p-button-danger"
                                 style="
@@ -336,12 +343,17 @@
                     </template>
                 </Column>
                 <Column
+                    v-if="
+                        getPermissionsByRole('edit_incidents') ||
+                        getPermissionsByRole('create_incidents_actions')
+                    "
                     header="Upload/Manage"
                     style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
                             <Button
+                                v-if="getPermissionsByRole('edit_incidents')"
                                 icon="pi pi-upload"
                                 class="p-button-rounded p-button-success"
                                 style="
@@ -352,6 +364,11 @@
                                 @click="uploadPdfIncident(slotProps.data)"
                             />
                             <Button
+                                v-if="
+                                    getPermissionsByRole(
+                                        'create_incidents_actions'
+                                    )
+                                "
                                 icon="pi pi-cog"
                                 class="p-button-rounded p-button-success"
                                 style="
@@ -405,7 +422,7 @@ import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenIncidentActionComponent from "../incidentAction/management/ManagemenIncidentActionComponent.vue";
 
 export default {
-    props: [],
+    props: ["permissions"],
     data() {
         return {
             incidents: [],
@@ -643,6 +660,11 @@ export default {
             if (incidents == 0) return;
             window.location.href = "/occurrences-action?incident_id=" + id;
             return;
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
         },
     },
 };

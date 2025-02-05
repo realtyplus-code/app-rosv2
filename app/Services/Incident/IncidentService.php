@@ -6,6 +6,7 @@ use App\Models\Incident\Incident;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
@@ -44,42 +45,58 @@ class IncidentService
             ->leftJoin('incident_actions', 'incident_actions.incident_id', '=', 'incidents.id')
             ->leftJoin('providers', 'providers.id', '=', 'incident_provider.provider_id')
             ->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
+            ->leftJoin('user_properties', 'user_properties.property_id', '=', 'properties.id')
             ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.incident_type_id')
             ->leftJoin('enum_options as e_st', 'e_st.id', '=', 'incidents.status_id')
             ->leftJoin('enum_options as e_sev', 'e_sev.id', '=', 'incidents.priority_id')
             ->leftJoin('enum_options as e_py', 'e_py.id', '=', 'incidents.payer_id')
             ->leftJoin('enum_options as e_cur', 'e_cur.id', '=', 'incidents.currency_id')
-            ->leftJoin('users', 'users.id', '=', 'incidents.reported_by')
-            ->groupBy(
-                [
-                    'incidents.id',
-                    'incidents.description',
-                    'properties.id',
-                    'properties.name',
-                    'incidents.report_date',
-                    'e_st.id',
-                    'e_st.name',
-                    'users.id',
-                    'users.name',
-                    'e_sev.id',
-                    'e_sev.name',
-                    'e_ct.id',
-                    'e_ct.name',
-                    'e_py.id',
-                    'e_py.name',
-                    'e_cur.id',
-                    'e_cur.name',
-                    'incidents.cost',
-                    'incidents.created_at',
-                    'incidents.updated_at',
-                ]
-            );
+            ->leftJoin('users', 'users.id', '=', 'incidents.reported_by');
 
-        if (isset($data['property_id'])) {
-            $query->where('properties.id', $data['property_id']);
-        }
+        $this->getByUserRol($query);
+
+        $query->groupBy(
+            [
+                'incidents.id',
+                'incidents.description',
+                'properties.id',
+                'properties.name',
+                'incidents.report_date',
+                'e_st.id',
+                'e_st.name',
+                'users.id',
+                'users.name',
+                'e_sev.id',
+                'e_sev.name',
+                'e_ct.id',
+                'e_ct.name',
+                'e_py.id',
+                'e_py.name',
+                'e_cur.id',
+                'e_cur.name',
+                'incidents.cost',
+                'incidents.created_at',
+                'incidents.updated_at',
+            ]
+        );
+
+
 
         return $query;
+    }
+
+    private function getByUserRol(&$query)
+    {
+        switch (Auth::user()->getRoleNames()[0]) {
+            case 'owner':
+                case 'tenant':
+                    $userId = Auth::id();
+                    $query->where('user_properties.user_id', $userId);
+                    break;
+            default:
+                $query->where('properties.user_id', Auth::id());
+                break;
+        }
     }
 
     public function storeIncident(array $data)
@@ -92,7 +109,7 @@ class IncidentService
             $providers = $data['providers'] ?? [];
             $data['currency_id'] = $data['currency_id'] ?? null;
             $data['cost'] = $data['cost'] ?? null;
-            
+
             $incident = $this->incidentRepository->create($data);
             $this->assignAttachments($incident, $photos);
             $incident->save();

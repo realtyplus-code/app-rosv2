@@ -184,6 +184,24 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
+                <Select
+                    filter
+                    showClear
+                    :options="listClientRos"
+                    v-model="formProperty.client_ros_id"
+                    placeholder="Select client ros"
+                    :class="{ 'p-invalid': errors.client_ros_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.client_ros_id" class="p-error">{{
+                    errors.client_ros_id
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form">
+            <div class="custom-form-column">
                 <FloatLabel>
                     <DatePicker
                         showIcon
@@ -323,12 +341,14 @@ export default {
                 state: null,
                 city: null,
                 expected_end_date_ros: null,
+                client_ros_id: null,
             },
             errors: {},
             listPropertyType: [],
             listStatus: [],
             listOwners: [],
             listTenants: [],
+            listClientRos: [],
             // limite de seleccion
             limitOwners: 10,
             limitTenants: 10,
@@ -345,6 +365,14 @@ export default {
     watch: {},
     mounted() {
         this.$nextTick(async () => {
+            await this.initForm();
+        });
+    },
+    created() {
+        this.initServices();
+    },
+    methods: {
+        async initForm() {
             if (this.selectedProperty) {
                 const currentOwnersName = this.$parseTags(
                     this.selectedProperty.owners_name
@@ -369,13 +397,17 @@ export default {
                 this.formProperty.status = parseInt(
                     this.selectedProperty.status
                 );
+                this.formProperty.client_ros_id = parseInt(
+                    this.selectedProperty.user_ros_id
+                );
                 this.formProperty.owners = currentOwnersName.map(
                     (owner) => owner.id
                 );
                 this.formProperty.tenants = currentTenantsName.map(
                     (tenat) => tenat.id
                 );
-                this.formProperty.insurances = this.selectedProperty.insurances_id;
+                this.formProperty.insurances =
+                    this.selectedProperty.insurances_id;
                 this.setDate();
                 this.setPhotos();
                 if (this.selectedProperty.country_id) {
@@ -391,12 +423,7 @@ export default {
                     }
                 }
             }
-        });
-    },
-    created() {
-        this.initServices();
-    },
-    methods: {
+        },
         async initServices() {
             this.listStatus = [
                 { id: 1, name: "active" },
@@ -413,6 +440,7 @@ export default {
             // obtenemos los usuarios
             this.getUsers("owner");
             this.getUsers("tenant");
+            this.getUsers("ros_client");
             this.getInsurances();
         },
         getUsers(role = null) {
@@ -424,6 +452,8 @@ export default {
                         this.listOwners = response.data.data;
                     } else if (role === "tenant") {
                         this.listTenants = response.data.data;
+                    } else if (role === "ros_client") {
+                        this.listClientRos = response.data.data;
                     }
                 })
                 .catch((error) => {

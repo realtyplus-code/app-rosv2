@@ -19,6 +19,7 @@ class Property extends Model
         'state',
         'city',
         'user_id',
+        'client_ros_id',
         'expected_end_date_ros',
     ];
 

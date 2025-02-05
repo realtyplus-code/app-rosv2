@@ -36,6 +36,7 @@ class StorePropertyRequest extends FormRequest
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'expected_end_date_ros' => 'nullable|date',
+            'client_ros_id' => 'nullable|integer',
         ];
     }
 
@@ -84,6 +85,8 @@ class StorePropertyRequest extends FormRequest
             'city.max' => 'The city may not be greater than 255 characters.',
 
             'expected_end_date_ros.date' => 'The expected end date must be a valid date.',
+
+            'client_ros_id.integer' => 'The client ROS must be an integer.',
         ];
     }
 }

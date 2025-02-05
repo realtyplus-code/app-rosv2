@@ -21,10 +21,12 @@ return new class extends Migration
             $table->string('city')->nullable();
             $table->unsignedInteger('property_type_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('client_ros_id')->nullable();
             $table->date('expected_end_date_ros')->nullable();
             $table->timestamps();
             $table->foreign('property_type_id')->references('id')->on('enum_options');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('client_ros_id')->references('id')->on('users');
         });
     }
 

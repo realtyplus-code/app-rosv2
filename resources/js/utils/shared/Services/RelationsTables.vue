@@ -21,6 +21,8 @@ export default {
                     return "properties.created_at";
                 case "expected_end_date_ros":
                     return "properties.expected_end_date_ros";
+                case "user_ros_name":
+                    return "user_ros.name";
                 default:
                     return selector;
             }

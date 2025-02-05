@@ -6,11 +6,13 @@
     ></toggle-button>
     <component
         :is="checked ? 'incident-kanban-component' : 'incident-component'"
+        :permissions="permissions"
     ></component>
 </template>
 
 <script>
 export default {
+    props: ["permissions"],
     name: "IncidentTemplateComponent",
     data() {
         return {

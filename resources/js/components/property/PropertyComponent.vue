@@ -244,6 +244,7 @@
                 </Column>
                 <!-- Insurances Type Name Column -->
                 <Column
+                    v-if="getPermissionsByRole('list_insurances')"
                     field="insurances"
                     header="Insurance"
                     style="min-width: 120px"
@@ -304,6 +305,25 @@
                                 "
                             ></i>
                         </div>
+                    </template>
+                </Column>
+                <!-- Client Ros Column -->
+                <Column
+                    field="user_ros_name"
+                    header="Client Ros"
+                    sortable
+                    style="min-width: 180px"
+                >
+                    <template #body="{ data }">
+                        {{ data.user_ros_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by client"
+                        />
                     </template>
                 </Column>
                 <Column
@@ -375,12 +395,17 @@
                 </Column>
                 <!-- Actions Column -->
                 <Column
+                    v-if="
+                        getPermissionsByRole('edit_properties') ||
+                        getPermissionsByRole('delete_properties')
+                    "
                     header="Edit/Delete"
                     style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
                             <Button
+                                v-if="getPermissionsByRole('edit_properties')"
                                 icon="pi pi-pencil"
                                 class="p-button-rounded p-button-primary"
                                 style="
@@ -391,6 +416,7 @@
                                 @click="editProperty(slotProps.data)"
                             />
                             <Button
+                                v-if="getPermissionsByRole('delete_properties')"
                                 icon="pi pi-trash"
                                 class="p-button-rounded p-button-danger"
                                 style="
@@ -404,6 +430,7 @@
                     </template>
                 </Column>
                 <Column
+                    v-if="getPermissionsByRole('edit_properties')"
                     header="Upload"
                     style="min-width: 100px; text-align: center"
                 >
@@ -556,6 +583,12 @@ export default {
                     ],
                 },
                 expected_end_date_ros: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
+                user_ros_name: {
                     clear: false,
                     constraints: [
                         { value: null, matchMode: FilterMatchMode.STARTS_WITH },
