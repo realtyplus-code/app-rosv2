@@ -8,6 +8,7 @@ interface RoleRepositoryInterface
     public function update($id, array $attributes);
     public function delete($id);
     public function findById($id);
+    public function findByName($name);
     public function findAll();
     public function all();
 }

@@ -98,10 +98,10 @@ class PropertyService
 
     private function getByUserRol(&$query)
     {
+        $userId = Auth::id();
         switch (Auth::user()->getRoleNames()[0]) {
             case 'owner':
             case 'tenant':
-                $userId = Auth::id();
                 $query->whereExists(function ($subQuery) use ($userId) {
                     $subQuery->select(DB::raw(1))
                         ->from('user_properties')

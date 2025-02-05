@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <provider-component></provider-component>
+            <provider-component :permissions="{{ Auth::user()->getAllPermissions() }}"></provider-component>
         </div>
     </div>
 @endsection

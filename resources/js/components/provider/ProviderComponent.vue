@@ -4,6 +4,7 @@
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    v-if="getPermissionsByRole('create_providers')"
                     icon="pi pi-plus"
                     rounded
                     raised
@@ -325,7 +326,9 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        <a :href="data.website" target="_blank">{{ data.website }}</a>
+                        <a :href="data.website" target="_blank">{{
+                            data.website
+                        }}</a>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -376,12 +379,17 @@
                 </Column>
                 <!-- Actions Column -->
                 <Column
+                    v-if="
+                        getPermissionsByRole('edit_providers') ||
+                        getPermissionsByRole('delete_providers')
+                    "
                     header="Actions"
                     style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
                             <Button
+                                v-if="getPermissionsByRole('edit_providers')"
                                 icon="pi pi-pencil"
                                 class="p-button-rounded p-button-primary"
                                 style="
@@ -392,6 +400,7 @@
                                 @click="editProvider(slotProps.data)"
                             />
                             <Button
+                                v-if="getPermissionsByRole('delete_providers')"
                                 icon="pi pi-trash"
                                 class="p-button-rounded p-button-danger"
                                 style="
@@ -425,7 +434,7 @@ import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagementProviderComponent from "./management/ManagementProviderComponent.vue";
 
 export default {
-    props: [],
+    props: ["permissions"],
     data() {
         return {
             providers: [],
@@ -651,6 +660,11 @@ export default {
         },
         hidden(status) {
             this.dialogVisible = status;
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
         },
     },
 };

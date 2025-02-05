@@ -44,7 +44,11 @@
                     <h3>{{ status.name }}</h3>
                     <VueDraggableNext
                         :list="status.incidents"
-                        :group="{ name: 'incidents', pull: getPermissionsByRole('edit_incidents'), push: getPermissionsByRole('edit_incidents') }"
+                        :group="{
+                            name: 'incidents',
+                            pull: getPermissionsByRole('edit_incidents'),
+                            push: getPermissionsByRole('edit_incidents'),
+                        }"
                         class="task-list"
                         @end="onDragEnd($event, status.name)"
                     >
@@ -161,6 +165,7 @@
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
         :selectedIncident="selectedIncident"
+        :role="role"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
@@ -184,7 +189,7 @@ import ManagementIncidentComponent from "./management/ManagemenIncidentComponent
 import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 
 export default {
-    props: ["permissions"],
+    props: ["role", "permissions"],
     data() {
         return {
             incidents: [],

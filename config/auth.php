@@ -40,9 +40,9 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'proveedores' => [
+        'providers' => [
             'driver' => 'session',
-            'provider' => 'proveedores',
+            'provider' => 'providers',
         ],
     ],
 
@@ -68,7 +68,7 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-        'proveedores' => [
+        'providers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Provider\Provider::class,
         ],
@@ -105,8 +105,8 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
-        'proveedores' => [
-            'provider' => 'proveedores',
+        'providers' => [
+            'provider' => 'providers',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

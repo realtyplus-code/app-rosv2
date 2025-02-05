@@ -1,6 +1,6 @@
 <template>
     <Card>
-        <template #title>Property {{ roleName }}</template>
+        <template #title>Property</template>
         <template #content>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button

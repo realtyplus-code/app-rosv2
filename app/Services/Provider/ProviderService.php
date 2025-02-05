@@ -6,8 +6,10 @@ use App\Mail\User\UserMail;
 use App\Models\Provider\Provider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use App\Interfaces\Role\RoleRepositoryInterface;
 use App\Interfaces\Provider\ProviderRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
 
@@ -15,10 +17,12 @@ class ProviderService
 {
     protected $providerRepository;
     protected $providerServiceRepository;
+    protected $roleRepository;
 
-    public function __construct(ProviderRepositoryInterface $providerRepository, ProviderServiceRepositoryInterface $providerServiceRepository)
+    public function __construct(ProviderRepositoryInterface $providerRepository, RoleRepositoryInterface $roleRepository, ProviderServiceRepositoryInterface $providerServiceRepository)
     {
         $this->providerRepository = $providerRepository;
+        $this->roleRepository = $roleRepository;
         $this->providerServiceRepository = $providerServiceRepository;
     }
 
@@ -31,39 +35,54 @@ class ProviderService
             ->leftJoin('enum_options as es', 'es.id', '=', 'providers.state')
             ->leftJoin('enum_options as eci', 'eci.id', '=', 'providers.city')
             ->leftJoin('enum_options as el', 'el.id', '=', 'providers.language_id')
-            ->leftJoin('users', 'users.id', '=', 'providers.user_id')
-            ->groupBy([
-                'providers.id',
-                'providers.name',
-                'providers.user',
-                'providers.address',
-                'providers.website',
-                'providers.coverage_area',
-                'providers.contact_phone',
-                'providers.code_number',
-                'providers.code_country',
-                'providers.email',
-                'providers.service_cost',
-                'providers.status',
-                'ec.name',
-                'ec.id',
-                'es.name',
-                'es.id',
-                'eci.name',
-                'eci.id',
-                'el.name',
-                'el.id',
-                'users.id',
-                'users.name',
-                'providers.created_at',
-                'providers.updated_at',
-            ]);
+            ->leftJoin('users', 'users.id', '=', 'providers.user_id');
+
+        $this->getByUserRol($query);
+
+        $query->groupBy([
+            'providers.id',
+            'providers.name',
+            'providers.user',
+            'providers.address',
+            'providers.website',
+            'providers.coverage_area',
+            'providers.contact_phone',
+            'providers.code_number',
+            'providers.code_country',
+            'providers.email',
+            'providers.service_cost',
+            'providers.status',
+            'ec.name',
+            'ec.id',
+            'es.name',
+            'es.id',
+            'eci.name',
+            'eci.id',
+            'el.name',
+            'el.id',
+            'users.id',
+            'users.name',
+            'providers.created_at',
+            'providers.updated_at',
+        ]);
 
         if (isset($data['status']) && $data['status'] != null) {
             $query->where('providers.status', $data['status']);
         }
 
         return $query->distinct();
+    }
+
+    private function getByUserRol(&$query)
+    {
+        switch (Auth::user()->getRoleNames()[0]) {
+            case 'provider':
+                $userId = Auth::id();
+                $query->where('providers.id', $userId);
+                break;
+            default:
+                break;
+        }
     }
 
     public function storeProvider(array $data)
@@ -82,6 +101,8 @@ class ProviderService
                 ]);
             }
             if ($provider) {
+                $role = $this->roleRepository->findByName('provider');
+                $provider->assignRole($role);
                 $this->sendEmail($provider['email'], $provider, $tmp_password);
             }
             DB::commit();

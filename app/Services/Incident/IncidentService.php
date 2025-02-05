@@ -45,7 +45,6 @@ class IncidentService
             ->leftJoin('incident_actions', 'incident_actions.incident_id', '=', 'incidents.id')
             ->leftJoin('providers', 'providers.id', '=', 'incident_provider.provider_id')
             ->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
-            ->leftJoin('user_properties', 'user_properties.property_id', '=', 'properties.id')
             ->leftJoin('enum_options as e_ct', 'e_ct.id', '=', 'incidents.incident_type_id')
             ->leftJoin('enum_options as e_st', 'e_st.id', '=', 'incidents.status_id')
             ->leftJoin('enum_options as e_sev', 'e_sev.id', '=', 'incidents.priority_id')
@@ -80,19 +79,29 @@ class IncidentService
             ]
         );
 
-
-
         return $query;
     }
 
     private function getByUserRol(&$query)
     {
+        $userId = Auth::id();
         switch (Auth::user()->getRoleNames()[0]) {
             case 'owner':
-                case 'tenant':
-                    $userId = Auth::id();
-                    $query->where('user_properties.user_id', $userId);
-                    break;
+            case 'tenant':
+                $query->whereExists(function ($subQuery) use ($userId) {
+                    $subQuery->select(DB::raw(1))
+                        ->from('user_properties')
+                        ->whereRaw('user_properties.property_id = properties.id')
+                        ->where('user_properties.user_id', $userId);
+                });
+                break;
+            case 'provider':
+                $query->whereExists(function ($subQuery) use ($userId) {
+                    $subQuery->select(DB::raw(1))
+                        ->from('incident_provider')
+                        ->where('incident_provider.provider_id', $userId);
+                });
+                break;
             default:
                 $query->where('properties.user_id', Auth::id());
                 break;
@@ -141,7 +150,9 @@ class IncidentService
 
             $incident = $this->incidentRepository->update($id, $data);
             $this->incidentProviderRepository->deleteByIncident($id);
+          
             foreach ($providers as $key => $value) {
+                Log::info($value);
                 $this->incidentProviderRepository->create([
                     'incident_id' => $incident->id,
                     'provider_id' => $value,

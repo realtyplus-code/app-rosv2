@@ -232,7 +232,7 @@
                                     width: 100%;
                                     border-radius: 0px 0px 10px 10px;
                                 "
-                                 @click="removePhoto(index, photo.id)"
+                                @click="removePhoto(index, photo.id)"
                             >
                                 Delete
                             </button>
@@ -291,9 +291,10 @@ import * as Yup from "yup";
 import { hide } from "@popperjs/core";
 
 export default {
-    props: ["dialogVisible", "selectedIncident", "selectedPropertyId"],
+    props: ["dialogVisible", "selectedIncident", "selectedPropertyId", "role"],
     data() {
         return {
+            roleName: this.role[0],
             visible: this.dialogVisible,
             formIncident: {
                 id: null,
@@ -407,8 +408,13 @@ export default {
             });
         },
         async getProperties() {
+            let url = "/properties/list";
+            const roles = ["provider"];
+            if (roles.includes(this.roleName)) {
+                url = "/properties/providers/list";
+            }
             try {
-                const response = await this.$axios.get("/properties/list");
+                const response = await this.$axios.get(url);
                 this.listProperty = response.data.data;
             } catch (error) {
                 this.$readStatusHttp(error);

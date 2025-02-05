@@ -389,6 +389,7 @@
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
         :selectedIncident="selectedIncident"
+        :role="role"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
@@ -422,7 +423,7 @@ import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenIncidentActionComponent from "../incidentAction/management/ManagemenIncidentActionComponent.vue";
 
 export default {
-    props: ["permissions"],
+    props: ["role", "permissions"],
     data() {
         return {
             incidents: [],

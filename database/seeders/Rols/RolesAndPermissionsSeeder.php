@@ -10,7 +10,7 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-        // Permisos
+        // Permisos web
         $permissions = [
             'create_properties',
             'edit_properties',
@@ -41,33 +41,70 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit_insurances',
             'list_insurances',
             'delete_insurances',
+            // solo lectura
+            'read_properties',
+            'read_providers',
+        ];
+
+        // Permisos providers
+        $permissionProviders = [
+            'create_properties',
+            'edit_properties',
+            'list_properties',
+            'delete_properties',
+            'create_incidents',
+            'edit_incidents',
+            'list_incidents',
+            'delete_incidents',
+            'create_incidents_actions',
+            'edit_incidents_actions',
+            'list_incidents_actions',
+            'delete_incidents_actions',
+            'create_users',
+            'edit_users',
+            'list_users',
+            'delete_users',
+            'create_enums',
+            'edit_enums',
+            'list_enums',
+            'delete_enums',
+            'export_properties',
+            'create_providers',
+            'edit_providers',
+            'list_providers',
+            'delete_providers',
+            'create_insurances',
+            'edit_insurances',
+            'list_insurances',
+            'delete_insurances',
+            // solo lectura
+            'read_properties',
+            'read_providers',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Roles y sus permisos
+        foreach ($permissionProviders as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'providers']);
+        }
+
+        // Roles y sus permisos web
         $rolesAndPermissions = [
             'owner' => [
                 'list_properties',
                 'list_incidents',
                 'create_incidents',
+                'read_providers'
             ],
             'tenant' => [
                 'list_properties',
                 'list_incidents',
                 'create_incidents',
+                'read_providers'
             ],
-            'provider' => [
-                'list_incidents',
-                'edit_incidents',
-                'list_incidents_actions',
-                'create_incidents_actions',
-                'edit_incidents_actions',
-                'delete_incidents_actions',
-            ],
-            'ros_client' => [
+            'ros_client' => [ // en espera de definir permisos
                 'list_properties',
                 'list_incidents',
                 'create_properties',
@@ -75,13 +112,13 @@ class RolesAndPermissionsSeeder extends Seeder
                 'delete_properties',
                 'export_properties',
             ],
-            'ros_client_manager' => [
+            'ros_client_manager' => [ // en espera de definir permisos
                 'list_users',
                 'create_users',
                 'edit_users',
                 'delete_users',
             ],
-            'global_manager' => [
+            'global_manager' => [ // en espera de definir permisos
                 'list_properties',
                 'list_incidents',
                 'list_users',
@@ -121,10 +158,26 @@ class RolesAndPermissionsSeeder extends Seeder
             ]
         ];
 
+        $rolesAndPermissionsProviders = [
+            'provider' => [
+                'list_providers',
+                'list_incidents',
+                'edit_incidents',
+                'list_incidents_actions',
+                'edit_incidents_actions',
+                'read_properties',
+                'read_providers',
+            ],
+        ];
+
         foreach ($rolesAndPermissions as $roleName => $rolePermissions) {
-            $role = Role::create(['name' => $roleName]);
-            //$role = Role::where(['name' => $roleName])->first();
-            $role->givePermissionTo($rolePermissions);
+            $role = Role::firstOrCreate(['name' => $roleName]);
+            $role->syncPermissions($rolePermissions);
+        }
+
+        foreach ($rolesAndPermissionsProviders as $roleName => $rolePermissions) {
+            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'providers']);
+            $role->syncPermissions($rolePermissions);
         }
     }
 }

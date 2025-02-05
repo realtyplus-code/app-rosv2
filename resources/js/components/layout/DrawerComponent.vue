@@ -103,7 +103,7 @@ export default {
                     ],
                 },
                 {
-                    label: "Admin",
+                    label: "Management",
                     icon: "pi pi-users",
                     permissions: ["list_users", "list_providers", "list_enums"],
                     expanded: false,

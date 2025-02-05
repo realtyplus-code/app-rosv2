@@ -37,8 +37,8 @@ class LoginController extends Controller
             return redirect()->intended('/properties');
         }
 
-        // Intentar autenticación para proveedores
-        if (Auth::guard('proveedores')->attempt($credentials)) {
+        // Intentar autenticación para providers
+        if (Auth::guard('providers')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/providers');
         }
@@ -54,8 +54,8 @@ class LoginController extends Controller
             Auth::guard('web')->logout();
         }
 
-        if (Auth::guard('proveedores')->check()) {
-            Auth::guard('proveedores')->logout();
+        if (Auth::guard('providers')->check()) {
+            Auth::guard('providers')->logout();
         }
 
         $request->session()->invalidate();

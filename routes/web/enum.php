@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EnumOption\EnumOptionController;
 
-Route::prefix('enums')->middleware(['auth'])->group(function () {
+Route::prefix('enums')->middleware(['auth:providers,web'])->group(function () {
     Route::get('/', [EnumOptionController::class, 'view'])->name('enum');
     Route::get('/list', [EnumOptionController::class, 'index'])->name('enum.index');
     Route::post('/store', [EnumOptionController::class, 'store'])->name('enum.store');

@@ -397,9 +397,9 @@ export default {
                 this.formProperty.status = parseInt(
                     this.selectedProperty.status
                 );
-                this.formProperty.client_ros_id = parseInt(
+                this.formProperty.client_ros_id =  this.selectedProperty.user_ros_id ? parseInt(
                     this.selectedProperty.user_ros_id
-                );
+                ): null;
                 this.formProperty.owners = currentOwnersName.map(
                     (owner) => owner.id
                 );

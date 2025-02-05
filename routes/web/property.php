@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Property\PropertyController;
 
-Route::prefix('properties')->middleware(['auth'])->group(function () {
+Route::prefix('properties')->middleware(['auth:web'])->group(function () {
     Route::get('/', [PropertyController::class, 'view'])->name('properties.view')->middleware('can:list_properties');
     Route::get('/list', [PropertyController::class, 'index'])->name('properties.index')->middleware('can:list_properties');
     Route::post('/store', [PropertyController::class, 'store'])->name('properties.store')->middleware('can:create_properties');
@@ -17,4 +17,9 @@ Route::prefix('properties')->middleware(['auth'])->group(function () {
     Route::post('/photo/delete/', [PropertyController::class, 'destroyPhoto'])->name('properties.destroy.photo');
     Route::post('/document/add', [PropertyController::class, 'addPdf'])->name('properties.add.pdf');
     Route::post('/document/delete', [PropertyController::class, 'destroyPdf'])->name('properties.destroy.pdf');
+});
+
+
+Route::prefix('properties/providers')->middleware(['auth:providers'])->group(function () {
+    Route::get('/list', [PropertyController::class, 'index'])->name('providers.properties.index')->middleware('can:read_properties');
 });

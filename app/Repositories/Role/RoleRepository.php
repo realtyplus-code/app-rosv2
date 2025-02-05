@@ -38,6 +38,11 @@ class RoleRepository implements RoleRepositoryInterface
         return $this->model->findOrFail($id);
     }
 
+    public function findByName($name)
+    {
+        return $this->model->where('name', $name)->firstOrFail();
+    }
+
     public function findAll()
     {
         return $this->model->where('name', '!=', 'admin')->where('name', '!=', 'provider')->get();
