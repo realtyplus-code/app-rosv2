@@ -11,5 +11,5 @@ Route::prefix('providers')->middleware(['auth:providers,web'])->group(function (
     Route::delete('/{id}', [ProviderController::class, 'destroy'])->name('providers.destroy')->middleware('can:delete_providers');
     // otras funciones
     Route::get('/byTypeCount', [ProviderController::class, 'byTypeCount'])->name('providers.count');
-    Route::get('/listByProperty', [ProviderController::class, 'byProperty'])->name('providers.by.property');
+    Route::get('/listByProperty', [ProviderController::class, 'byProperty'])->name('providers.by.property')->middleware('can:read_providers');
 });

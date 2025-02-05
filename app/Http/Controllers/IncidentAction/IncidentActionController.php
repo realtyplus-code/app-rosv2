@@ -32,11 +32,6 @@ class IncidentActionController extends Controller
     public function index(Request $request)
     {
         try {
-
-            $role = Auth::user()->getRoleNames()[0];
-            if ($role !== 'admin' && !$request->has('incident_id')) {
-                return Response::sendError(__('messages.controllers.warning.incident_field_required'), 400);
-            }
             $query = $this->incidentActionService->getIncidentActionQuery($request->all());
             $response = renderDataTable(
                 $query,

@@ -37,8 +37,8 @@
             </div>
         </div>
         <br />
-        <p>Select type responsible</p>
-        <div class="custom-form">
+        <p v-if="roleName != 'provider'">Select type responsible</p>
+        <div class="custom-form" v-if="roleName != 'provider'">
             <ToggleButton
                 v-model="isTypeUser"
                 class="w-20"
@@ -46,7 +46,7 @@
                 offLabel="Providers"
             />
         </div>
-        <div class="custom-form">
+        <div class="custom-form" v-if="roleName != 'provider'">
             <div class="custom-form-column" v-if="isTypeUser">
                 <Select
                     filter
@@ -75,25 +75,6 @@
                 />
                 <small v-if="errors.responsible_user_id" class="p-error">{{
                     errors.responsible_user_id
-                }}</small>
-            </div>
-            <div class="custom-form-column">
-                <FloatLabel>
-                    <DatePicker
-                        showIcon
-                        fluid
-                        id="action_date"
-                        class="inputtext-custom"
-                        :class="{ 'p-invalid': errors.action_date }"
-                        v-model="formIncident.action_date"
-                        @input="clearError('action_date')"
-                        :show-time="true"
-                        :hourFormat="'24'"
-                    />
-                    <label for="action_date">Report Date</label>
-                </FloatLabel>
-                <small v-if="errors.action_date" class="p-error">{{
-                    errors.action_date
                 }}</small>
             </div>
         </div>
@@ -161,6 +142,25 @@
                     errors.status_id
                 }}</small>
             </div>
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <DatePicker
+                        showIcon
+                        fluid
+                        id="action_date"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.action_date }"
+                        v-model="formIncident.action_date"
+                        @input="clearError('action_date')"
+                        :show-time="true"
+                        :hourFormat="'24'"
+                    />
+                    <label for="action_date">Report Date</label>
+                </FloatLabel>
+                <small v-if="errors.action_date" class="p-error">{{
+                    errors.action_date
+                }}</small>
+            </div>
         </div>
         <hr />
         <div class="custom-form mt-4">
@@ -208,9 +208,7 @@
                                     width: 100%;
                                     border-radius: 0px 0px 10px 10px;
                                 "
-                                @click="
-                                    removePhoto(index, photo.id)
-                                "
+                                @click="removePhoto(index, photo.id)"
                             >
                                 Delete
                             </button>
@@ -269,9 +267,10 @@ import * as Yup from "yup";
 import moment from "moment";
 
 export default {
-    props: ["dialogVisible", "selectedIncident", "selectedIncidentId"],
+    props: ["dialogVisible", "selectedIncident", "selectedIncidentId", "role"],
     data() {
         return {
+            roleName: this.role[0],
             visible: this.dialogVisible,
             formIncident: {
                 id: null,
@@ -309,7 +308,8 @@ export default {
             await this.checkTypeUser(status);
         },
         "formIncident.action_date"(newValue) {
-            this.formIncident.action_date = moment(newValue).format("Y-MM-DD HH:mm");
+            this.formIncident.action_date =
+                moment(newValue).format("Y-MM-DD HH:mm");
         },
     },
     mounted() {

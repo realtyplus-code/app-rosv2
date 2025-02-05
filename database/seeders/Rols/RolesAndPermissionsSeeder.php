@@ -44,6 +44,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // solo lectura
             'read_properties',
             'read_providers',
+            'read_insurances',
         ];
 
         // Permisos providers
@@ -80,6 +81,7 @@ class RolesAndPermissionsSeeder extends Seeder
             // solo lectura
             'read_properties',
             'read_providers',
+            'read_insurances',
         ];
 
         foreach ($permissions as $permission) {
@@ -96,13 +98,15 @@ class RolesAndPermissionsSeeder extends Seeder
                 'list_properties',
                 'list_incidents',
                 'create_incidents',
-                'read_providers'
+                'read_providers',
+                'read_insurances',
             ],
             'tenant' => [
                 'list_properties',
                 'list_incidents',
                 'create_incidents',
-                'read_providers'
+                'read_providers',
+                'read_insurances',
             ],
             'ros_client' => [ // en espera de definir permisos
                 'list_properties',
@@ -155,6 +159,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 'create_enums',
                 'edit_enums',
                 'delete_enums',
+                'read_properties',
+                'read_providers',
+                'read_insurances',
             ]
         ];
 
@@ -167,6 +174,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'edit_incidents_actions',
                 'read_properties',
                 'read_providers',
+                'read_insurances',
             ],
         ];
 

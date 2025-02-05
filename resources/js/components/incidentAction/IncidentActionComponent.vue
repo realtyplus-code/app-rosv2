@@ -225,12 +225,21 @@
                     </template>
                 </Column>
                 <Column
-                    header="Actions"
-                    style="min-width: 100px; text-align: center"
+                    v-if="
+                        getPermissionsByRole('edit_incidents_actions') ||
+                        getPermissionsByRole('delete_incidents_actions')
+                    "
+                    header="Edit/Delete"
+                    style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
                             <Button
+                                v-if="
+                                    getPermissionsByRole(
+                                        'edit_incidents_actions'
+                                    )
+                                "
                                 icon="pi pi-pencil"
                                 class="p-button-rounded p-button-primary"
                                 style="
@@ -241,6 +250,11 @@
                                 @click="editIncidentAction(slotProps.data)"
                             />
                             <Button
+                                v-if="
+                                    getPermissionsByRole(
+                                        'delete_incidents_actions'
+                                    )
+                                "
                                 icon="pi pi-trash"
                                 class="p-button-rounded p-button-danger"
                                 style="
@@ -250,6 +264,16 @@
                                 "
                                 @click="deleteIncidentAction(slotProps.data.id)"
                             />
+                        </div>
+                    </template>
+                </Column>
+                <Column
+                    v-if="getPermissionsByRole('edit_incidents_actions')"
+                    header="Upload"
+                    style="min-width: 100px; text-align: center"
+                >
+                    <template #body="slotProps">
+                        <div class="row">
                             <Button
                                 icon="pi pi-upload"
                                 class="p-button-rounded p-button-success"
@@ -271,6 +295,7 @@
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
         :selectedIncident="selectedIncident"
+        :role="role"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"
@@ -294,7 +319,7 @@ import UploadPdfModalComponent from "../utils/UploadPdfModalComponent.vue";
 import ManagemenIncidentActionComponent from "./management/ManagemenIncidentActionComponent.vue";
 
 export default {
-    props: [],
+    props: ["role", "permissions"],
     data() {
         return {
             incidents: [],
@@ -540,6 +565,11 @@ export default {
                 .catch((error) => {
                     this.$readStatusHttp(error);
                 });
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
         },
     },
 };

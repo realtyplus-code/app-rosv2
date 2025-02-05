@@ -19,7 +19,6 @@ Route::prefix('properties')->middleware(['auth:web'])->group(function () {
     Route::post('/document/delete', [PropertyController::class, 'destroyPdf'])->name('properties.destroy.pdf');
 });
 
-
-Route::prefix('properties/providers')->middleware(['auth:providers'])->group(function () {
-    Route::get('/list', [PropertyController::class, 'index'])->name('providers.properties.index')->middleware('can:read_properties');
+Route::prefix('properties/only')->middleware(['auth:providers'])->group(function () {
+    Route::get('/list', [PropertyController::class, 'index'])->name('only.properties.index')->middleware('can:read_properties');
 });

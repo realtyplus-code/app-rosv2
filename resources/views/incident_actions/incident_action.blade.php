@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <incident-action-component></incident-action-component>
+            <incident-action-component :role="{{ Auth::user()->getRoleNames()}}" :permissions="{{ Auth::user()->getAllPermissions() }}"></incident-action-component>
         </div>
     </div>
 @endsection

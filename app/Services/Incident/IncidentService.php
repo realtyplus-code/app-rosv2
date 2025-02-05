@@ -54,6 +54,10 @@ class IncidentService
 
         $this->getByUserRol($query);
 
+        if (isset($data['property_id'])) {
+            $query->where('properties.id', $data['property_id']);
+        }
+
         $query->groupBy(
             [
                 'incidents.id',

@@ -251,7 +251,7 @@
                 </Column>
                 <Column
                     field="incidents"
-                    header="Incidents"
+                    header="Action(s)"
                     style="min-width: 120px"
                 >
                     <template #body="{ data }">

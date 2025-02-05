@@ -5,6 +5,7 @@ namespace App\Services\IncidentAction;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\IncidentAction\IncidentAction;
 use App\Services\Attachment\AttachmentService;
@@ -50,7 +51,21 @@ class IncidentActionService
             $query->where('incidents.id', $data['incident_id']);
         }
 
+        $this->getByUserRol($query);
+
         return $query;
+    }
+
+    private function getByUserRol(&$query)
+    {
+        $userId = Auth::id();
+        switch (Auth::user()->getRoleNames()[0]) {
+            case 'provider':
+                $query->where('providers.id', $userId);
+                break;
+            default:
+                break;
+        }
     }
 
     public function storeIncident(array $data)

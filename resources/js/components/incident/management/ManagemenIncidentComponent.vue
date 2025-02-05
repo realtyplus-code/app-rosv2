@@ -36,7 +36,7 @@
                 <small>{{ characterCount }}/1000</small>
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form" v-if="roleName !== 'provider'">
             <div class="custom-form-column">
                 <MultiSelect
                     :options="listProviders"
@@ -54,7 +54,7 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form" v-if="roleName !== 'provider'">
             <div class="custom-form-column">
                 <Select
                     filter
@@ -288,7 +288,6 @@
 
 <script>
 import * as Yup from "yup";
-import { hide } from "@popperjs/core";
 
 export default {
     props: ["dialogVisible", "selectedIncident", "selectedPropertyId", "role"],
@@ -411,7 +410,7 @@ export default {
             let url = "/properties/list";
             const roles = ["provider"];
             if (roles.includes(this.roleName)) {
-                url = "/properties/providers/list";
+                url = "/properties/only/list";
             }
             try {
                 const response = await this.$axios.get(url);
