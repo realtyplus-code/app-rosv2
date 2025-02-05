@@ -4,7 +4,7 @@
             <div class="flex items-center gap-2">
                 <Avatar
                     image="/img/rentalcolorb.svg"
-                    style="width: 80%; justify-content: center; cursor: pointer;"
+                    style="width: 80%; justify-content: center; cursor: pointer"
                     @click="route('home')"
                 />
             </div>
@@ -14,6 +14,7 @@
         <ul class="menu-options">
             <li v-for="item in items" :key="item.label">
                 <div
+                    v-if="getPermissionsByRoles(item.permissions)"
                     @click="item.expanded = !item.expanded"
                     class="menu-headers"
                 >
@@ -28,6 +29,7 @@
                 <ul v-if="item.items && item.expanded" class="submenu-options">
                     <li v-for="subItem in item.items" :key="subItem.label">
                         <a
+                            v-if="getPermissionsByRole(subItem.permission)"
                             href="#"
                             @click="subItem.command"
                             style="text-decoration: none"
@@ -46,7 +48,7 @@
 
 <script>
 export default {
-    props: ["visibleMenu"],
+    props: ["visibleMenu", "permissions"],
     emits: ["closeDrawer"],
     data() {
         return {
@@ -55,11 +57,13 @@ export default {
                 {
                     label: "Properties",
                     icon: "pi pi-warehouse",
+                    permissions: ["list_properties", "list_insurances"],
                     expanded: false,
                     items: [
                         {
                             label: "Property",
                             icon: "pi pi-home",
+                            permission: "list_properties",
                             command: () => {
                                 this.route("property");
                             },
@@ -67,6 +71,7 @@ export default {
                         {
                             label: "Insurance",
                             icon: "pi pi-shield",
+                            permission: "list_insurances",
                             command: () => {
                                 this.route("insurance");
                             },
@@ -76,11 +81,13 @@ export default {
                 {
                     label: "Incidents",
                     icon: "pi pi-exclamation-circle",
+                    permissions: ["list_incidents", "list_incidents_actions"],
                     expanded: false,
                     items: [
                         {
                             label: "Incident",
                             icon: "pi pi-exclamation-triangle",
+                            permission: "list_incidents",
                             command: () => {
                                 this.route("occurrences");
                             },
@@ -88,6 +95,7 @@ export default {
                         {
                             label: "Actions incident",
                             icon: "pi pi-wrench",
+                            permission: "list_incidents_actions",
                             command: () => {
                                 this.route("occurrences-action");
                             },
@@ -97,11 +105,13 @@ export default {
                 {
                     label: "Admin",
                     icon: "pi pi-users",
+                    permissions: ["list_users", "list_providers", "list_enums"],
                     expanded: false,
                     items: [
                         {
                             label: "User",
                             icon: "pi pi-user",
+                            permission: "list_users",
                             command: () => {
                                 this.route("user");
                             },
@@ -109,6 +119,7 @@ export default {
                         {
                             label: "Provider",
                             icon: "pi pi-truck",
+                            permission: "list_providers",
                             command: () => {
                                 this.route("provider");
                             },
@@ -116,6 +127,7 @@ export default {
                         {
                             label: "Enum",
                             icon: "pi pi-cog",
+                            permission: "list_enums",
                             command: () => {
                                 this.route("enum");
                             },
@@ -168,6 +180,16 @@ export default {
                 default:
                     break;
             }
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
+        },
+        getPermissionsByRoles(permissions) {
+            return permissions.some((permission) =>
+                this.permissions.some((p) => p.name == permission)
+            );
         },
     },
 };

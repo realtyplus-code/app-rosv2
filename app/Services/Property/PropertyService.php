@@ -65,8 +65,13 @@ class PropertyService
             ->leftJoin('enum_options as es', 'es.id', '=', 'properties.state')
             ->leftJoin('enum_options as eci', 'eci.id', '=', 'properties.city')
             ->leftJoin('insurance_property as ip', 'ip.property_id', '=', 'properties.id')
-            ->leftJoin('insurances', 'insurances.id', '=', 'ip.insurance_id')
-            ->groupBy([
+            ->leftJoin('insurances', 'insurances.id', '=', 'ip.insurance_id');
+
+            $role = Auth::user()->getRoleNames()[0];
+            if ($role !== 'admin') {
+                $query->where('properties.user_id', Auth::id());
+            }
+            $query->groupBy([
                 'properties.id',
                 'incidents.id',
                 'properties.name',

@@ -1,4 +1,4 @@
 <nav>
-    <navbar-component></navbar-component>
+    <navbar-component  :permissions="{{ Auth::user()->getAllPermissions() }}"></navbar-component>
     <drawer-component></drawer-component>
 </nav>
