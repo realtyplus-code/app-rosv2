@@ -177,15 +177,14 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.property_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <InputText
-                            v-model="filterModel.value"
-                            type="text"
-                            class="p-column-filter"
-                            placeholder="Search by property"
-                        />
+                        <div class="size-tags">
+                            <Tag
+                                v-for="index in $parseTags(data.property_name)"
+                                :key="index.id"
+                                :value="`${index.tag}`"
+                                class="size-tag"
+                            />
+                        </div>
                     </template>
                 </Column>
                 <Column
