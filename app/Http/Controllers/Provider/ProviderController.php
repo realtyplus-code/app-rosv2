@@ -58,7 +58,7 @@ class ProviderController extends Controller
                     'users.name as log_user_name',
                     'providers.created_at',
                     'providers.updated_at',
-                    DB::raw('GROUP_CONCAT(CONCAT(e_provider.id, ":", e_provider.name) ORDER BY e_provider.name ASC SEPARATOR ";") as providers_name'),
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(e_provider.id, ":", e_provider.name) ORDER BY e_provider.name ASC SEPARATOR ";") as providers_name'),
                 ]
             );
         } catch (\Exception $ex) {

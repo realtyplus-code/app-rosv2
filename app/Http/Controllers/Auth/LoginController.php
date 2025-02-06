@@ -34,7 +34,18 @@ class LoginController extends Controller
         // Intentar autenticación para usuarios
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/properties');
+            switch (Auth::user()->getRoleNames()[0]) {
+                case 'owner':
+                case 'tenant':
+                case 'ros_client':
+                case 'ros_client_manager':
+                case 'global_manager':
+                    return redirect()->intended('/properties');
+                case 'admin':
+                    return redirect()->intended('/enums');
+                default:
+                    return;
+            }
         }
 
         // Intentar autenticación para providers

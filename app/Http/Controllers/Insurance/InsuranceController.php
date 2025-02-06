@@ -50,7 +50,7 @@ class InsuranceController extends Controller
                     'insurances.phone',
                     'insurances.code_number',
                     'insurances.code_country',
-                    DB::raw('GROUP_CONCAT(CONCAT(properties.id, ":", properties.name) ORDER BY properties.name ASC SEPARATOR ";") as property_name'),
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(properties.id, ":", properties.name) ORDER BY properties.name ASC SEPARATOR ";") as property_name'),
                     'e_ct.name as insurance_name',
                     'e_ct.id as insurance_id',
                     'insurances.created_at',

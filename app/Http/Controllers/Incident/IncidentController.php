@@ -64,7 +64,7 @@ class IncidentController extends Controller
                     'incidents.cost',
                     'incidents.created_at',
                     'incidents.updated_at',
-                    DB::raw('GROUP_CONCAT(CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name'),
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name'),
                     DB::raw('COUNT(incident_actions.id) as incidents')
                 ]
             );

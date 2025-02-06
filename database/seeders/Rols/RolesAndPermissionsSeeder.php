@@ -132,15 +132,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'read_providers',
                 'read_insurances',
             ],
-            'global_manager' => [ // en espera de definir permisos
-                'list_properties',
-                'list_incidents',
-                'list_users',
-                'create_users',
-                'edit_users',
-                'delete_users',
-            ],
-            'admin' => [
+            'global_manager' => [
                 'list_properties',
                 'create_properties',
                 'edit_properties',
@@ -165,13 +157,15 @@ class RolesAndPermissionsSeeder extends Seeder
                 'create_users',
                 'edit_users',
                 'delete_users',
+                'read_properties',
+                'read_providers',
+                'read_insurances',
+            ],
+            'admin' => [
                 'list_enums',
                 'create_enums',
                 'edit_enums',
                 'delete_enums',
-                'read_properties',
-                'read_providers',
-                'read_insurances',
             ]
         ];
 

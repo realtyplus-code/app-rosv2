@@ -59,8 +59,8 @@ class PropertyController extends Controller
                     'user_ros.id as user_ros_id',
                     'user_ros.name as user_ros_name',
                     'insurances.id as insurances_id',
-                    DB::raw('GROUP_CONCAT(CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
-                    DB::raw('GROUP_CONCAT(CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
                     DB::raw('COUNT(DISTINCT incidents.id) as incidents'),
                     DB::raw('COUNT(DISTINCT insurances.id) as insurances')
                 ]
@@ -215,8 +215,8 @@ class PropertyController extends Controller
                 'properties.created_at',
                 'properties.expected_end_date_ros',
                 'users.name as log_user_name',
-                DB::raw('GROUP_CONCAT(user_owner.name ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
-                DB::raw('GROUP_CONCAT(user_tenant.name ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
+                DB::raw('GROUP_CONCAT(DISTINCT user_owner.name ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
+                DB::raw('GROUP_CONCAT(DISTINCT user_tenant.name ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
                 DB::raw('COUNT(DISTINCT incidents.id) as incidents')
             ]
         );

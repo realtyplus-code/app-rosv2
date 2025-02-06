@@ -52,7 +52,7 @@ class UserController extends Controller
                     'users.code_number',
                     'users.code_country',
                     'users.email',
-                    DB::raw('GROUP_CONCAT(CONCAT(p.id, ":", p.name) ORDER BY p.name ASC SEPARATOR ";") as property_name'),
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(p.id, ":", p.name) ORDER BY p.name ASC SEPARATOR ";") as property_name'),
                 ]
             );
             $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], User::class, 'disk_user');

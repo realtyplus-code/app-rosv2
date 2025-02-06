@@ -57,7 +57,7 @@ class UserService
             ->leftJoin('enum_options as eci', 'eci.id', '=', 'users.city')
             ->leftJoin('enum_options as el', 'el.id', '=', 'users.language_id');
 
-        if (Auth::user()->getRoleNames()[0] != 'admin') {
+        if (Auth::user()->getRoleNames()[0] != 'global_manager') {
             $this->getByUserRol($consult, $role);
         }
 
