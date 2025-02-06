@@ -495,6 +495,9 @@ export default {
                 state: Yup.string().required("State is required"),
                 city: Yup.string().required("City is required"),
             };
+            if(this.roleName === 'ros_client_manager'){
+                initialRules.client_ros_id = Yup.string().required("Client ROS is required");
+            }
             const schema = Yup.object().shape({
                 ...initialRules,
             });
