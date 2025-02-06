@@ -80,7 +80,7 @@
                     v-model="formIncident.currency_id"
                     placeholder="Select currency"
                     :class="{ 'p-invalid': errors.currency_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -131,7 +131,7 @@
                     v-model="formIncident.incident_type_id"
                     placeholder="Select type"
                     :class="{ 'p-invalid': errors.incident_type_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -146,7 +146,7 @@
                     v-model="formIncident.priority_id"
                     placeholder="Select priority"
                     :class="{ 'p-invalid': errors.priority_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -163,7 +163,7 @@
                     v-model="formIncident.payer_id"
                     placeholder="Select payer"
                     :class="{ 'p-invalid': errors.payer_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -178,7 +178,7 @@
                     v-model="formIncident.status_id"
                     placeholder="Select status"
                     :class="{ 'p-invalid': errors.status_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />

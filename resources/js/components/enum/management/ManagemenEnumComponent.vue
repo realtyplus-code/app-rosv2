@@ -37,6 +37,8 @@
                         v-model="formEnum.name"
                         @input="clearError('name')"
                         style="width: 100%"
+                        :disabled="selectedEnum"
+                        :readonly="selectedEnum"
                     />
                     <label for="name">Name</label>
                 </FloatLabel>
@@ -45,18 +47,39 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form mt-2">
+        <div class="custom-form mt-4">
             <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listStatus"
-                    v-model="formEnum.status"
-                    placeholder="Select status"
-                    :class="{ 'p-invalid': errors.status }"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
+                <FloatLabel>
+                    <InputText
+                        id="valor1"
+                        class="inputtext-custom"
+                        :class="{ 'p-invalid': errors.valor1 }"
+                        v-model="formEnum.valor1"
+                        @input="clearError('valor1')"
+                        style="width: 100%"
+                    />
+                    <label for="valor1">Descripcion</label>
+                </FloatLabel>
+                <small v-if="errors.valor1" class="p-error">{{
+                    errors.valor1
+                }}</small>
+            </div>
+        </div>
+        <div class="custom-form mt-4">
+            <div class="custom-form-column">
+                <FloatLabel>
+                    <Select
+                        id="status"
+                        filter
+                        :options="listStatus"
+                        v-model="formEnum.status"
+                        :class="{ 'p-invalid': errors.status }"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label for="status">Status</label>
+                </FloatLabel>
                 <small v-if="errors.status" class="p-error">{{
                     errors.status
                 }}</small>
@@ -105,6 +128,7 @@ export default {
             formEnum: {
                 parent_id: null,
                 name: null,
+                valor1: null,
                 status: null,
                 value1: null,
                 brother_relation_id: null,
@@ -115,13 +139,13 @@ export default {
             listStatus: [],
         };
     },
-    components: {
-    },
+    components: {},
     watch: {},
     mounted() {
         this.formEnum.parent_id = this.selectedOption;
         if (this.selectedEnum) {
             this.formEnum.name = this.selectedEnum.name;
+            this.formEnum.valor1 = this.selectedEnum.valor1;
             this.formEnum.brother_relation_id =
                 this.selectedEnum.brother_relation_id;
             this.formEnum.status = parseInt(this.selectedEnum.status);
@@ -142,6 +166,7 @@ export default {
             let initialRules = {
                 parent_id: Yup.string().required("Parent is required"),
                 name: Yup.string().required("Name is required"),
+                valor1: Yup.string().required("Descripcion is required"),
             };
             const schema = Yup.object().shape({
                 ...initialRules,

@@ -74,13 +74,32 @@
                 </Column>
                 <Column
                     field="name"
-                    header="Name"
+                    header="Name system"
                     :showClearButton="false"
                     style="min-width: 200px"
                     sortable
                 >
                     <template #body="{ data }">
                         {{ data.name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Buscar por nombre"
+                        />
+                    </template>
+                </Column>
+                <Column
+                    field="valor1"
+                    header="Value to display"
+                    :showClearButton="false"
+                    style="min-width: 200px"
+                    sortable
+                >
+                    <template #body="{ data }">
+                        {{ data.valor1 }}
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText

@@ -114,7 +114,7 @@
                     v-model="formProvider.country"
                     placeholder="Select country"
                     :class="{ 'p-invalid': errors.country }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                     @change="onChangeCountry(formProvider.country, true)"
@@ -129,7 +129,7 @@
                     v-model="formProvider.state"
                     :placeholder="placeholderState"
                     :class="{ 'p-invalid': errors.state }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                     @change="onChangeState(formProvider.state, true)"
@@ -144,11 +144,10 @@
                     v-model="formProvider.city"
                     :placeholder="placeholderCity"
                     :class="{ 'p-invalid': errors.city }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
-
                 <small v-if="errors.city" class="p-error">{{
                     errors.city
                 }}</small>
@@ -231,7 +230,7 @@
                     placeholder="Select services offered"
                     :class="{ 'p-invalid': errors.providers }"
                     :maxSelectedLabels="limitPrivders"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -246,7 +245,7 @@
                     v-model="formProvider.language_id"
                     placeholder="Select language"
                     :class="{ 'p-invalid': errors.language_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -261,7 +260,7 @@
                     v-model="formProvider.status"
                     placeholder="Select status"
                     :class="{ 'p-invalid': errors.status }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -418,8 +417,8 @@ export default {
         },
         async initServices() {
             this.listStatus = [
-                { id: 1, name: "active" },
-                { id: 2, name: "inactive" },
+                { id: 1, name: "active", valor1: "activo" },
+                { id: 2, name: "inactive", valor1: "inactivo" },
             ];
             const comboNames = ["country", "provider_type", "language"];
             const response = await this.$getEnumsOptions(comboNames);

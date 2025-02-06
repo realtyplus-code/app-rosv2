@@ -130,7 +130,7 @@
                     v-model="formInsurance.insurance_type_id"
                     placeholder="Select insurance"
                     :class="{ 'p-invalid': errors.insurance_type_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -192,7 +192,7 @@
                     v-model="formInsurance.country"
                     placeholder="Select country"
                     :class="{ 'p-invalid': errors.country }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />

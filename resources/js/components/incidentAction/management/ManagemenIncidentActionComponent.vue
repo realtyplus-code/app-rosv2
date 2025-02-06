@@ -86,7 +86,7 @@
                     v-model="formIncident.currency_id"
                     placeholder="Select currency"
                     :class="{ 'p-invalid': errors.currency_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -119,7 +119,7 @@
                     v-model="formIncident.action_type_id"
                     placeholder="Select insurance"
                     :class="{ 'p-invalid': errors.action_type_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -134,7 +134,7 @@
                     v-model="formIncident.status_id"
                     placeholder="Select insurance"
                     :class="{ 'p-invalid': errors.status_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />

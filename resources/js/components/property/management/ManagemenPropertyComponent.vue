@@ -72,7 +72,7 @@
                     v-model="formProperty.country"
                     placeholder="Select country"
                     :class="{ 'p-invalid': errors.country }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                     @change="onChangeCountry(formProperty.country, true)"
@@ -87,7 +87,7 @@
                     v-model="formProperty.state"
                     :placeholder="placeholderState"
                     :class="{ 'p-invalid': errors.state }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                     @change="onChangeState(formProperty.state, true)"
@@ -102,7 +102,7 @@
                     v-model="formProperty.city"
                     :placeholder="placeholderCity"
                     :class="{ 'p-invalid': errors.city }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -120,7 +120,7 @@
                     v-model="formProperty.status"
                     placeholder="Select status"
                     :class="{ 'p-invalid': errors.status }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -137,7 +137,7 @@
                     v-model="formProperty.property_type_id"
                     placeholder="Select property type"
                     :class="{ 'p-invalid': errors.property_type_id }"
-                    optionLabel="name"
+                    optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
                 />
@@ -427,8 +427,8 @@ export default {
         },
         async initServices() {
             this.listStatus = [
-                { id: 1, name: "active" },
-                { id: 2, name: "inactive" },
+                { id: 1, name: "active", valor1: "activo" },
+                { id: 2, name: "inactive", valor1: "inactivo" },
             ];
             const comboNames = ["country", "property_type"];
             const response = await this.$getEnumsOptions(comboNames);
