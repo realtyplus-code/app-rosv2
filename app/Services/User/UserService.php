@@ -7,6 +7,7 @@ use App\Mail\User\UserMail;
 use App\Services\File\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -54,27 +55,46 @@ class UserService
             ->leftJoin('enum_options as ec', 'ec.id', '=', 'users.country')
             ->leftJoin('enum_options as es', 'es.id', '=', 'users.state')
             ->leftJoin('enum_options as eci', 'eci.id', '=', 'users.city')
-            ->leftJoin('enum_options as el', 'el.id', '=', 'users.language_id')
-            ->groupBy([
-                'users.id',
-                'users.name',
-                'users.phone',
-                'ec.id',
-                'es.id',
-                'eci.id',
-                'el.id',
-                'ec.name',
-                'es.name',
-                'eci.name',
-                'el.name',
-                'users.code_number',
-                'users.code_country',
-                'users.email',
-                'users.address',
-                'users.user',
-            ]);
+            ->leftJoin('enum_options as el', 'el.id', '=', 'users.language_id');
+
+        $this->getByUserRol($consult, $role);
+
+        $consult->groupBy([
+            'users.id',
+            'users.name',
+            'users.phone',
+            'ec.id',
+            'es.id',
+            'eci.id',
+            'el.id',
+            'ec.name',
+            'es.name',
+            'eci.name',
+            'el.name',
+            'users.code_number',
+            'users.code_country',
+            'users.email',
+            'users.address',
+            'users.user',
+        ]);
 
         return $consult;
+    }
+
+    private function getByUserRol(&$query, $role)
+    {
+        $userId = Auth::id();
+        switch ($role) {
+            case 'ros_client':
+                $query->whereIn('users.id', function ($query) use ($userId) {
+                    $query->select('users_relations.user_id')
+                        ->from('users_relations')
+                        ->where('users_relations.user_id_related', $userId);
+                });
+                break;
+            default:
+                break;
+        }
     }
 
     public function storeUser(array $data)

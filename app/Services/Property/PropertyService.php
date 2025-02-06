@@ -109,8 +109,17 @@ class PropertyService
                         ->where('user_properties.user_id', $userId);
                 });
                 break;
+            case 'ros_client':
+                $query->where('properties.client_ros_id', $userId);
+                break;
+            case 'ros_client_manager':
+                $query->whereIn('properties.client_ros_id', function ($query) use ($userId) {
+                    $query->select('users_relations.user_id')
+                        ->from('users_relations')
+                        ->where('users_relations.user_id_related', $userId);
+                });
+                break;
             default:
-                $query->where('properties.user_id', Auth::id());
                 break;
         }
     }

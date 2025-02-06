@@ -381,6 +381,10 @@ export default {
             if (this.selectedUser) {
                 await this.setFormUser();
             }
+            const rols = await this.getRoles();
+            if (rols) {
+                this.listRoles = rols.data;
+            }
             this.onChangeRole(this.formUser.role, false);
             const phoneInputField = document.querySelector("#countryPhone");
             if (!phoneInputField) {
@@ -427,10 +431,6 @@ export default {
             );
         },
         async initServices() {
-            const rols = await this.getRoles();
-            if (rols) {
-                this.listRoles = rols.data;
-            }
             const comboNames = ["country", "language"];
             const response = await this.$getEnumsOptions(comboNames);
             const { country: responsCountry, language: responsLenguaje } =
@@ -483,6 +483,7 @@ export default {
                 state: Yup.string().required("State is required"),
                 city: Yup.string().required("City is required"),
                 address: Yup.string().required("Address is required"),
+                language_id: Yup.string().required("Language is required"),
             };
             if (!this.selectedUser) {
                 this.dynamicRules.password = Yup.string().required(

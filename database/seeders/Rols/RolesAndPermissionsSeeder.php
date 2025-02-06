@@ -108,19 +108,29 @@ class RolesAndPermissionsSeeder extends Seeder
                 'read_providers',
                 'read_insurances',
             ],
-            'ros_client' => [ // en espera de definir permisos
+            'ros_client' => [
                 'list_properties',
-                'list_incidents',
+                'list_incidents'
+            ],
+            'ros_client_manager' => [
+                'list_properties',
                 'create_properties',
                 'edit_properties',
                 'delete_properties',
-                'export_properties',
-            ],
-            'ros_client_manager' => [ // en espera de definir permisos
+                'list_incidents',
+                'create_incidents',
+                'edit_incidents',
+                'delete_incidents',
+                'list_incidents_actions',
+                'create_incidents_actions',
+                'edit_incidents_actions',
+                'delete_incidents_actions',
                 'list_users',
                 'create_users',
                 'edit_users',
                 'delete_users',
+                'read_providers',
+                'read_insurances',
             ],
             'global_manager' => [ // en espera de definir permisos
                 'list_properties',

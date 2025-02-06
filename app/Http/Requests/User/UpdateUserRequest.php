@@ -82,8 +82,8 @@ class UpdateUserRequest extends FormRequest
             'password.string' => 'The password must be a string.',
             'password.min' => 'The password must be at least 8 characters.',
             'password.max' => 'The password may not be greater than 255 characters.',
-            'language_id.integer' => 'The language ID must be an integer.',
-            'language_id.min' => 'The language ID must be at least 1.',
+            'language_id.integer' => 'The language must be an integer.',
+            'language_id.min' => 'The language must be at least 1.',
         ];
     }
 }

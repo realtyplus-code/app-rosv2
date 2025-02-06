@@ -457,6 +457,7 @@
         v-if="dialogVisible"
         :dialogVisible="dialogVisible"
         :selectedProperty="selectedProperty"
+        :role="role"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"

@@ -15,6 +15,6 @@ Route::prefix('insurances')->middleware(['auth:web'])->group(function () {
     Route::post('/document/delete', [InsuranceController::class, 'destroyPdf'])->name('insurances.destroy.pdf');
 });
 
-Route::prefix('insurances/only')->middleware(['auth:providers'])->group(function () {
+Route::prefix('insurances/only')->middleware(['auth:web,providers'])->group(function () {
     Route::get('/list', [InsuranceController::class, 'index'])->name('only.insurances.index')->middleware('can:read_insurances');
 });

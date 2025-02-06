@@ -408,6 +408,7 @@
         :dialogVisible="dialogVisibleAction"
         :selectedIncidentId="selectedIncidentId"
         :selectedIncident="selectedIncidentAction"
+        :role="role"
         @hidden="hidden"
         @reload="reload"
         @reloadTable="reloadTable"

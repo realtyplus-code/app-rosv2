@@ -31,10 +31,6 @@ class InsuranceController extends Controller
     public function index(Request $request)
     {
         try {
-            $role = Auth::user()->getRoleNames()[0];
-            if ($role !== 'admin' && !$request->has('property_id')) {
-                return Response::sendError('The property field is required for non-admin users', 400);
-            }
             $query = $this->insuranceService->getInsurancesQuery($request->all());
             $response = renderDataTable(
                 $query,

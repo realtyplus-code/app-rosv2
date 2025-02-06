@@ -63,6 +63,14 @@ class IncidentActionService
             case 'provider':
                 $query->where('providers.id', $userId);
                 break;
+            case 'ros_client_manager':
+                $query->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
+                    ->whereIn('properties.client_ros_id', function ($query) use ($userId) {
+                        $query->select('users_relations.user_id')
+                            ->from('users_relations')
+                            ->where('users_relations.user_id_related', $userId);
+                    });
+                break;
             default:
                 break;
         }

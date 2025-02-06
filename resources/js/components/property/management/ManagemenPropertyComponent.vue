@@ -323,9 +323,10 @@
 import * as Yup from "yup";
 
 export default {
-    props: ["dialogVisible", "selectedProperty"],
+    props: ["dialogVisible", "selectedProperty", "role"],
     data() {
         return {
+            roleName: this.role[0],
             visible: this.dialogVisible,
             formProperty: {
                 id: null,
@@ -461,8 +462,12 @@ export default {
                 });
         },
         getInsurances() {
+            let url = `/insurances/list`;
+            if(this.roleName === 'ros_client_manager'){
+                url = `/insurances/only/list`;
+            }
             this.$axios
-                .get(`/insurances/list`)
+                .get(url)
                 .then((response) => {
                     this.listInsurances = response.data.data;
                 })
