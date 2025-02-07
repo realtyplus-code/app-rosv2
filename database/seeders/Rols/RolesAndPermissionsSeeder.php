@@ -160,6 +160,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'read_properties',
                 'read_providers',
                 'read_insurances',
+                'export_properties',
             ],
             'admin' => [
                 'list_enums',

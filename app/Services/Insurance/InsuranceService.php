@@ -8,20 +8,22 @@ use App\Models\Insurance\Insurance;
 use Illuminate\Support\Facades\Log;
 use App\Services\Attachment\AttachmentService;
 use App\Interfaces\Insurance\InsuranceRepositoryInterface;
-
+use App\Repositories\InsuranceProperty\InsurancePropertyRepository;
 
 class InsuranceService
 {
     protected $fileService;
     protected $attachmentService;
+    protected $insurancePropertyRepository;
     protected $insuranceRepository;
     private $listDocuments = ['document'];
     private $disk = 'disk_insurance';
 
-    public function __construct(InsuranceRepositoryInterface $insuranceRepository,  AttachmentService $attachmentService, FileService $fileService)
+    public function __construct(InsuranceRepositoryInterface $insuranceRepository, InsurancePropertyRepository $insurancePropertyRepository, AttachmentService $attachmentService, FileService $fileService)
     {
         $this->fileService = $fileService;
         $this->attachmentService = $attachmentService;
+        $this->insurancePropertyRepository = $insurancePropertyRepository;
         $this->insuranceRepository = $insuranceRepository;
     }
 
@@ -68,6 +70,14 @@ class InsuranceService
         DB::beginTransaction();
         try {
             $insurance = $this->insuranceRepository->create($data);
+            if (isset($data['properties']) && count($data['properties']) > 0) {
+                foreach ($data['properties'] as $property) {
+                    $this->insurancePropertyRepository->create([
+                        'insurance_id' => $insurance->id,
+                        'property_id' => $property,
+                    ]);
+                }
+            }
             DB::commit();
             return $insurance;
         } catch (\Exception $ex) {
@@ -92,6 +102,15 @@ class InsuranceService
         DB::beginTransaction();
         try {
             $insurance = $this->insuranceRepository->update($id, $data);
+            $this->insurancePropertyRepository->deleteByInsurance($id);
+            if (isset($data['properties'])) {
+                foreach ($data['properties'] as $property) {
+                    $this->insurancePropertyRepository->create([
+                        'insurance_id' => $insurance->id,
+                        'property_id' => $property,
+                    ]);
+                }
+            }
             DB::commit();
             return $insurance;
         } catch (\Exception $ex) {

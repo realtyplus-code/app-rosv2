@@ -124,9 +124,16 @@ class PropertyService
         }
     }
 
-    public function getPropertiesTypeQuery()
+    public function getPropertiesTypeQuery($idInsurance = null, $exclude = false)
     {
         $query = Property::query();
+        if ($exclude) {
+            $query->whereNotIn('properties.id', function ($query) use ($idInsurance) {
+                $query->select('insurance_property.property_id')
+                    ->from('insurance_property')
+                    ->where('insurance_property.insurance_id', '!=', $idInsurance);
+            });
+        }
         return $query->distinct();
     }
 
@@ -158,12 +165,6 @@ class PropertyService
                 $this->userPropertyRepository->create([
                     'property_id' => $property->id,
                     'user_id' => $value,
-                ]);
-            }
-            if (!empty($data['insurances'])) {
-                $this->insurancePropertyRepository->create([
-                    'property_id' => $property->id,
-                    'insurance_id' => $data['insurances']
                 ]);
             }
             DB::commit();
@@ -203,12 +204,6 @@ class PropertyService
                 ]);
             }
             $this->insurancePropertyRepository->deleteByProperty($id);
-            if (!empty($data['insurances'])) {
-                $this->insurancePropertyRepository->create([
-                    'property_id' => $property->id,
-                    'insurance_id' => $data['insurances']
-                ]);
-            }
             DB::commit();
             return $property;
         } catch (\Exception $ex) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Property\PropertyController;
 Route::prefix('properties')->middleware(['auth:web'])->group(function () {
     Route::get('/', [PropertyController::class, 'view'])->name('properties.view')->middleware('can:list_properties');
     Route::get('/list', [PropertyController::class, 'index'])->name('properties.index')->middleware('can:list_properties');
+    Route::get('/listByUnique/{idInsurance}', [PropertyController::class, 'byUnique'])->name('properties.by.unique')->middleware('can:list_properties');
     Route::post('/store', [PropertyController::class, 'store'])->name('properties.store')->middleware('can:create_properties');
     Route::post('/update/{id}', [PropertyController::class, 'update'])->name('properties.update')->middleware('can:edit_properties');
     Route::delete('/{id}', [PropertyController::class, 'destroy'])->name('properties.destroy')->middleware('can:delete_properties');

@@ -48,23 +48,6 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
-            <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listInsurances"
-                    v-model="formProperty.insurances"
-                    placeholder="Select insurances"
-                    :class="{ 'p-invalid': errors.insurances }"
-                    optionLabel="insurance_company"
-                    optionValue="id"
-                    style="width: 100%"
-                />
-                <small v-if="errors.insurances" class="p-error">{{
-                    errors.insurances
-                }}</small>
-            </div>
-        </div>
         <div class="custom-form mt-4">
             <div class="custom-form-column" style="margin-top: 10px">
                 <Select
@@ -336,7 +319,6 @@ export default {
                 status: null,
                 owners: [],
                 tenants: [],
-                insurances: [],
                 photos: [],
                 country: null,
                 state: null,
@@ -357,7 +339,6 @@ export default {
             listCity: [],
             listCountry: [],
             listState: [],
-            listInsurances: [],
             placeholderCity: "Select the state first",
             placeholderState: "Select the country first",
         };
@@ -407,8 +388,6 @@ export default {
                 this.formProperty.tenants = currentTenantsName.map(
                     (tenat) => tenat.id
                 );
-                this.formProperty.insurances =
-                    this.selectedProperty.insurances_id;
                 this.setDate();
                 this.setPhotos();
                 if (this.selectedProperty.country_id) {
@@ -442,7 +421,6 @@ export default {
             this.getUsers("owner");
             this.getUsers("tenant");
             this.getUsers("ros_client");
-            this.getInsurances();
         },
         getUsers(role = null) {
             const params = role ? { params: { role } } : {};
@@ -456,20 +434,6 @@ export default {
                     } else if (role === "ros_client") {
                         this.listClientRos = response.data.data;
                     }
-                })
-                .catch((error) => {
-                    this.$readStatusHttp(error);
-                });
-        },
-        getInsurances() {
-            let url = `/insurances/list`;
-            if(this.roleName === 'ros_client_manager'){
-                url = `/insurances/only/list`;
-            }
-            this.$axios
-                .get(url)
-                .then((response) => {
-                    this.listInsurances = response.data.data;
                 })
                 .catch((error) => {
                     this.$readStatusHttp(error);

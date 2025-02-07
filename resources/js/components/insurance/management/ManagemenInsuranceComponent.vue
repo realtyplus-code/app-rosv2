@@ -33,6 +33,21 @@
                 }}</small>
             </div>
         </div>
+        <div class="custom-form-column mt-4">
+            <MultiSelect
+                :options="listProperty"
+                v-model="formInsurance.properties"
+                filter
+                placeholder="Select property"
+                :class="{ 'p-invalid': errors.properties }"
+                optionLabel="name"
+                optionValue="id"
+                style="width: 100%"
+            />
+            <small v-if="errors.properties" class="p-error">{{
+                errors.properties
+            }}</small>
+        </div>
         <div class="custom-form">
             <div class="custom-form-column">
                 <FloatLabel>
@@ -292,18 +307,23 @@ export default {
                 renewal_indicator: true,
                 renewal_months: 0,
                 policy_amount: null,
+                properties: [],
             },
             errors: {},
             listInsuranceType: [],
             listCountry: [],
+            listProperty: [],
             isLoad: false,
         };
     },
     components: {},
     watch: {},
     mounted() {
-        this.$nextTick(() => {
+        this.$nextTick(async () => {
             if (this.selectedInsurance) {
+                const currentPropertiesName = this.$parseTags(
+                    this.selectedInsurance.property_name
+                );
                 this.formInsurance.id = this.selectedInsurance.id;
                 this.formInsurance.insurance_company =
                     this.selectedInsurance.insurance_company;
@@ -336,7 +356,11 @@ export default {
                     this.selectedInsurance.policy_amount;
                 this.formInsurance.renewal_indicator =
                     this.selectedInsurance.renewal_indicator;
+                this.formInsurance.properties = currentPropertiesName.map(
+                    (item) => item.id
+                );
             }
+            await this.getProperties();
             const phoneInputField = document.querySelector("#countryPhone");
             if (!phoneInputField) {
                 console.error("El elemento #phone no está definido.");
@@ -380,6 +404,15 @@ export default {
                         reject(error);
                     });
             });
+        },
+        async getProperties() {
+            let url = `/properties/listByUnique/${this.formInsurance.id}`;
+            try {
+                const response = await this.$axios.get(url);
+                this.listProperty = response.data.data;
+            } catch (error) {
+                this.$readStatusHttp(error);
+            }
         },
         async validateForm() {
             let initialRules = {
