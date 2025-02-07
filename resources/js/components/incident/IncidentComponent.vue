@@ -466,6 +466,12 @@ export default {
     methods: {
         initFilters() {
             this.filters = {
+                property: {
+                    clear: false,
+                    constraints: [
+                        { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+                    ],
+                },
                 description: {
                     clear: false,
                     constraints: [
@@ -528,7 +534,6 @@ export default {
             this.filtroInfo = [];
             for (const [key, filter] of Object.entries(event.filters)) {
                 if (filter.constraints) {
-                    console.log(filter.constraints);
                     for (const constraint of filter.constraints) {
                         if (constraint.value) {
                             this.filtroInfo.push([

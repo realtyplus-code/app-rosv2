@@ -203,7 +203,7 @@ class PropertyController extends Controller
         try {
             $data = $this->getDataToExport($request);
             $pdf = \PDF::loadView('exports.properties', ['data' => $data])
-                ->setPaper('A4', 'landscape');
+                ->setPaper('A3', 'landscape');
             $currentDate = Carbon::now()->format('Y-m-d H:i:s');
             return $pdf->download("User_{$currentDate}.pdf");
         } catch (\Exception $ex) {

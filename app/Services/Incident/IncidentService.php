@@ -58,6 +58,8 @@ class IncidentService
             $query->where('properties.id', $data['property_id']);
         }
 
+        $query->orderBy('incidents.report_date', 'desc');
+
         $query->groupBy(
             [
                 'incidents.id',

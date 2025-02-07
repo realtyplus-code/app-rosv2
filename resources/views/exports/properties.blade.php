@@ -6,6 +6,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 10px;
         }
         table, th, td {
             border: 1px solid black;

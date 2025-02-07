@@ -576,12 +576,12 @@ export default {
         },
         roleAlias(roleName) {
             const aliases = {
-                owner: "Owner",
-                tenant: "Tenant",
-                provider: "Provider",
-                ros_client: "Ros Client",
-                ros_client_manager: "Ros Client Manager",
-                global_manager: "Global Manager",
+                owner: "Propietario",
+                tenant: "Inquilino",
+                provider: "Proveedor",
+                ros_client: "Cliente Ros",
+                ros_client_manager: "Gerente Cliente Ros",
+                global_manager: "Gerente Global",
             };
             return aliases[roleName] || roleName;
         },

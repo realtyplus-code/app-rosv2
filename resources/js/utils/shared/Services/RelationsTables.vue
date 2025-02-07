@@ -98,6 +98,8 @@ export default {
 
         $relationTableIncident(selector) {
             switch (selector) {
+                case "property":
+                    return "properties.name";
                 case "description":
                     return "incidents.description";
                 case "report_date":
