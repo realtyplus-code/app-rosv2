@@ -60,6 +60,16 @@ class IncidentActionService
     {
         $userId = Auth::id();
         switch (Auth::user()->getRoleNames()[0]) {
+            case 'owner':
+            case 'tenant':
+                $query->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
+                    ->whereExists(function ($subQuery) use ($userId) {
+                        $subQuery->select(DB::raw(1))
+                            ->from('user_properties')
+                            ->whereRaw('user_properties.property_id = properties.id')
+                            ->where('user_properties.user_id', $userId);
+                    });
+                break;
             case 'provider':
                 $query->where('providers.id', $userId);
                 break;
