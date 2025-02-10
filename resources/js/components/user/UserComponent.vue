@@ -340,6 +340,7 @@ export default {
             filters: null,
             filtroInfo: [],
             loading: true,
+            filterRole: {},
             filterSelect: {},
             //
             selectedUser: null,
@@ -444,6 +445,7 @@ export default {
         clearFilters() {
             this.initFilters();
             this.filtroInfo = [];
+            this.filterRole = null;
             this.selectedRole = null;
             this.fetchUser();
         },
@@ -486,7 +488,11 @@ export default {
                         sort: [this.sortField, this.sortOrder],
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
-                        role: role ?? null,
+                        role: role
+                            ? role
+                            : this.filterRole
+                            ? this.filterRole.name
+                            : null,
                     },
                 })
                 .then((response) => {
@@ -566,11 +572,13 @@ export default {
         },
         onChangeSelect(item) {
             if (item.value === null) {
+                this.filterRole = null;
                 this.selectedRole = null;
                 this.fetchUser();
                 return;
             }
             const role = this.listRoles.find((role) => role.id === item.value);
+            this.filterRole = role;
             this.fetchUser(role.name);
             this.resetGallery();
         },

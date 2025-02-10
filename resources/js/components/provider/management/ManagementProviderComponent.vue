@@ -440,9 +440,12 @@ export default {
                 coverage_area: Yup.string().required(
                     "Coverage area is required"
                 ),
-                contact_phone: Yup.string().required(
-                    "Contact phone is required"
-                ),
+                contact_phone: Yup.string()
+                    .matches(
+                        /^[0-9]+$/,
+                        "Phone number must contain only digits"
+                    )
+                    .required("Type phone is required"),
                 email: Yup.string()
                     .email("The email format is not valid")
                     .required("Contact email is required"),

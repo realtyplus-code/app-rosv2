@@ -428,7 +428,9 @@ export default {
                     .required("Contact email is required")
                     .email("Contact email must be a valid email"),
                 position: Yup.string().required("Position is required"),
-                phone: Yup.string().required("Phone number is required"),
+                phone: Yup.string()
+                    .matches(/^[0-9]+$/, "Phone number must contain only digits")
+                    .required("Type phone is required"),
                 insurance_type_id: Yup.string().required(
                     "Coverage type is required"
                 ),

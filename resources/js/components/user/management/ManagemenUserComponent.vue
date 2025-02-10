@@ -473,7 +473,9 @@ export default {
                 email: Yup.string()
                     .email("The email format is not valid")
                     .required("Type email is required"),
-                phone: Yup.string().required("Type phone is required"),
+                phone: Yup.string()
+                    .matches(/^[0-9]+$/, "Phone number must contain only digits")
+                    .required("Type phone is required"),
                 photos: Yup.array()
                     .min(1, "At least 1 photo is required")
                     .max(1, "You can upload up to 1 photos")
