@@ -126,7 +126,8 @@ class CoreEnumCountryStateCitySeeder extends Seeder
             $brotherId = DB::table('enum_options')->insertGetId([
                 'parent_id' => $stateId,
                 'brother_relation_id' => $brotherIdC,
-                'name' => $key
+                'name' => $key,
+                'valor1' => $key,
             ]);
             foreach ($value as $item) {
                 DB::table('enum_options')->insert([
