@@ -131,7 +131,8 @@ class CoreEnumCountryStateCitySeeder extends Seeder
                 DB::table('enum_options')->insert([
                     'parent_id' => $cityId,
                     'brother_relation_id' => $brotherId,
-                    'name' => $item
+                    'name' => $item,
+                    'valor1' => $item,
                 ]);
             }
         }
