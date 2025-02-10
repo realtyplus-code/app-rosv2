@@ -23,14 +23,17 @@ class CoreMasterComboInsuranceTypeSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'home',
+                        'valor1' => 'hogar',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'business',
+                        'valor1' => 'negocio',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'rent default',
+                        'valor1' => 'alquiler por defecto',
                         'orden' => 2,
                     ]
                 ],

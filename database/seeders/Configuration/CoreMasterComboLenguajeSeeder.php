@@ -23,14 +23,17 @@ class CoreMasterComboLenguajeSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'spanish',
+                        'valor1' => 'español',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'english',
+                        'valor1' => 'ingles',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'french',
+                        'valor1' => 'frances',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboLenguajeSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

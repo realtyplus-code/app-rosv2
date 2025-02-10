@@ -23,10 +23,12 @@ class CoreMasterComboCoverageTypeSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'parcial', //departamento
+                        'valor1' => 'parcial',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'complet', //casa
+                        'valor1' => 'completo',
                         'orden' => 1,
                     ],
                 ],
@@ -48,6 +50,7 @@ class CoreMasterComboCoverageTypeSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

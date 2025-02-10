@@ -118,7 +118,8 @@ class CoreEnumCountryStateCitySeeder extends Seeder
 
         $brotherIdC = DB::table('enum_options')->insertGetId([
             'parent_id' => $countryId,
-            'name' => 'Spain'
+            'name' => 'Spain',
+            'valor1' => 'España'
         ]);
 
         foreach ($listCitiesByState as $key => $value) {

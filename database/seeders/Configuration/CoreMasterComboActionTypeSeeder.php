@@ -23,14 +23,17 @@ class CoreMasterComboActionTypeSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'high',
+                        'valor1' => 'alta',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'intervention',
+                        'valor1' => 'intervencion',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'closure',
+                        'valor1' => 'cierre',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboActionTypeSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

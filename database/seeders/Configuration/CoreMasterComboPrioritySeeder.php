@@ -23,14 +23,17 @@ class CoreMasterComboPrioritySeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'high', //alta
+                        'valor1' => 'alta',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'average', //media
+                        'valor1' => 'media',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'low', //baja
+                        'valor1' => 'baja',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboPrioritySeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

@@ -23,14 +23,17 @@ class CoreMasterComboPropertyTypeSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'department', //departamento
+                        'valor1' => 'departamento',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'home', //casa
+                        'valor1' => 'casa',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'premises', //local
+                        'valor1' => 'local',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboPropertyTypeSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

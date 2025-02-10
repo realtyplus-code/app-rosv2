@@ -23,14 +23,17 @@ class CoreMasterComboPayerSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'owner', //propietario
+                        'valor1' => 'propietario',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'tenant', //inquilino
+                        'valor1' => 'inquilino',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'insurance company', //compañia de seguros
+                        'valor1' => 'compañia de seguros',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboPayerSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

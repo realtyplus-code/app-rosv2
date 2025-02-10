@@ -23,14 +23,17 @@ class CoreMasterComboIncidentTypeSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'electric', //electrico
+                        'valor1' => 'electrica',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'plumbing', //plomeria
+                        'valor1' => 'plomeria',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'structural', //estructural
+                        'valor1' => 'estructural',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboIncidentTypeSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

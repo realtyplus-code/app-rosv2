@@ -23,10 +23,12 @@ class CoreMasterComboActionStatusSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'completed',
+                        'valor1' => 'completado',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'pending',
+                        'valor1' => 'pendiente',
                         'orden' => 1,
                     ],
                 ],
@@ -48,6 +50,7 @@ class CoreMasterComboActionStatusSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);

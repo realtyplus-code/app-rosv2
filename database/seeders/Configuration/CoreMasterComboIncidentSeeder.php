@@ -23,14 +23,17 @@ class CoreMasterComboIncidentSeeder extends Seeder
                 'childrens' => [
                     [
                         'name' => 'opened', //abierta
+                        'valor1' => 'abierto',
                         'orden' => 0,
                     ],
                     [
                         'name' => 'in progress', //en proceso
+                        'valor1' => 'en proceso',
                         'orden' => 1,
                     ],
                     [
                         'name' => 'closed', //cerrada
+                        'valor1' => 'cerrado',
                         'orden' => 2,
                     ]
                 ],
@@ -52,6 +55,7 @@ class CoreMasterComboIncidentSeeder extends Seeder
                     DB::table('enum_options')->insert([
                         'parent_id' => $father_id,
                         'name' => $child['name'],
+                        'valor1' => $child['valor1'],
                         'orden' => $child['orden'],
                         'status' => true
                     ]);
