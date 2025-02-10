@@ -23,13 +23,22 @@ class UsersSeeder extends Seeder
         $adminRole = Role::where('name', 'admin')->first();
         $adminUser->assignRole($adminRole);
 
+        $rolUser = User::create([
+            'name' => 'Global User',
+            'user' => 'global',
+            'email' => 'global@ros.com',
+            'password' => bcrypt('password'),
+        ]);
+        $adminRole = Role::where('name', 'global_manager')->first();
+        $rolUser->assignRole($adminRole);
+
         $roles = ['owner', 'tenant'];
         for ($i = 1; $i <= 10; $i++) {
             $user = User::create([
                 'name' => "Test User $i",
                 'user' => "test$i",
                 'email' => "testuser$i@example.com",
-                'password' => Hash::make('password'),
+                'password' => bcrypt('password'),
             ]);
             $randomRole = $roles[array_rand($roles)];
             $user->assignRole($randomRole);

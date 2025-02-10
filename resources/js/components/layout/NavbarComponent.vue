@@ -6,7 +6,7 @@
                 icon="pi pi-bars"
                 aria-label="Filter"
                 @click="toggleDrawer"
-                raised 
+                raised
             />
             <img
                 :src="logoPath"
@@ -22,7 +22,11 @@
         </template>
     </Menubar>
     <br /><br />
-    <DrawerComponent :visibleMenu="visibleMenu" :permissions="permissions" @closeDrawer="hiddenMenu" />
+    <DrawerComponent
+        :visibleMenu="visibleMenu"
+        :permissions="permissions"
+        @closeDrawer="hiddenMenu"
+    />
 </template>
 
 <script>
@@ -31,13 +35,17 @@ import Menubar from "primevue/menubar";
 import DrawerComponent from "./DrawerComponent.vue";
 
 export default {
-    props: ["permissions"],
+    props: ["userAuth", "permissions"],
     data() {
         return {
             visibleMenu: false,
             rolName: null,
             logoPath: `${window.location.origin}/img/rentalcolorb.svg`,
             menuItems: [
+                {
+                    label: "Bienvenido " + this.userAuth.name,
+                    icon: "pi pi-user",
+                },
                 {
                     label: "Logout",
                     icon: "pi pi-sign-out",
@@ -117,12 +125,12 @@ export default {
 </script>
 
 <style scoped>
-.menu-button{
+.menu-button {
     background-color: #f76f31;
     border: none;
 }
 
-.menu-button:hover{
+.menu-button:hover {
     background-color: #fb8047 !important;
     border: none !important;
 }
