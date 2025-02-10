@@ -100,6 +100,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'create_incidents',
                 'read_providers',
                 'read_insurances',
+                'list_incidents_actions',
             ],
             'tenant' => [
                 'list_properties',
@@ -107,6 +108,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'create_incidents',
                 'read_providers',
                 'read_insurances',
+                'list_incidents_actions',
             ],
             'ros_client' => [
                 'list_properties',
