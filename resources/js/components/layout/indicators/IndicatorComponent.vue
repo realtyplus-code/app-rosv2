@@ -1,7 +1,7 @@
 <template>
     <div class="indicator-container">
         <div class="cards">
-            <div class="card">
+            <div class="card" v-if="roleName !== 'provider'">
                 <div class="card-header">
                     <span class="card-title">
                         <img src="/img/indicators/casa.png" alt="Properties" />
@@ -11,18 +11,18 @@
                 <div class="card-body">
                     <div v-if="loadingProperties">Loading...</div>
                     <div v-else>
-                        <h3>
-                            {{
-                                countProperties.actives + countProperties.inactives
-                            }}
-                        </h3>
-                        <div class="tag active-tag" title="Actives">
-                            <i class="pi pi-check-circle"></i>
-                            {{ countProperties.actives }}
-                        </div>
-                        <div class="tag inactive-tag" title="Inactives">
-                            <i class="pi pi-times-circle"></i>
-                            {{ countProperties.inactives }}
+                        <h3>{{ totalProperties }}</h3>
+                        <div
+                            v-for="property in propertiesCounts"
+                            :key="property.type_name"
+                            :class="[
+                                'tag',
+                                property.type_name.replace(' ', '-') + '-tag',
+                            ]"
+                            :title="property.type_name"
+                        >
+                            <i :class="getIconClass(property.type_name)"></i>
+                            {{ property.count }}
                         </div>
                     </div>
                 </div>
@@ -56,64 +56,6 @@
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title"
-                        ><img
-                            src="/img/indicators/seguro.png"
-                            alt="Insurances"
-                        />
-                        INSURANCES</span
-                    >
-                </div>
-                <div class="card-body">
-                    <div v-if="loadingInsurances">Loading...</div>
-                    <div v-else>
-                        <h3>{{ totalInsurances }}</h3>
-                        <div
-                            v-for="insurance in insuranceCounts"
-                            :key="insurance.type_name"
-                            :class="[
-                                'tag',
-                                insurance.type_name.replace(' ', '-') + '-tag',
-                            ]"
-                            :title="insurance.type_name"
-                        >
-                            <i :class="getIconClass(insurance.type_name)"></i>
-                            {{ insurance.count }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-title"
-                        ><img
-                            src="/img/indicators/proveedor.png"
-                            alt="Providers"
-                        />
-                        PROVIDERS</span
-                    >
-                </div>
-                <div class="card-body">
-                    <div v-if="loadingProviders">Loading...</div>
-                    <div v-else>
-                        <h3>{{ totalProviders }}</h3>
-                        <div
-                            v-for="provider in providersCounts"
-                            :key="provider.type_name"
-                            :class="[
-                                'tag',
-                                provider.type_name.replace(' ', '-') + '-tag',
-                            ]"
-                            :title="provider.type_name"
-                        >
-                            <i :class="getIconClass(provider.type_name)"></i>
-                            {{ provider.count }}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>
@@ -124,20 +66,13 @@ export default {
     components: {},
     data() {
         return {
-            countProperties: {
-                actives: 0,
-                inactives: 0,
-            },
+            roleName: this.rol[0],
+            propertiesCounts: [],
+            totalProperties: 0,
             incidentCounts: [],
             totalIncidents: 0,
-            insuranceCounts: [],
-            totalInsurances: 0,
-            providersCounts: [],
-            totalProviders: 0,
             loadingProperties: true,
             loadingIncidents: true,
-            loadingInsurances: true,
-            loadingProviders: true,
         };
     },
     computed: {},
@@ -145,15 +80,17 @@ export default {
     created() {
         this.getPropertyTypeCount();
         this.getIncidentTypeCount();
-        this.getInsuranceTypeCount();
-        this.getProvidersTypeCount();
     },
     methods: {
         getPropertyTypeCount() {
             this.$axios
                 .get("/properties/byTypeCount")
                 .then((response) => {
-                    this.countProperties = response.data.data;
+                    this.propertiesCounts = response.data.data;
+                    this.totalProperties = this.propertiesCounts.reduce(
+                        (sum, item) => sum + item.count,
+                        0
+                    );
                 })
                 .catch((error) => {
                     console.error("Error fetching properties data:", error);
@@ -168,7 +105,7 @@ export default {
                 .then((response) => {
                     this.incidentCounts = response.data.data;
                     this.totalIncidents = this.incidentCounts.reduce(
-                        (sum, incident) => sum + incident.count,
+                        (sum, item) => sum + item.count,
                         0
                     );
                 })
@@ -177,40 +114,6 @@ export default {
                 })
                 .finally(() => {
                     this.loadingIncidents = false;
-                });
-        },
-        getInsuranceTypeCount() {
-            this.$axios
-                .get("/insurances/byTypeCount")
-                .then((response) => {
-                    this.insuranceCounts = response.data.data;
-                    this.totalInsurances = this.insuranceCounts.reduce(
-                        (sum, insurance) => sum + insurance.count,
-                        0
-                    );
-                })
-                .catch((error) => {
-                    console.error("Error fetching insurances data:", error);
-                })
-                .finally(() => {
-                    this.loadingInsurances = false;
-                });
-        },
-        getProvidersTypeCount() {
-            this.$axios
-                .get("/providers/byTypeCount")
-                .then((response) => {
-                    this.providersCounts = response.data.data;
-                    this.totalProviders = this.providersCounts.reduce(
-                        (sum, provider) => sum + provider.count,
-                        0
-                    );
-                })
-                .catch((error) => {
-                    console.error("Error fetching insurances data:", error);
-                })
-                .finally(() => {
-                    this.loadingProviders = false;
                 });
         },
         getIconClass(typeName) {

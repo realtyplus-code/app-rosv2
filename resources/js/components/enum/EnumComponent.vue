@@ -1,6 +1,9 @@
 <template>
     <Card class="container">
-        <template #title>Options</template>
+        <template #title
+            >Options
+            <i class="pi pi-info info" @click="infoVisible = true"></i>
+        </template>
         <template #content>
             <DataTable
                 v-model:filters="filters"
@@ -163,6 +166,32 @@
         </template>
     </Card>
 
+    <Dialog
+        v-model:visible="infoVisible"
+        maximizable
+        modal
+        header="Información"
+        :style="{ width: '50rem' }"
+        :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
+        style="text-align: justify"
+    >
+        <p class="m-0">
+            Este módulo permite crear opciones para los diferentes listados
+            dentro del aplicativo. Para gestionar (crear o editar) una opción,
+            primero debemos ubicarnos en el listado correspondiente,
+            identificado como "Select Option", y seleccionar la opción deseada.
+            Una vez seleccionada, se mostrarán las opciones de creación, edición
+            y eliminación.
+        </p>
+        <br />
+        <p class="m-0">
+            Para las opciones de Country, State y City, al realizar una
+            selección, se desplegará un campo adicional que representa la
+            relación interna de dependencia. Por lo tanto, es necesario elegir
+            la opción adecuada para establecer la relación correctamente.
+        </p>
+    </Dialog>
+
     <!-- gestion de opcion -->
     <ManagemenEnumComponent
         v-if="dialogVisible"
@@ -205,6 +234,7 @@ export default {
                 { value: "Active", id: 1 },
                 { value: "Inactive", id: 2 },
             ],
+            infoVisible: false,
         };
     },
     components: {
@@ -385,4 +415,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.info {
+    font-size: 1rem;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    background-color: #010101;
+    border-radius: 50%;
+    padding: 2px;
+}
+</style>

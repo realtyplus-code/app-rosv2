@@ -133,6 +133,9 @@ class PropertyService
                     ->from('insurance_property')
                     ->where('insurance_property.insurance_id', '!=', $idInsurance);
             });
+        } else {
+            $this->getByUserRol($query);
+            $query->groupBy('status');
         }
         return $query->distinct();
     }

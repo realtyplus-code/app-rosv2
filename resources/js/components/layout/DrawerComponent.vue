@@ -27,9 +27,12 @@
                     ></i>
                 </div>
                 <ul v-if="item.items && item.expanded" class="submenu-options">
-                    <li v-for="subItem in item.items" :key="subItem.label">
+                    <li
+                        v-for="subItem in item.items"
+                        :key="subItem.label"
+                        v-show="getPermissionsByRole(subItem.permission)"
+                    >
                         <a
-                            v-if="getPermissionsByRole(subItem.permission)"
                             href="#"
                             @click="subItem.command"
                             style="text-decoration: none"

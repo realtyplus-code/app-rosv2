@@ -4,11 +4,12 @@ namespace App\Models\Provider;
 
 use Carbon\Carbon;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Provider extends Authenticatable
 {
-    use HasRoles;
+    use HasRoles, Notifiable;
     protected $guard_name = 'providers';
 
     protected $fillable = [

@@ -78,13 +78,10 @@ class PropertyController extends Controller
     {
         try {
             $query = $this->propertyService->getPropertiesTypeQuery();
-            $properties = $query->get();
-            $actives = $properties->where('status', 1)->count();
-            $inactives = $properties->where('status', 2)->count();
-            $response = [
-                'actives' => $actives,
-                'inactives' => $inactives
-            ];
+            $response = $query->get([
+                DB::raw('CASE WHEN properties.status = 1 THEN "active" WHEN properties.status = 2 THEN "inactive" ELSE "unknown" END as type_name'),
+                DB::raw('COUNT(properties.id) as count'),
+            ]);
             return Response::sendResponse($response, __('messages.controllers.success.records_fetched_successfully'));
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
