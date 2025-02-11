@@ -101,6 +101,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'read_providers',
                 'read_insurances',
                 'list_incidents_actions',
+                'list_users',
+                'edit_users',  
             ],
             'tenant' => [
                 'list_properties',
@@ -109,6 +111,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'read_providers',
                 'read_insurances',
                 'list_incidents_actions',
+                'list_users',
+                'edit_users',  
             ],
             'ros_client' => [
                 'list_properties',
@@ -133,6 +137,11 @@ class RolesAndPermissionsSeeder extends Seeder
                 'delete_users',
                 'read_providers',
                 'read_insurances',
+                // providers control total
+                'create_providers',
+                'edit_providers',
+                'list_providers',
+                'delete_providers',
             ],
             'global_manager' => [
                 'list_properties',

@@ -86,13 +86,21 @@ class UserService
     private function getByUserRol(&$query, $role)
     {
         $userId = Auth::id();
+        if (empty($role)) {
+            $role = Auth::user()->getRoleNames()[0];
+        }
         switch ($role) {
+            case 'owner':
+            case 'tenant':
+                $query->where('users.id', $userId);
+                break;
             case 'ros_client':
+            case 'ros_client_manager':
                 $query->whereIn('users.id', function ($query) use ($userId) {
                     $query->select('users_relations.user_id')
                         ->from('users_relations')
                         ->where('users_relations.user_id_related', $userId);
-                });
+                })->orWhere('users.id', $userId);
                 break;
             default:
                 break;

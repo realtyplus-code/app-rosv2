@@ -4,6 +4,7 @@
         <template #content>
             <div class="custom-form-column col-md-3">
                 <Select
+                    v-if="getPermissionsByRole('create_users')"
                     filter
                     :options="
                         listRoles.map((role) => ({
@@ -22,6 +23,7 @@
             </div>
             <div class="p-d-flex p-jc-end p-mb-3">
                 <Button
+                    v-if="getPermissionsByRole('create_users')"
                     icon="pi pi-plus"
                     rounded
                     raised
@@ -279,12 +281,17 @@
                 </Column>
                 <!-- Actions Column -->
                 <Column
+                    v-if="
+                        getPermissionsByRole('edit_users') ||
+                        getPermissionsByRole('delete_users')
+                    "
                     header="Actions"
                     style="min-width: 120px; text-align: center"
                 >
                     <template #body="slotProps">
                         <div class="row">
                             <Button
+                                v-if="getPermissionsByRole('edit_users')"
                                 icon="pi pi-pencil"
                                 class="p-button-rounded p-button-primary"
                                 style="
@@ -295,6 +302,7 @@
                                 @click="editProperty(slotProps.data)"
                             />
                             <Button
+                                v-if="getPermissionsByRole('delete_users')"
                                 icon="pi pi-trash"
                                 class="p-button-rounded p-button-danger"
                                 style="
@@ -328,7 +336,7 @@ import { FilterMatchMode, FilterOperator } from "@primevue/core/api";
 import ManagemenUserComponent from "./management/ManagemenUserComponent.vue";
 
 export default {
-    props: [],
+    props: ["role", "permissions"],
     data() {
         return {
             users: [],
@@ -592,6 +600,11 @@ export default {
                 global_manager: "Gerente Global",
             };
             return aliases[roleName] || roleName;
+        },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
         },
     },
 };
