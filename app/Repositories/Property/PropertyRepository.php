@@ -47,4 +47,9 @@ class PropertyRepository implements PropertyRepositoryInterface
     {
         return $this->model->all();
     }
+
+    public function findBy($field, $condition = '=', $value)
+    {
+        return $this->model->where($field, $condition, $value)->get();
+    }
 }

@@ -10,4 +10,5 @@ interface PropertyRepositoryInterface
     public function findById($id);
     public function findAll();
     public function all();
+    public function findBy($field, $condition ,$value);
 }

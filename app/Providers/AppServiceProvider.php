@@ -17,16 +17,20 @@ use App\Repositories\EnumOption\EnumOptionRepository;
 use App\Interfaces\Incident\IncidentRepositoryInterface;
 use App\Interfaces\Property\PropertyRepositoryInterface;
 use App\Interfaces\Provider\ProviderRepositoryInterface;
+use App\Repositories\Contracts\PropertyHistoryRepository;
 use App\Repositories\UserProperty\UserPropertyRepository;
 use App\Repositories\UserRelation\UserRelationRepository;
 use App\Interfaces\Insurance\InsuranceRepositoryInterface;
 use App\Interfaces\Attachment\AttachmentRepositoryInterface;
 use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
+use App\Repositories\Contracts\UserPropertyHistoryRepository;
 use App\Repositories\IncidentAction\IncidentActionRepository;
+use App\Interfaces\Contract\PropertyHistoryRepositoryInterface;
 use App\Repositories\ProviderService\ProviderServiceRepository;
 use App\Interfaces\UserProperty\UserPropertyRepositoryInterface;
 use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
 use App\Repositories\IncidentProvider\IncidentProviderRepository;
+use App\Interfaces\Contract\UserPropertyHistoryRepositoryInterface;
 use App\Repositories\InsuranceProperty\InsurancePropertyRepository;
 use App\Interfaces\IncidentAction\IncidentActionRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
@@ -54,6 +58,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRelationRepositoryInterface::class, UserRelationRepository::class);
         $this->app->bind(AttachmentRepositoryInterface::class, AttachmentRepository::class);
         $this->app->bind(InsurancePropertyRepositoryInterface::class, InsurancePropertyRepository::class);
+        $this->app->bind(UserPropertyHistoryRepositoryInterface::class, UserPropertyHistoryRepository::class);
+        $this->app->bind(PropertyHistoryRepositoryInterface::class, PropertyHistoryRepository::class);
     }
 
     /**
