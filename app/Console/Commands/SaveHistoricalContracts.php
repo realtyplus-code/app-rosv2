@@ -19,7 +19,10 @@ class SaveHistoricalContracts extends Command
 
     public function handle()
     {
-        $this->propertyHistoryService->saveHistoricalContracts();
-        $this->info('Contratos históricos actualizados.');
+        if($this->propertyHistoryService->saveHistoricalContracts()) {
+            $this->info('Contratos históricos actualizados.');
+        } else {
+            $this->error('No se han podido actualizar los contratos históricos.');
+        }
     }
 }

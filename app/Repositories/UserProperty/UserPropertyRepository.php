@@ -47,6 +47,13 @@ class UserPropertyRepository implements UserPropertyRepositoryInterface
         ])->get();
     }
 
+    public function findByProperty($id)
+    {
+        return $this->model->where([
+            'property_id' => $id
+        ])->get();
+    }
+
     public function findById($id)
     {
         return $this->model->findOrFail($id);

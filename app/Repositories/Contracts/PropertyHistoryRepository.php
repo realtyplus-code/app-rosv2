@@ -32,4 +32,13 @@ class PropertyHistoryRepository implements PropertyHistoryRepositoryInterface
         $contract->delete();
         return $contract;
     }
+
+    public function findBy(array $conditions)
+    {
+        $query = $this->model::query();
+        foreach ($conditions as $field => $value) {
+            $query->where($field, $value);
+        }
+        return $query->get();
+    }
 }
