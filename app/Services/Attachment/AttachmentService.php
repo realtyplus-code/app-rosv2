@@ -20,7 +20,6 @@ class AttachmentService
         $this->attachmentRepository = $attachmentRepository;
     }
 
-
     public function store(array $data)
     {
         DB::beginTransaction();

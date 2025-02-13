@@ -18,7 +18,10 @@
     </style>
 </head>
 <body>
-    <h1>Lista de Propiedades</h1>
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <img src="{{ $logoPath }}" alt="Logo" style="height: 50px; margin-right: 10px;">
+    </div>
+    <h1 style="margin-top: 20px">Lista de Propiedades</h1>
     <table>
         <thead>
             <tr>

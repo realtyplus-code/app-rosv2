@@ -20,8 +20,16 @@
                         selectedRegister &&
                         selectedRegister[`document`][index - 1]
                     "
+                    style="max-width: 200px !important"
                 >
                     <h4>PDF {{ index }}</h4>
+                    <p class="pdf-name">
+                        {{
+                            selectedRegister[`document`][index - 1][
+                                "name"
+                            ].replace(/\.[^/.]+$/, "")
+                        }}
+                    </p>
                     <Button
                         icon="pi pi-eye"
                         @click="
@@ -183,6 +191,10 @@ export default {
 </script>
 
 <style>
+.pdf-name {
+    width: 100%;
+    word-wrap: break-word;
+}
 .custom-pdf-column {
     display: flex;
     justify-content: space-between;

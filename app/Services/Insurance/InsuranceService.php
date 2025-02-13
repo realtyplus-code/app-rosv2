@@ -150,12 +150,14 @@ class InsuranceService
     {
         foreach ($this->listDocuments as $key => $value) {
             if (isset($data['pdfs'][$key])) {
+                $originalName = $data['pdfs'][$key]->getClientOriginalName();
                 $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
                 $this->attachmentService->store([
                     'attachable_id' => $data['insurance_id'],
                     'attachable_type' => Insurance::class,
                     'file_path' => $filePath,
                     'file_type' => 'PDF',
+                    'name' => $originalName,
                 ]);
             }
         }

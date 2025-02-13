@@ -95,7 +95,7 @@
                     field="address"
                     header="Address"
                     sortable
-                    style="min-width: 200px"
+                    style="min-width: 150px"
                 >
                     <template #body="{ data }">
                         {{ data.address }}
@@ -107,6 +107,71 @@
                             class="p-column-filter"
                             placeholder="Search by address"
                         />
+                    </template>
+                </Column>
+                <!-- Insurances Type Name Column -->
+                <Column
+                    v-if="getPermissionsByRole('list_insurances')"
+                    field="insurances"
+                    header="Insurance"
+                    style="min-width: 120px"
+                >
+                    <template #body="{ data }">
+                        <div
+                            class="size-insurances"
+                            style="justify-content: center"
+                        >
+                            <i
+                                class="size-insurance"
+                                :class="$parsePreview(data.insurances)"
+                                :title="
+                                    data.insurances > 0
+                                        ? 'View insurances'
+                                        : 'No insurances available'
+                                "
+                                :style="{
+                                    fontSize: '1.5rem',
+                                    color:
+                                        data.insurances > 0 ? 'green' : 'red',
+                                    cursor:
+                                        data.insurances > 0 ? 'pointer' : '',
+                                }"
+                                @click="
+                                    viewPanelInsurance(data.insurances, data.id)
+                                "
+                            ></i>
+                        </div>
+                    </template>
+                </Column>
+                <!-- incidents Type Name Column -->
+                <Column
+                    field="incidents"
+                    header="Incidents"
+                    style="min-width: 120px"
+                >
+                    <template #body="{ data }">
+                        <div
+                            class="size-incidents"
+                            style="justify-content: center"
+                        >
+                            <i
+                                class="size-insurance"
+                                :class="$parsePreview(data.incidents)"
+                                :title="
+                                    data.incidents > 0
+                                        ? 'View incidents'
+                                        : 'No incidents available'
+                                "
+                                :style="{
+                                    fontSize: '1.5rem',
+                                    color: data.incidents > 0 ? 'green' : 'red',
+                                    cursor: data.incidents > 0 ? 'pointer' : '',
+                                }"
+                                @click="
+                                    viewPanelIncidents(data.incidents, data.id)
+                                "
+                            ></i>
+                        </div>
                     </template>
                 </Column>
                 <!-- Status Column -->
@@ -239,71 +304,6 @@
                                 :value="`${index.tag}`"
                                 class="size-tag"
                             />
-                        </div>
-                    </template>
-                </Column>
-                <!-- Insurances Type Name Column -->
-                <Column
-                    v-if="getPermissionsByRole('list_insurances')"
-                    field="insurances"
-                    header="Insurance"
-                    style="min-width: 120px"
-                >
-                    <template #body="{ data }">
-                        <div
-                            class="size-insurances"
-                            style="justify-content: center"
-                        >
-                            <i
-                                class="size-insurance"
-                                :class="$parsePreview(data.insurances)"
-                                :title="
-                                    data.insurances > 0
-                                        ? 'View insurances'
-                                        : 'No insurances available'
-                                "
-                                :style="{
-                                    fontSize: '1.5rem',
-                                    color:
-                                        data.insurances > 0 ? 'green' : 'red',
-                                    cursor:
-                                        data.insurances > 0 ? 'pointer' : '',
-                                }"
-                                @click="
-                                    viewPanelInsurance(data.insurances, data.id)
-                                "
-                            ></i>
-                        </div>
-                    </template>
-                </Column>
-                <!-- incidents Type Name Column -->
-                <Column
-                    field="incidents"
-                    header="Incidents"
-                    style="min-width: 120px"
-                >
-                    <template #body="{ data }">
-                        <div
-                            class="size-incidents"
-                            style="justify-content: center"
-                        >
-                            <i
-                                class="size-insurance"
-                                :class="$parsePreview(data.incidents)"
-                                :title="
-                                    data.incidents > 0
-                                        ? 'View incidents'
-                                        : 'No incidents available'
-                                "
-                                :style="{
-                                    fontSize: '1.5rem',
-                                    color: data.incidents > 0 ? 'green' : 'red',
-                                    cursor: data.incidents > 0 ? 'pointer' : '',
-                                }"
-                                @click="
-                                    viewPanelIncidents(data.incidents, data.id)
-                                "
-                            ></i>
                         </div>
                     </template>
                 </Column>

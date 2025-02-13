@@ -198,7 +198,8 @@ class PropertyController extends Controller
     {
         try {
             $data = $this->getDataToExport($request);
-            $pdf = \PDF::loadView('exports.properties', ['data' => $data])
+            $logoPath = public_path('img/rentalcolorb.svg');
+            $pdf = \PDF::loadView('exports.properties', ['data' => $data, 'logoPath' => $logoPath])
                 ->setPaper('A3', 'landscape');
             $currentDate = Carbon::now()->format('Y-m-d H:i:s');
             return $pdf->download("User_{$currentDate}.pdf");
@@ -219,7 +220,7 @@ class PropertyController extends Controller
             [
                 'properties.name',
                 'properties.address',
-                'properties.status',
+                DB::raw('CASE WHEN properties.status = 1 THEN "Active" WHEN properties.status = 2 THEN "Inactive" ELSE "unknown" END as status'),
                 'ec.name as country',
                 'es.name as state',
                 'eci.name as city',

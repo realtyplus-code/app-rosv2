@@ -214,12 +214,14 @@ class UserService
     {
         foreach ($this->listPhotos as $key => $value) {
             if (isset($photos[$key])) {
+                $originalName = $photos[$key]->getClientOriginalName();
                 $filePath = $this->fileService->saveFile($photos[$key], 'photo', $this->disk);
                 $this->attachmentService->store([
                     'attachable_id' => $user->id,
                     'attachable_type' => User::class,
                     'file_path' => $filePath,
                     'file_type' => 'PHOTO',
+                    'name' => $originalName,
                 ]);
             }
         }
@@ -244,12 +246,14 @@ class UserService
 
     public function addPhotoUser($data)
     {
+        $originalName = $data['photo']->getClientOriginalName();
         $filePath = $this->fileService->saveFile($data['photo'], 'photo', $this->disk);
         $attachment = $this->attachmentService->store([
             'attachable_id' => $data['user_id'],
             'attachable_type' => User::class,
             'file_path' => $filePath,
             'file_type' => 'PHOTO',
+            'name' => $originalName,
         ]);
         $attachment->file_path = Storage::disk($this->disk)->url($attachment->file_path);
         return $attachment;
