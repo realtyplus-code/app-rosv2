@@ -25,9 +25,9 @@
                     <h4>PDF {{ index }}</h4>
                     <p class="pdf-name">
                         {{
-                            selectedRegister[`document`][index - 1][
-                                "name"
-                            ].replace(/\.[^/.]+$/, "")
+                            selectedRegister[`document`][index - 1]["name"]
+                                ? selectedRegister[`document`][index - 1]["name"].replace(/\.[^/.]+$/, "")
+                                : ""
                         }}
                     </p>
                     <Button
