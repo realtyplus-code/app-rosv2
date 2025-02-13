@@ -9,7 +9,7 @@
                     :options="
                         listRoles.map((role) => ({
                             ...role,
-                            name: roleAlias(role.name),
+                            name: $roleAlias(role.name),
                         }))
                     "
                     v-model="selectedRole"
@@ -152,7 +152,7 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ roleAlias(data.roles[0].name) }}
+                        {{ $roleAlias(data.roles[0].name) }}
                     </template>
                 </Column>
                 <Column
@@ -589,17 +589,6 @@ export default {
             this.filterRole = role;
             this.fetchUser(role.name);
             this.resetGallery();
-        },
-        roleAlias(roleName) {
-            const aliases = {
-                owner: "Propietario",
-                tenant: "Inquilino",
-                provider: "Proveedor",
-                ros_client: "Cliente Ros",
-                ros_client_manager: "Gerente Cliente Ros",
-                global_manager: "Gerente Global",
-            };
-            return aliases[roleName] || roleName;
         },
         getPermissionsByRole(name) {
             return this.permissions.some(

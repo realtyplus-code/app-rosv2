@@ -19,7 +19,7 @@ class UpdateIncidentRequest extends FormRequest
             ];
         }
 
-        return [
+        $rules = [
             'property_id' => 'required|integer|exists:properties,id',
             'description' => 'required|string|max:1000',
             'report_date' => 'required|date',
@@ -30,6 +30,19 @@ class UpdateIncidentRequest extends FormRequest
             'payer_id' => 'required|exists:enum_options,id',
             'currency_id' => 'nullable|integer|min:1',
         ];
+
+        $userRole = $this->user() ? $this->user()->roles->toArray()[0]['name'] : null;
+
+        if (in_array($userRole, ['tenant', 'owner', 'ros_client'])) {
+            $rules['report_date'] = 'nullable|date';
+            $rules['priority_id'] = 'nullable|exists:enum_options,id';
+            $rules['payer_id'] = 'nullable|exists:enum_options,id';
+            $rules['status_id'] = 'nullable|exists:enum_options,id';
+            $rules['currency_id'] = 'nullable|integer|min:1';
+            $rules['cost'] = 'nullable|numeric|min:0|max:999999999';
+        }
+
+        return $rules;
     }
 
     public function messages()

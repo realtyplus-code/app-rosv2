@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('property_id')->nullable();
             $table->string('description', 1000)->nullable();
-            $table->date('report_date');
-            $table->unsignedInteger('status_id');
-            $table->unsignedBigInteger('reported_by');
-            $table->unsignedInteger('incident_type_id');
-            $table->unsignedInteger('priority_id');
+            $table->date('report_date')->nullable();
+            $table->unsignedInteger('status_id')->nullable();
+            $table->unsignedBigInteger('reported_by')->nullable();
+            $table->unsignedInteger('incident_type_id')->nullable();
+            $table->unsignedInteger('priority_id')->nullable();
             $table->unsignedInteger('currency_id')->nullable();
             $table->decimal('cost', 10, 2)->nullable();
-            $table->unsignedInteger('payer_id');
+            $table->unsignedInteger('payer_id')->nullable();
             $table->timestamps();
 
             $table->foreign('status_id')->references('id')->on('enum_options');

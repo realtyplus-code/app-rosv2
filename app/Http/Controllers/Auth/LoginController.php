@@ -40,9 +40,9 @@ class LoginController extends Controller
                 case 'ros_client':
                 case 'ros_client_manager':
                 case 'global_manager':
-                    return redirect()->intended('/properties');
+                    return redirect()->intended('/home');
                 case 'admin':
-                    return redirect()->intended('/enums');
+                    return redirect()->intended('/home');
                 default:
                     return;
             }
@@ -51,7 +51,7 @@ class LoginController extends Controller
         // Intentar autenticación para providers
         if (Auth::guard('providers')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/providers');
+            return redirect()->intended('/home');
         }
 
         return back()->withErrors([

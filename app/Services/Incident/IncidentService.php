@@ -58,6 +58,11 @@ class IncidentService
             $query->where('properties.id', $data['property_id']);
         }
 
+        if (isset($data['status'])) {
+            $data['status'] = urldecode($data['status']);
+            $query->where('e_st.name', $data['status']);
+        }
+
         $query->orderBy('incidents.report_date', 'desc');
 
         $query->groupBy(
@@ -134,6 +139,11 @@ class IncidentService
             $providers = $data['providers'] ?? [];
             $data['currency_id'] = $data['currency_id'] ?? null;
             $data['cost'] = $data['cost'] ?? null;
+            $data['report_date'] = $data['report_date'] ?? now();
+
+            if(!isset($data['status_id'])) {
+                $data['status_id'] =  $this->enumOptionRepository->findByName('opened')->id;
+            }
 
             $incident = $this->incidentRepository->create($data);
             $this->assignAttachments($incident, $photos);

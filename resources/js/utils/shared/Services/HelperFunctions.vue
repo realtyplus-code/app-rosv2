@@ -59,7 +59,7 @@ export default {
         $getImages(data) {
             let images = [];
             if (Array.isArray(data.photos)) {
-                data.photos.forEach(item => {
+                data.photos.forEach((item) => {
                     images.push(item.file_path);
                 });
             }
@@ -136,7 +136,17 @@ export default {
                 currency: currency,
             }).format(value);
         },
-    
+        $roleAlias(roleName) {
+            const aliases = {
+                owner: "Propietario",
+                tenant: "Inquilino",
+                provider: "Proveedor",
+                ros_client: "Cliente Ros",
+                ros_client_manager: "Gerente Cliente Ros",
+                global_manager: "Gerente Global",
+            };
+            return aliases[roleName] || roleName;
+        },
     },
 };
 </script>

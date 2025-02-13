@@ -550,6 +550,7 @@ export default {
         fetchIncident() {
             this.loading = true;
             const property_id = $.urlParam("property_id");
+            const status = $.urlParam("status");
             this.$axios
                 .get("/occurrences/list", {
                     params: {
@@ -559,6 +560,7 @@ export default {
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
                         property_id: property_id ?? null,
+                        status: status ?? null,
                     },
                 })
                 .then((response) => {

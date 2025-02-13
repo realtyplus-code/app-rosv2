@@ -633,6 +633,7 @@ export default {
         },
         fetchProperty() {
             this.loading = true;
+            const status = $.urlParam("status");
             this.$axios
                 .get("/properties/list", {
                     params: {
@@ -641,6 +642,7 @@ export default {
                         sort: [this.sortField, this.sortOrder],
                         filters: this.filtroInfo,
                         select: this.filterSelect ?? null,
+                        status: status ?? null,
                     },
                 })
                 .then((response) => {

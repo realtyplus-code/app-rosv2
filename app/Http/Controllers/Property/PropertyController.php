@@ -34,7 +34,7 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = $this->propertyService->getPropertiesQuery();
+            $query = $this->propertyService->getPropertiesQuery($request->all());
             $response = renderDataTable(
                 $query,
                 $request,

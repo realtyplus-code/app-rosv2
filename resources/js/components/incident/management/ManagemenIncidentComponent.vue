@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="custom-form">
-            <div class="custom-form-column">
+            <div class="custom-form-column" v-if="isNotViewRole()">
                 <Select
                     filter
                     :options="listCurrency"
@@ -88,7 +88,7 @@
                     errors.currency_id
                 }}</small>
             </div>
-            <div class="custom-form-column">
+            <div class="custom-form-column"  v-if="isNotViewRole()">
                 <FloatLabel>
                     <InputNumber
                         id="cost"
@@ -104,7 +104,7 @@
                     errors.cost
                 }}</small>
             </div>
-            <div class="custom-form-column">
+            <div class="custom-form-column" v-if="isNotViewRole()">
                 <FloatLabel>
                     <DatePicker
                         showIcon
@@ -139,7 +139,7 @@
                     errors.incident_type_id
                 }}</small>
             </div>
-            <div class="custom-form-column">
+            <div class="custom-form-column" v-if="isNotViewRole()">
                 <Select
                     filter
                     :options="listPriority"
@@ -156,7 +156,7 @@
             </div>
         </div>
         <div class="custom-form">
-            <div class="custom-form-column">
+            <div class="custom-form-column" v-if="isNotViewRole()">
                 <Select
                     filter
                     :options="listPayer"
@@ -171,7 +171,7 @@
                     errors.payer_id
                 }}</small>
             </div>
-            <div class="custom-form-column">
+            <div class="custom-form-column" v-if="isNotViewRole()">
                 <Select
                     filter
                     :options="listStatus"
@@ -420,6 +420,7 @@ export default {
             }
         },
         async validateForm() {
+            let dynamicRules = {};
             let initialRules = {
                 description: Yup.string().required(
                     "Incident description is required"
@@ -441,8 +442,15 @@ export default {
                     .max(4, "You can upload up to 4 photos")
                     .required("Photo is required"), */
             };
+            if(!this.isNotViewRole()){
+                delete initialRules.report_date;
+                delete initialRules.priority_id;
+                delete initialRules.payer_id;
+                delete initialRules.status_id;
+            }
             const schema = Yup.object().shape({
                 ...initialRules,
+                ...dynamicRules,
             });
             this.errors = {};
             try {
@@ -599,6 +607,9 @@ export default {
         },
         clearProperty(field) {
             this.formIncident[field] = null;
+        },
+        isNotViewRole() {
+            return !["tenant", "owner", "ros_client"].includes(this.roleName);
         },
     },
 };

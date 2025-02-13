@@ -38,12 +38,13 @@ export default {
     props: ["userAuth", "permissions"],
     data() {
         return {
+            labelUser: null,
             visibleMenu: false,
             rolName: null,
             logoPath: `${window.location.origin}/img/rentalcolorb.svg`,
             menuItems: [
                 {
-                    label: "Bienvenido " + this.userAuth.name,
+                    label: "",
                     icon: "pi pi-user",
                 },
                 {
@@ -60,7 +61,16 @@ export default {
         Menubar,
         DrawerComponent,
     },
-    created() {},
+    created() {
+        this.labelUser =
+            "Bienvenido " +
+            (this.userAuth.roles && this.userAuth.roles.length > 0
+                ? this.roleAlias(this.userAuth.roles[0].name)
+                : "") +
+            " " +
+            this.userAuth.name;
+        this.menuItems[0].label = this.labelUser;
+    },
     mounted() {},
     methods: {
         async logout() {
@@ -119,6 +129,17 @@ export default {
         },
         hiddenMenu() {
             this.visibleMenu = false;
+        },
+        roleAlias(roleName) {
+            const aliases = {
+                owner: "Propietario",
+                tenant: "Inquilino",
+                provider: "Proveedor",
+                ros_client: "Cliente Ros",
+                ros_client_manager: "Gerente Cliente Ros",
+                global_manager: "Gerente Global",
+            };
+            return aliases[roleName] || roleName;
         },
     },
 };
