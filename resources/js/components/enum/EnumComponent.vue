@@ -50,18 +50,50 @@
                             />
                         </div>
                         <div class="header-end" style="margin-top: 20px">
-                            <Select
-                                filter
-                                v-model="selectedOption"
-                                :options="listOptions"
-                                placeholder="Select option"
-                                optionLabel="name"
-                                optionValue="id"
-                                class="w-full md:w-56"
-                                style="width: 100%"
-                                @change="changeSelectOption"
-                                showClear
-                            />
+                            <div class="row">
+                                <div class="col">
+                                    <Select
+                                        filter
+                                        v-model="selectedOption"
+                                        :options="listOptions"
+                                        placeholder="Select option"
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        class="w-full md:w-56"
+                                        style="width: 100%"
+                                        @change="changeSelectOption"
+                                        showClear
+                                    />
+                                </div>
+                                <div class="col">
+                                    <Select
+                                        filter
+                                        v-if="isRelation == 'city'"
+                                        v-model="selectedOptionCity"
+                                        :options="listState"
+                                        placeholder="Select state"
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        class="w-full md:w-56"
+                                        style="width: 100%"
+                                        @change="changeSelectOptionCity"
+                                        showClear
+                                    />
+                                    <Select
+                                        filter
+                                        v-if="isRelation == 'state'"
+                                        v-model="selectedOptionState"
+                                        :options="listCountry"
+                                        placeholder="Select country"
+                                        optionLabel="name"
+                                        optionValue="id"
+                                        class="w-full md:w-56"
+                                        style="width: 100%"
+                                        @change="changeSelectOptionState"
+                                        showClear
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -111,6 +143,28 @@
                             class="p-column-filter"
                             placeholder="Buscar por nombre"
                         />
+                    </template>
+                </Column>
+                <Column
+                    v-if="isRelation == 'city'"
+                    field="data.brother_relation.name"
+                    header="State"
+                    :showClearButton="false"
+                    style="min-width: 200px"
+                >
+                    <template #body="{ data }">
+                        {{ data.brother_relation?.name }}
+                    </template>
+                </Column>
+                <Column
+                    v-if="isRelation == 'state'"
+                    field="data.brother_relation.name"
+                    header="Country"
+                    :showClearButton="false"
+                    style="min-width: 200px"
+                >
+                    <template #body="{ data }">
+                        {{ data.brother_relation?.name }}
                     </template>
                 </Column>
                 <Column
@@ -229,12 +283,16 @@ export default {
             selectedEnum: null,
             dialogVisible: false,
             isOption: null,
-            isCity: null,
             statuses: [
                 { value: "Active", id: 1 },
                 { value: "Inactive", id: 2 },
             ],
             infoVisible: false,
+            isRelation: null,
+            selectedOptionCity: null,
+            selectedOptionState: null,
+            listState: [],
+            listCountry: [],
         };
     },
     components: {
@@ -248,8 +306,17 @@ export default {
     watch: {
         async selectedOption(value) {
             if (value) {
-                this.isCity = null;
+                this.isRelation = null;
                 this.initEnumBrother(value);
+            }
+        },
+        isRelation(value) {
+            if (value) {
+                if (this.isRelation == "city") {
+                    this.getCities();
+                } else if (this.isRelation == "state") {
+                    this.getState();
+                }
             }
         },
     },
@@ -258,12 +325,24 @@ export default {
         this.initServices();
     },
     methods: {
+        async getCities() {
+            const comboNames = ["state"];
+            const response = await this.$getEnumsOptions(comboNames);
+            const { state: rpState } = response.data;
+            this.listState = rpState;
+        },
+        async getState() {
+            const comboNames = ["country"];
+            const response = await this.$getEnumsOptions(comboNames);
+            const { country: rpCountry } = response.data;
+            this.listCountry = rpCountry;
+        },
         initEnumBrother(id) {
             this.$axios
                 .get("/enums/get-id/" + id)
                 .then((response) => {
                     const { data } = response.data;
-                    this.isCity = data.name;
+                    this.isRelation = data.name;
                 })
                 .catch((error) => {
                     this.$readStatusHttp(error);
@@ -401,6 +480,7 @@ export default {
             this.dialogVisible = status;
         },
         changeSelectOption(event) {
+            this.isRelation = null;
             this.isOption = null;
             this.filterSelect.parent_id = event.value;
             if (event.value) {
@@ -409,6 +489,14 @@ export default {
                 ).code;
                 this.isOption = option;
             }
+            this.fetchEnumOptios();
+        },
+        changeSelectOptionCity(event) {
+            this.filterSelect.brother_relation_id = event.value;
+            this.fetchEnumOptios();
+        },
+        changeSelectOptionState(event) {
+            this.filterSelect.brother_relation_id = event.value;
             this.fetchEnumOptios();
         },
     },

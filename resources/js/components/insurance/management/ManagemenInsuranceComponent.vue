@@ -406,7 +406,7 @@ export default {
             });
         },
         async getProperties() {
-            let url = `/properties/listByUnique/${this.formInsurance.id}`;
+            let url = `/properties/list`;
             try {
                 const response = await this.$axios.get(url);
                 this.listProperty = response.data.data;

@@ -59,6 +59,7 @@ class EnumOptionService
     {
         DB::beginTransaction();
         try {
+            $data['status'] = $data['status'] ?? true;
             $enum = $this->enumRepository->create($data);
             DB::commit();
             return $enum;
@@ -74,6 +75,7 @@ class EnumOptionService
     {
         DB::beginTransaction();
         try {
+            $data['status'] = $data['status'] ?? true;
             $enum = $this->enumRepository->update($id, $data);
             DB::commit();
             return $enum;

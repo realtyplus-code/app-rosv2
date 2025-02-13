@@ -58,7 +58,6 @@ class PropertyController extends Controller
                     'users.name as log_user_name',
                     'user_ros.id as user_ros_id',
                     'user_ros.name as user_ros_name',
-                    'insurances.id as insurances_id',
                     DB::raw('GROUP_CONCAT(DISTINCT CONCAT(user_owner.id, ":", user_owner.name) ORDER BY user_owner.name ASC SEPARATOR ";") as owners_name'),
                     DB::raw('GROUP_CONCAT(DISTINCT CONCAT(user_tenant.id, ":", user_tenant.name) ORDER BY user_tenant.name ASC SEPARATOR ";") as tenants_name'),
                     DB::raw('COUNT(DISTINCT incidents.id) as incidents'),

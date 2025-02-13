@@ -2,7 +2,11 @@
     <div class="indicator-container">
         <div class="cards">
             <div class="card" v-if="roleName !== 'provider'">
-                <div class="card-header">
+                <div
+                    class="card-header"
+                    @click="getViewModule('property')"
+                    style="cursor: pointer"
+                >
                     <span class="card-title">
                         <img src="/img/indicators/casa.png" alt="Properties" />
                         PROPERTIES</span
@@ -20,6 +24,8 @@
                                 property.type_name.replace(' ', '-') + '-tag',
                             ]"
                             :title="property.type_name"
+                            style="cursor: pointer"
+                            @click="getViewModuleFilter('property', property.type_name)"
                         >
                             <i :class="getIconClass(property.type_name)"></i>
                             {{ property.count }}
@@ -28,7 +34,11 @@
                 </div>
             </div>
             <div class="card">
-                <div class="card-header">
+                <div
+                    class="card-header"
+                    @click="getViewModule('incident')"
+                    style="cursor: pointer"
+                >
                     <span class="card-title">
                         <img
                             src="/img/indicators/incidente.png"
@@ -49,6 +59,8 @@
                                 incident.type_name.replace(' ', '-') + '-tag',
                             ]"
                             :title="incident.type_name"
+                            style="cursor: pointer"
+                            @click="getViewModuleFilter('incident', incident.type_name)"
                         >
                             <i :class="getIconClass(incident.type_name)"></i>
                             {{ incident.count }}
@@ -136,6 +148,26 @@ export default {
                     return "pi pi-dollar";
                 default:
                     return "pi pi-tag";
+            }
+        },
+        getViewModule(value) {
+            switch (value) {
+                case "property":
+                    window.location.href = "/properties";
+                    break;
+                case "incident":
+                    window.location.href = "/occurrences";
+                    break;
+            }
+        },
+        getViewModuleFilter(value, type) {
+            switch (value) {
+                case "property":
+                    window.location.href = "/properties?status=" + type;
+                    break;
+                case "incident":
+                    window.location.href = "/occurrences?status=" + type;
+                    break;
             }
         },
     },
