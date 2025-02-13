@@ -8,6 +8,7 @@ use App\Services\User\UserService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Requests\User\ValidatePhotoRequest;
@@ -60,6 +61,40 @@ class UserController extends Controller
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function byId(Request $request){
+        try {
+            $query = $this->userService->getUsersQuery(null, Auth::user()->id);
+            $response = renderDataTable(
+                $query,
+                $request,
+                ['roles'],
+                [
+                    'users.id',
+                    'users.name',
+                    'users.user',
+                    'users.phone',
+                    'users.address',
+                    'ec.id as country_id',
+                    'es.id as state_id',
+                    'eci.id as city_id',
+                    'el.id as language_id',
+                    'ec.name as country_name',
+                    'es.name as state_name',
+                    'eci.name as city_name',
+                    'el.name as language_name',
+                    'users.code_number',
+                    'users.code_country',
+                    'users.email',
+                    DB::raw('GROUP_CONCAT(DISTINCT CONCAT(p.id, ":", p.name) ORDER BY p.name ASC SEPARATOR ";") as property_name'),
+                ]
+            );
+            $response = attachFilesToProperties($response, ['PHOTO' => 'photos', 'PDF' => 'document'], User::class, 'disk_user');
+            return $response;
+        } catch (\Exception $ex) {
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }

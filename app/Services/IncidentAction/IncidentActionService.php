@@ -69,6 +69,7 @@ class IncidentActionService
                             ->whereRaw('user_properties.property_id = properties.id')
                             ->where('user_properties.user_id', $userId);
                     });
+                $query->where('eat.name', '!=', 'closure');
                 break;
             case 'provider':
                 $query->where('providers.id', $userId);

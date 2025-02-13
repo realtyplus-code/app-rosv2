@@ -120,6 +120,36 @@
                     </template>
                 </Column>
                 <Column
+                    field="incidents"
+                    header="Action(s)"
+                    style="min-width: 120px"
+                >
+                    <template #body="{ data }">
+                        <div
+                            class="size-insurances"
+                            style="justify-content: center"
+                        >
+                            <i
+                                class="size-insurance"
+                                :class="$parsePreview(data.incidents)"
+                                :title="
+                                    data.incidents > 0
+                                        ? 'View incidents'
+                                        : 'No incidents available'
+                                "
+                                :style="{
+                                    fontSize: '1.5rem',
+                                    color: data.incidents > 0 ? 'green' : 'red',
+                                    cursor: data.incidents > 0 ? 'pointer' : '',
+                                }"
+                                @click="
+                                    viewPanelIncidents(data.incidents, data.id)
+                                "
+                            ></i>
+                        </div>
+                    </template>
+                </Column>
+                <Column
                     field="reported_by_name"
                     header="Reported by"
                     sortable
@@ -246,36 +276,6 @@
                                 :value="`${index.tag}`"
                                 class="size-tag"
                             />
-                        </div>
-                    </template>
-                </Column>
-                <Column
-                    field="incidents"
-                    header="Action(s)"
-                    style="min-width: 120px"
-                >
-                    <template #body="{ data }">
-                        <div
-                            class="size-insurances"
-                            style="justify-content: center"
-                        >
-                            <i
-                                class="size-insurance"
-                                :class="$parsePreview(data.incidents)"
-                                :title="
-                                    data.incidents > 0
-                                        ? 'View incidents'
-                                        : 'No incidents available'
-                                "
-                                :style="{
-                                    fontSize: '1.5rem',
-                                    color: data.incidents > 0 ? 'green' : 'red',
-                                    cursor: data.incidents > 0 ? 'pointer' : '',
-                                }"
-                                @click="
-                                    viewPanelIncidents(data.incidents, data.id)
-                                "
-                            ></i>
                         </div>
                     </template>
                 </Column>

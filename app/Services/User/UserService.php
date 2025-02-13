@@ -40,7 +40,7 @@ class UserService
         $this->userRelationRepository = $userRelationRepository;
     }
 
-    public function getUsersQuery($role = null)
+    public function getUsersQuery($role = null, $id = null)
     {
         $consult = User::query();
         $consult->whereHas('roles', function ($query) use ($role) {
@@ -59,6 +59,10 @@ class UserService
 
         if (Auth::user()->getRoleNames()[0] != 'global_manager') {
             $this->getByUserRol($consult, $role);
+        }
+
+        if(!empty($id)){
+            $consult->where('users.id', $id);
         }
 
         $consult->groupBy([

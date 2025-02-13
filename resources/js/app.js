@@ -68,6 +68,9 @@ app.component("property-component", PropertyComponent);
 import UserComponent from "./components/user/UserComponent.vue";
 app.component("user-component", UserComponent);
 
+import UserOnlyComponent from "./components/user/only/UserOnlyComponent.vue";
+app.component("user-only-component", UserOnlyComponent);
+
 //importacion de insurance
 import InsuranceComponent from "./components/insurance/InsuranceComponent.vue";
 app.component("insurance-component", InsuranceComponent);

@@ -95,14 +95,6 @@ export default {
                                 this.route("occurrences");
                             },
                         },
-                        {
-                            label: "Actions incident",
-                            icon: "pi pi-wrench",
-                            permission: "list_incidents_actions",
-                            command: () => {
-                                this.route("occurrences-action");
-                            },
-                        },
                     ],
                 },
                 {

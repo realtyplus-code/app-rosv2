@@ -70,6 +70,24 @@
                     </template>
                 </Column>
                 <Column
+                    field="status_name"
+                    header="Status"
+                    sortable
+                    style="min-width: 150px"
+                >
+                    <template #body="{ data }">
+                        {{ data.status_name }}
+                    </template>
+                    <template #filter="{ filterModel }">
+                        <InputText
+                            v-model="filterModel.value"
+                            type="text"
+                            class="p-column-filter"
+                            placeholder="Search by status"
+                        />
+                    </template>
+                </Column>
+                <Column
                     field="responsible_type"
                     header="Responsible By"
                     sortable
@@ -175,24 +193,6 @@
                             type="text"
                             class="p-column-filter"
                             placeholder="Search by action"
-                        />
-                    </template>
-                </Column>
-                <Column
-                    field="status_name"
-                    header="Status"
-                    sortable
-                    style="min-width: 150px"
-                >
-                    <template #body="{ data }">
-                        {{ data.status_name }}
-                    </template>
-                    <template #filter="{ filterModel }">
-                        <InputText
-                            v-model="filterModel.value"
-                            type="text"
-                            class="p-column-filter"
-                            placeholder="Search by status"
                         />
                     </template>
                 </Column>
