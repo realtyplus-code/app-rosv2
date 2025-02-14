@@ -71,6 +71,7 @@ class IncidentService
                 'incidents.description',
                 'properties.id',
                 'properties.name',
+                'properties.country',
                 'incidents.report_date',
                 'e_st.id',
                 'e_st.name',

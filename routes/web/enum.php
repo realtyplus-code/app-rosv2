@@ -14,4 +14,5 @@ Route::prefix('enums')->middleware(['auth:providers,web'])->group(function () {
     Route::get('/option/{name}', [EnumOptionController::class, 'listChildrens'])->name('enum.option');
     Route::get('/get-id/{id}', [EnumOptionController::class, 'getOptionById'])->name('enum.get');
     Route::get('/get-brother/{id}', [EnumOptionController::class, 'getBrotherById'])->name('enum.get.childrens');
+    Route::get('/get-brother-code/{id}/{code}', [EnumOptionController::class, 'getBrotherByIdAndCode'])->name('enum.get.code.childrens');
 });

@@ -46,6 +46,7 @@ class IncidentController extends Controller
                 'incidents.description',
                 'properties.id as property_id',
                 'properties.name as property_name',
+                'properties.country as property_country',
                 'incidents.report_date',
                 'e_st.id as status_id',
                 'e_st.name as status_name',

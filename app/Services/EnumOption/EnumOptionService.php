@@ -118,6 +118,20 @@ class EnumOptionService
             ->get();
     }
 
+    public static function getBrotherByIdAndCode($id, $code)
+    {
+        $subQuery = EnumOption::where('status', true)
+            ->where('brother_relation_id', $id)
+            ->pluck('id');
+
+        return EnumOption::select('id', 'name', 'valor1', 'parent_id', 'brother_relation_id')
+            ->whereIn('id', $subQuery)
+            ->whereHas('parent', function ($query) use ($code) {
+                $query->where('code', $code);
+            })
+            ->get();
+    }
+
     public static function getBrotherByIdRelation($id)
     {
         return EnumOption::where('brother_relation_id', $id)

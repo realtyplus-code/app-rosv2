@@ -376,7 +376,7 @@
                                     background-color: #17a2b8;
                                     border-color: #17a2b8;
                                 "
-                                @click="managementIncident(slotProps.data.id)"
+                                @click="managementIncident(slotProps.data)"
                             />
                         </div>
                     </template>
@@ -408,6 +408,7 @@
         :dialogVisible="dialogVisibleAction"
         :selectedIncidentId="selectedIncidentId"
         :selectedIncident="selectedIncidentAction"
+        :selectedPropertyCountry="selectedPropertyCountry"
         :role="role"
         @hidden="hidden"
         @reload="reload"
@@ -439,6 +440,7 @@ export default {
             //
             selectedIncident: null,
             selectedIncidentId: true,
+            selectedPropertyCountry: null,
             selectedIncidentAction: null,
             dialogVisible: false,
             dialogVisiblePdf: false,
@@ -585,8 +587,9 @@ export default {
             this.selectedIncident = incident;
             this.dialogVisiblePdf = true;
         },
-        managementIncident(id) {
-            this.selectedIncidentId = id;
+        managementIncident(data) {
+            this.selectedIncidentId = data.id;
+            this.selectedPropertyCountry = data.property_country;
             this.dialogVisibleAction = true;
         },
         async deleteIncident(incidentId) {
@@ -628,6 +631,7 @@ export default {
         hidden(status) {
             this.dialogVisible = status;
             this.dialogVisiblePdf = status;
+            this.dialogVisibleAction = status;
         },
         async uploadFiles(pdfs) {
             if (pdfs.length === 0) {

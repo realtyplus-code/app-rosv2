@@ -29,6 +29,20 @@ export default {
                     });
             });
         },
+        $getBrotherCode(id, $code) {
+            const vm = this;
+            return new Promise((resolve, reject) => {
+                this.$axios
+                    .get(`/enums/get-brother-code/${id}/${$code}`)
+                    .then(function (response) {
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        vm.$readStatusHttp(error);
+                        reject(error);
+                    });
+            });
+        },
         $parseTags(tagasString) {
             if (!tagasString) return [];
             return tagasString.split(";").map((tagPair) => {

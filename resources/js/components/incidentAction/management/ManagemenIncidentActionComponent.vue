@@ -267,7 +267,13 @@ import * as Yup from "yup";
 import moment from "moment";
 
 export default {
-    props: ["dialogVisible", "selectedIncident", "selectedIncidentId", "role"],
+    props: [
+        "dialogVisible",
+        "selectedIncident",
+        "selectedIncidentId",
+        "selectedPropertyCountry",
+        "role",
+    ],
     data() {
         return {
             roleName: this.role[0],
@@ -314,6 +320,14 @@ export default {
     },
     mounted() {
         this.$nextTick(async () => {
+            this.setForm();
+        });
+    },
+    created() {
+        this.initServices();
+    },
+    methods: {
+        async setForm() {
             if (this.selectedIncident) {
                 this.formIncident.id = this.selectedIncident.id;
                 this.formIncident.incident_id =
@@ -342,13 +356,18 @@ export default {
 
                 await this.checkTypeUser(this.isTypeUser);
                 this.setPhotos();
+            } else {
+                if (this.selectedPropertyCountry) {
+                    const response = await this.$getBrotherCode(
+                        this.selectedPropertyCountry,
+                        "currency"
+                    );
+                    if (response.data && response.data.length > 0) {
+                        this.formIncident.currency_id = parseInt(response.data[0].id);
+                    }
+                }
             }
-        });
-    },
-    created() {
-        this.initServices();
-    },
-    methods: {
+        },
         async checkTypeUser(status) {
             this.listOtherUsers = [];
             this.listProviders = [];

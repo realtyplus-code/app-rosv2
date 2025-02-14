@@ -114,4 +114,15 @@ class EnumOptionController extends Controller
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
+
+    
+    public function getBrotherByIdAndCode($id, $code)
+    {
+        try {
+            $enums = $this->enumService->getBrotherByIdAndCode($id, $code);
+            return Response::sendResponse($enums, __('messages.controllers.success.records_fetched_successfully'));
+        } catch (\Exception $ex) {
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
 }
