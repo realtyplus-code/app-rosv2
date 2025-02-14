@@ -40,7 +40,7 @@ class PropertyService
         $this->insurancePropertyRepository = $insurancePropertyRepository;
     }
 
-    public function getPropertiesQuery($data = [])
+    public function getPropertiesQuery($data = [], $id = null)
     {
         $query = Property::query()
             ->leftJoin('enum_options as eo_property_type', 'eo_property_type.id', '=', 'properties.property_type_id')
@@ -73,6 +73,10 @@ class PropertyService
         if (isset($data['status'])) {
             $value = $data['status'] == "active" ? 1 : 2;
             $query->where('properties.status', $value);
+        }
+
+        if(!empty($id)){
+            $query->where('properties.id', $id);
         }
 
         $query->groupBy([

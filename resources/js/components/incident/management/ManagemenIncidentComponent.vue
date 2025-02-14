@@ -36,7 +36,7 @@
                 <small>{{ characterCount }}/1000</small>
             </div>
         </div>
-        <div class="custom-form" v-if="roleName !== 'provider'">
+        <div class="custom-form" v-if="roleName !== 'provider' && isNotViewRole()">
             <div class="custom-form-column">
                 <MultiSelect
                     :options="listProviders"

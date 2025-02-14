@@ -26,7 +26,7 @@ class ProviderService
         $this->providerServiceRepository = $providerServiceRepository;
     }
 
-    public function getProvidersQuery($data = null)
+    public function getProvidersQuery($data = null, $id = null)
     {
         $query = Provider::query()
             ->leftJoin('provider_service', 'provider_service.provider_id', '=', 'providers.id')
@@ -68,6 +68,10 @@ class ProviderService
 
         if (isset($data['status']) && $data['status'] != null) {
             $query->where('providers.status', $data['status']);
+        }
+
+        if(!empty($id)){
+            $query->where('providers.id', $id);
         }
 
         return $query->distinct();

@@ -359,6 +359,8 @@ export default {
                 this.formInsurance.properties = currentPropertiesName.map(
                     (item) => item.id
                 );
+            } else {
+                this.setFormUrl();
             }
             await this.getProperties();
             const phoneInputField = document.querySelector("#countryPhone");
@@ -380,6 +382,15 @@ export default {
         this.initServices();
     },
     methods: {
+        async setFormUrl() {
+            const property_id = $.urlParam("property_id");
+            if (property_id) {
+                let response = await this.getPropertyById(property_id);
+                this.formInsurance.properties = response.map(
+                    (item) => item.id
+                );
+            }
+        },
         async initServices() {
             const comboNames = ["insurance_type", "country"];
             const response = await this.$getEnumsOptions(comboNames);
@@ -414,6 +425,15 @@ export default {
                 this.$readStatusHttp(error);
             }
         },
+        async getPropertyById(id) {
+            let url = `/properties/byId/` + id;
+            try {
+                const response = await this.$axios.get(url);
+                return response.data.data;
+            } catch (error) {
+                this.$readStatusHttp(error);
+            }
+        },
         async validateForm() {
             let initialRules = {
                 insurance_company: Yup.string().required(
@@ -429,7 +449,10 @@ export default {
                     .email("Contact email must be a valid email"),
                 position: Yup.string().required("Position is required"),
                 phone: Yup.string()
-                    .matches(/^[0-9]+$/, "Phone number must contain only digits")
+                    .matches(
+                        /^[0-9]+$/,
+                        "Phone number must contain only digits"
+                    )
                     .required("Type phone is required"),
                 insurance_type_id: Yup.string().required(
                     "Coverage type is required"

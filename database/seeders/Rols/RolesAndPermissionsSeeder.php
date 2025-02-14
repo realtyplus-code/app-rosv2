@@ -183,6 +183,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $rolesAndPermissionsProviders = [
             'provider' => [
+                'edit_providers',
                 'list_providers',
                 'list_incidents',
                 'edit_incidents',

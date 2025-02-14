@@ -96,6 +96,9 @@ app.component("incident-template-component", IncidentTemplateComponent);
 import ProviderComponent from "./components/provider/ProviderComponent.vue";
 app.component("provider-component", ProviderComponent);
 
+import ProviderOnlyComponent from "./components/provider/only/ProviderOnlyComponent.vue";
+app.component("provider-only-component", ProviderOnlyComponent);
+
 import Aura from "@primevue/themes/aura";
 import "primeicons/primeicons.css";
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Property;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exports\ExportDataGrid;
+use App\Models\Property\Property;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -15,7 +16,6 @@ use App\Http\Requests\Property\StorePropertyRequest;
 use App\Http\Requests\Property\ValidatePhotoRequest;
 use App\Http\Requests\Property\UpdatePropertyRequest;
 use App\Http\Controllers\ResponseController as Response;
-use App\Models\Property\Property;
 
 class PropertyController extends Controller
 {
@@ -93,6 +93,22 @@ class PropertyController extends Controller
     {
         try {
             $query = $this->propertyService->getPropertiesTypeQuery($idInsurance, true);
+            $response = $query->get([
+                'properties.id',
+                'properties.name',
+            ]);
+            return Response::sendResponse($response, __('messages.controllers.success.records_fetched_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
+
+    public function byId($id)
+    {
+        try {
+            $query = $this->propertyService->getPropertiesQuery(null,$id);
             $response = $query->get([
                 'properties.id',
                 'properties.name',
