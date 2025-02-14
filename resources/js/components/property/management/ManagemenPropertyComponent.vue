@@ -50,46 +50,51 @@
         </div>
         <div class="custom-form mt-4">
             <div class="custom-form-column" style="margin-top: 10px">
-                <Select
-                    :options="listCountry"
-                    v-model="formProperty.country"
-                    placeholder="Select country"
-                    :class="{ 'p-invalid': errors.country }"
-                    optionLabel="valor1"
-                    optionValue="id"
-                    style="width: 100%"
-                    @change="onChangeCountry(formProperty.country, true)"
-                />
+                <FloatLabel>
+                    <Select
+                        :options="listCountry"
+                        v-model="formProperty.country"
+                        :class="{ 'p-invalid': errors.country }"
+                        optionLabel="valor1"
+                        optionValue="id"
+                        style="width: 100%"
+                        @change="onChangeCountry(formProperty.country, true)"
+                    />
+                    <label>Select country</label>
+                </FloatLabel>
                 <small v-if="errors.country" class="p-error">{{
                     errors.country
                 }}</small>
             </div>
             <div class="custom-form-column" style="margin-top: 10px">
-                <Select
-                    :options="listState"
-                    v-model="formProperty.state"
-                    :placeholder="placeholderState"
-                    :class="{ 'p-invalid': errors.state }"
-                    optionLabel="valor1"
-                    optionValue="id"
-                    style="width: 100%"
-                    @change="onChangeState(formProperty.state, true)"
-                />
+                <FloatLabel>
+                    <Select
+                        :options="listState"
+                        v-model="formProperty.state"
+                        :class="{ 'p-invalid': errors.state }"
+                        optionLabel="valor1"
+                        optionValue="id"
+                        style="width: 100%"
+                        @change="onChangeState(formProperty.state, true)"
+                    />
+                    <label>Select state</label>
+                </FloatLabel>
                 <small v-if="errors.state" class="p-error">{{
                     errors.state
                 }}</small>
             </div>
             <div class="custom-form-column" style="margin-top: 10px">
-                <Select
-                    :options="listCity"
-                    v-model="formProperty.city"
-                    :placeholder="placeholderCity"
-                    :class="{ 'p-invalid': errors.city }"
-                    optionLabel="valor1"
-                    optionValue="id"
-                    style="width: 100%"
-                />
-
+                <FloatLabel>
+                    <Select
+                        :options="listCity"
+                        v-model="formProperty.city"
+                        :class="{ 'p-invalid': errors.city }"
+                        optionLabel="valor1"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label>Select city</label>
+                </FloatLabel>
                 <small v-if="errors.city" class="p-error">{{
                     errors.city
                 }}</small>
@@ -97,16 +102,19 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listStatus"
-                    v-model="formProperty.status"
-                    placeholder="Select status"
-                    :class="{ 'p-invalid': errors.status }"
-                    optionLabel="valor1"
-                    optionValue="id"
-                    style="width: 100%"
-                />
+                <FloatLabel>
+                    <Select
+                        filter
+                        :options="listStatus"
+                        v-model="formProperty.status"
+                        :class="{ 'p-invalid': errors.status }"
+                        optionLabel="valor1"
+                        optionValue="id"
+                        style="width: 100%"
+                        :disabled="!selectedProperty"
+                    />
+                    <label>Select status</label>
+                </FloatLabel>
                 <small v-if="errors.status" class="p-error">{{
                     errors.status
                 }}</small>
@@ -114,16 +122,18 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
-                <Select
-                    filter
-                    :options="listPropertyType"
-                    v-model="formProperty.property_type_id"
-                    placeholder="Select property type"
-                    :class="{ 'p-invalid': errors.property_type_id }"
-                    optionLabel="valor1"
-                    optionValue="id"
-                    style="width: 100%"
-                />
+                <FloatLabel>
+                    <Select
+                        filter
+                        :options="listPropertyType"
+                        v-model="formProperty.property_type_id"
+                        :class="{ 'p-invalid': errors.property_type_id }"
+                        optionLabel="valor1"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label>Select property type</label>
+                </FloatLabel>
                 <small v-if="errors.property_type_id" class="p-error">{{
                     errors.property_type_id
                 }}</small>
@@ -131,35 +141,39 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
-                <MultiSelect
-                    :options="listOwners"
-                    v-model="formProperty.owners"
-                    filter
-                    placeholder="Select owners"
-                    :class="{ 'p-invalid': errors.owners }"
-                    :maxSelectedLabels="limitOwners"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
+                <FloatLabel>
+                    <MultiSelect
+                        :options="listOwners"
+                        v-model="formProperty.owners"
+                        filter
+                        :class="{ 'p-invalid': errors.owners }"
+                        :maxSelectedLabels="limitOwners"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label>Select owners</label>
+                </FloatLabel>
                 <small v-if="errors.owners" class="p-error">{{
                     errors.owners
                 }}</small>
             </div>
         </div>
-        <div class="custom-form">
+        <div class="custom-form" v-if="!isViewTenat">
             <div class="custom-form-column">
-                <MultiSelect
-                    :options="listTenants"
-                    v-model="formProperty.tenants"
-                    filter
-                    placeholder="Select tenants"
-                    :class="{ 'p-invalid': errors.tenants }"
-                    :maxSelectedLabels="limitTenants"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
+                <FloatLabel>
+                    <MultiSelect
+                        :options="listTenants"
+                        v-model="formProperty.tenants"
+                        filter
+                        :class="{ 'p-invalid': errors.tenants }"
+                        :maxSelectedLabels="limitTenants"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label>Select tenants</label>
+                </FloatLabel>
                 <small v-if="errors.tenants" class="p-error">{{
                     errors.tenants
                 }}</small>
@@ -167,17 +181,19 @@
         </div>
         <div class="custom-form">
             <div class="custom-form-column">
-                <Select
-                    filter
-                    showClear
-                    :options="listClientRos"
-                    v-model="formProperty.client_ros_id"
-                    placeholder="Select client ros"
-                    :class="{ 'p-invalid': errors.client_ros_id }"
-                    optionLabel="name"
-                    optionValue="id"
-                    style="width: 100%"
-                />
+                <FloatLabel>
+                    <Select
+                        filter
+                        showClear
+                        :options="listClientRos"
+                        v-model="formProperty.client_ros_id"
+                        :class="{ 'p-invalid': errors.client_ros_id }"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label>Select client ros</label>
+                </FloatLabel>
                 <small v-if="errors.client_ros_id" class="p-error">{{
                     errors.client_ros_id
                 }}</small>
@@ -242,7 +258,7 @@
                                 class="gallery-image"
                             />
                             <button
-                                v-if="formProperty.photos.length > 1"
+                                v-if="formProperty.photos.length > 0"
                                 class="p-button-danger mt-2"
                                 style="
                                     width: 100%;
@@ -339,12 +355,26 @@ export default {
             listCity: [],
             listCountry: [],
             listState: [],
-            placeholderCity: "Select the state first",
-            placeholderState: "Select the country first",
+            isViewTenat: true,
         };
     },
     components: {},
-    watch: {},
+    watch: {
+        "formProperty.status": function (value) {
+            this.isViewTenat = true;
+            if (value) {
+                const response = this.listStatus.find(
+                    (state) => state.id == value
+                );
+                if (
+                    response.name === "alta_contrato" ||
+                    response.name === "active"
+                ) {
+                    this.isViewTenat = false;
+                }
+            }
+        },
+    },
     mounted() {
         this.$nextTick(async () => {
             await this.initForm();
@@ -379,9 +409,10 @@ export default {
                 this.formProperty.status = parseInt(
                     this.selectedProperty.status
                 );
-                this.formProperty.client_ros_id =  this.selectedProperty.user_ros_id ? parseInt(
-                    this.selectedProperty.user_ros_id
-                ): null;
+                this.formProperty.client_ros_id = this.selectedProperty
+                    .user_ros_id
+                    ? parseInt(this.selectedProperty.user_ros_id)
+                    : null;
                 this.formProperty.owners = currentOwnersName.map(
                     (owner) => owner.id
                 );
@@ -402,12 +433,15 @@ export default {
                         );
                     }
                 }
+            } else {
+                this.formProperty.status = parseInt(2);
             }
         },
         async initServices() {
             this.listStatus = [
-                { id: 1, name: "active", valor1: "activo" },
-                { id: 2, name: "inactive", valor1: "inactivo" },
+                { id: 1, name: "active", valor1: "Activo" },
+                { id: 2, name: "inactive", valor1: "Inactivo" },
+                { id: 3, name: "alta_contrato", valor1: "Alta Contrato" },
             ];
             const comboNames = ["country", "property_type"];
             const response = await this.$getEnumsOptions(comboNames);
@@ -451,16 +485,18 @@ export default {
                 property_type_id: Yup.string().required(
                     "Type property is required"
                 ),
-                photos: Yup.array()
+                /*  photos: Yup.array()
                     .min(1, "At least 1 photo is required")
                     .max(4, "You can upload up to 4 photos")
-                    .required("Photo is required"),
+                    .required("Photo is required"), */
                 country: Yup.string().required("Country is required"),
                 state: Yup.string().required("State is required"),
                 city: Yup.string().required("City is required"),
             };
-            if(this.roleName === 'ros_client_manager'){
-                initialRules.client_ros_id = Yup.string().required("Client ROS is required");
+            if (this.roleName === "ros_client_manager") {
+                initialRules.client_ros_id = Yup.string().required(
+                    "Client ROS is required"
+                );
             }
             const schema = Yup.object().shape({
                 ...initialRules,
@@ -547,11 +583,6 @@ export default {
                             ? parseInt(this.selectedProperty.city_id)
                             : null;
                     }
-
-                    this.placeholderState =
-                        response.data.length > 0
-                            ? "Select state"
-                            : "Data empty";
                     this.listState = response.data;
                     resolve();
                 } catch (error) {
@@ -572,9 +603,6 @@ export default {
                             ? parseInt(this.selectedProperty.city_id)
                             : null;
                     }
-
-                    this.placeholderCity =
-                        response.data.length > 0 ? "Select city" : "Data empty";
                     this.listCity = response.data;
                     resolve();
                 } catch (error) {

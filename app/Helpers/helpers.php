@@ -169,3 +169,15 @@ function attachFilesToProperties($response, $fileTypes, $typeClass, $disk)
     }
     return $response;
 }
+
+function roleAlias($roleName) {
+    $aliases = [
+        'owner' => 'Propietario',
+        'tenant' => 'Inquilino',
+        'provider' => 'Proveedor',
+        'ros_client' => 'Cliente Ros',
+        'ros_client_manager' => 'Gerente Cliente Ros',
+        'global_manager' => 'Gerente Global',
+    ];
+    return $aliases[$roleName] ?? $roleName;
+}

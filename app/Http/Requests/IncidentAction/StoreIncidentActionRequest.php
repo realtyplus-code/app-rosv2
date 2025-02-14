@@ -17,7 +17,7 @@ class StoreIncidentActionRequest extends FormRequest
             'action_date' => 'required|string',
             'responsible_user_id' => 'required|integer',
             'action_description' => 'required|string|max:1000',
-            'action_cost' => 'required|numeric',
+            'action_cost' => 'nullable|numeric',
         ];
     }
 
@@ -34,7 +34,6 @@ class StoreIncidentActionRequest extends FormRequest
             'action_description.string' => 'The action description must be valid text.',
             'action_description.max' => 'The description may not be greater than 1000 characters.',
 
-            'action_cost.required' => 'The action cost is required.',
             'action_cost.numeric' => 'The action cost must be a valid number.',
         ];
     }

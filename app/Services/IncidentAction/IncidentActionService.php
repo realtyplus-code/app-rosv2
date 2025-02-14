@@ -111,6 +111,7 @@ class IncidentActionService
     {
         DB::beginTransaction();
         try {
+            $data['action_cost'] = $data['action_cost'] ?? null;
             $incidentAction = $this->incidentActionRepository->update($id, $data);
             DB::commit();
             return $incidentAction;

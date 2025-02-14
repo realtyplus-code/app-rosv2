@@ -9,6 +9,7 @@ use App\Models\Property\Property;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\Property\PropertyService;
 use App\Http\Requests\Property\ValidatePdfRequest;
@@ -215,10 +216,17 @@ class PropertyController extends Controller
         try {
             $data = $this->getDataToExport($request);
             $logoPath = public_path('img/rentalcolorb.svg');
-            $pdf = \PDF::loadView('exports.properties', ['data' => $data, 'logoPath' => $logoPath])
-                ->setPaper('A3', 'landscape');
-            $currentDate = Carbon::now()->format('Y-m-d H:i:s');
-            return $pdf->download("User_{$currentDate}.pdf");
+            $userName = Auth::user()->name;
+            $userProfile = roleAlias(Auth::user()->getRoleNames()[0]);
+            $reportDate = Carbon::now()->format('Y-m-d H:i:s');
+            $pdf = \PDF::loadView('exports.properties', [
+                'data' => $data,
+                'logoPath' => $logoPath,
+                'userName' => $userName,
+                'userProfile' => $userProfile,
+                'reportDate' => $reportDate
+            ])->setPaper('A3', 'landscape');
+            return $pdf->download("User_{$reportDate}.pdf");
         } catch (\Exception $ex) {
             Log::info($ex->getLine());
             Log::info($ex->getMessage());

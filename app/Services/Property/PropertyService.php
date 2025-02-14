@@ -153,7 +153,7 @@ class PropertyService
     {
         DB::beginTransaction();
         try {
-            $photos = $data['photos'];
+            $photos = isset($data['photos']) ? $data['photos'] : [];
             unset($data['photo']);
             $owners = $data['owners'];
             $tenants = [];

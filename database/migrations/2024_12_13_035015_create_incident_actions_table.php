@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('responsible_user_id');
             $table->string('responsible_user_type');
             $table->string('action_description', 1000)->nullable();
-            $table->decimal('action_cost', 10, 2);
+            $table->decimal('action_cost', 10, 2)->nullable();
             $table->unsignedInteger('currency_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('action_type_id');

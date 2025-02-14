@@ -22,6 +22,9 @@
         <img src="{{ $logoPath }}" alt="Logo" style="height: 50px; margin-right: 10px;">
     </div>
     <h1 style="margin-top: 20px">Lista de Propiedades</h1>
+    <p><b>Usuario:</b> {{ $userName }}</p>
+    <p><b>Perfil:</b> {{ $userProfile }}</p>
+    <p><b>Fecha del informe:</b> {{ $reportDate }}</p>
     <table>
         <thead>
             <tr>

@@ -187,7 +187,7 @@ export default {
     justify-content: center;
 }
 .card {
-    background: #f76f31;
+    background: #f25927;
     color: white;
     border-radius: 10px;
     padding: 10px;
@@ -199,9 +199,11 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f68049;
+    background-color: #f64949;
     border-radius: 10px;
     font-size: 15px;
+    border: 1px solid white;
+    border-color: white;
 }
 .card-title {
     font-weight: bold;

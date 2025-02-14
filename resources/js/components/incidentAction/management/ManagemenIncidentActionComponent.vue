@@ -117,7 +117,7 @@
                     filter
                     :options="listActionType"
                     v-model="formIncident.action_type_id"
-                    placeholder="Select insurance"
+                    placeholder="Select type"
                     :class="{ 'p-invalid': errors.action_type_id }"
                     optionLabel="valor1"
                     optionValue="id"
@@ -132,7 +132,7 @@
                     filter
                     :options="listActionStatus"
                     v-model="formIncident.status_id"
-                    placeholder="Select insurance"
+                    placeholder="Select status"
                     :class="{ 'p-invalid': errors.status_id }"
                     optionLabel="valor1"
                     optionValue="id"
@@ -275,7 +275,7 @@ export default {
             formIncident: {
                 id: null,
                 incident_id: null,
-                action_date: null,
+                action_date: new Date(),
                 responsible_user_id: null,
                 responsible_user_type: null,
                 action_description: null,
@@ -429,7 +429,12 @@ export default {
                 action_description: Yup.string().required(
                     "Description is required"
                 ),
-                action_cost: Yup.string().required("Cost is required"),
+                action_cost: Yup.number()
+                    .nullable()
+                    .transform((value, originalValue) =>
+                        String(originalValue).trim() === "" ? null : value
+                    )
+                    .typeError("Cost must be a number"),
                 status_id: Yup.string().required("Status is required"),
                 action_type_id: Yup.string().required("Type is required"),
                 currency_id: Yup.string().required("Currency is required"),

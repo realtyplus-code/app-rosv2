@@ -85,7 +85,6 @@ class IncidentActionController extends Controller
     public function update(UpdateIncidentActionRequest $request, $id)
     {
         try {
-
             $incident = $this->incidentActionService->updateIncident($request->all(), $id);
             return Response::sendResponse($incident, __('messages.controllers.success.record_updated_successfully'));
         } catch (\Exception $ex) {

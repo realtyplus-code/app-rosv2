@@ -33,7 +33,7 @@
                 }}</small>
             </div>
         </div>
-        <div class="custom-form-column mt-4">
+        <div class="custom-form-column mt-4" v-if="isViewProperty">
             <MultiSelect
                 :options="listProperty"
                 v-model="formInsurance.properties"
@@ -314,6 +314,7 @@ export default {
             listCountry: [],
             listProperty: [],
             isLoad: false,
+            isViewProperty: true,
         };
     },
     components: {},
@@ -385,6 +386,7 @@ export default {
         async setFormUrl() {
             const property_id = $.urlParam("property_id");
             if (property_id) {
+                this.isViewProperty = false;
                 let response = await this.getPropertyById(property_id);
                 this.formInsurance.properties = response.map(
                     (item) => item.id
