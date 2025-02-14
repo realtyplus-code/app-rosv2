@@ -201,6 +201,9 @@ class PropertyService
             // proceso de actualización de la propiedad
             $data['expected_end_date_ros'] = $data['expected_end_date_ros'] ?? null;
             $data['client_ros_id'] = $data['client_ros_id'] ?? null;
+            $data['country'] = $data['country'] ?? null;
+            $data['state'] = $data['state'] ?? null;
+            $data['city'] = $data['city'] ?? null;
             $property = $this->propertyRepository->update($id, $data);
             $this->userPropertyRepository->deleteByProperty($id);
             foreach ($owners as $key => $value) {

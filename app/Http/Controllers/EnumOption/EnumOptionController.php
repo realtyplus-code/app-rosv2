@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\EnumOption\EnumOptionService;
 use App\Http\Controllers\ResponseController as Response;
+use App\Http\Requests\EnumOption\StoreEnumOptionRequest;
+use App\Http\Requests\EnumOption\UpdateEnumOptionRequest;
 
 class EnumOptionController extends Controller
 {
@@ -41,8 +43,7 @@ class EnumOptionController extends Controller
         }
     }
 
-
-    public function store(Request $request)
+    public function store(StoreEnumOptionRequest $request)
     {
         try {
             $enum = $this->enumService->storeEnum($request->all());
@@ -52,7 +53,7 @@ class EnumOptionController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateEnumOptionRequest $request, $id)
     {
         try {
             $enum = $this->enumService->updateEnum($request->all(), $id);

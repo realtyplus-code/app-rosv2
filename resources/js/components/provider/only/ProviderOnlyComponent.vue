@@ -494,17 +494,17 @@ export default {
         onChangeCountry(value, change) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const response = await this.$getBrother(value);
+                    const response = await this.$getBrotherCode(value, "state");
                     this.listState = [];
                     this.listCity = [];
                     if (value && change) {
-                        this.formProvider.state_id = null;
-                        this.formProvider.city_id = null;
+                        this.formProvider.state = null;
+                        this.formProvider.city = null;
                     } else {
-                        this.formProvider.state_id = this.selectedProvider
+                        this.formProvider.state = this.selectedProvider
                             ? parseInt(this.selectedProvider.state_id)
                             : null;
-                        this.formProvider.city_id = this.selectedProvider
+                        this.formProvider.city = this.selectedProvider
                             ? parseInt(this.selectedProvider.city_id)
                             : null;
                     }
@@ -519,12 +519,12 @@ export default {
         onChangeState(value, change) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const response = await this.$getBrother(value);
+                    const response = await this.$getBrotherCode(value, "city");
                     this.listCity = [];
                     if (value && change) {
-                        this.formProvider.city_id = null;
+                        this.formProvider.city = null;
                     } else {
-                        this.formProvider.city_id = this.selectedProvider
+                        this.formProvider.city = this.selectedProvider
                             ? parseInt(this.selectedProvider.city_id)
                             : null;
                     }

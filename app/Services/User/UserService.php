@@ -159,6 +159,9 @@ class UserService
     public function updateUser(array $data, $id)
     {
         try {
+            $data['country'] = $data['country'] ?? null;
+            $data['state'] = $data['state'] ?? null;
+            $data['city'] = $data['city'] ?? null;
             $user = $this->userRepository->update($id, $data);
             if (isset($data['role'])) {
                 $user->roles()->detach();

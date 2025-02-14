@@ -474,16 +474,19 @@ export default {
                     .email("The email format is not valid")
                     .required("Type email is required"),
                 phone: Yup.string()
-                    .matches(/^[0-9]+$/, "Phone number must contain only digits")
+                    .matches(
+                        /^[0-9]+$/,
+                        "Phone number must contain only digits"
+                    )
                     .required("Type phone is required"),
                 photos: Yup.array()
                     .min(1, "At least 1 photo is required")
                     .max(1, "You can upload up to 1 photos")
                     .required("Photo is required"),
                 role: Yup.string().required("Role is required"),
-                country: Yup.string().required("Country is required"),
+                /*   country: Yup.string().required("Country is required"),
                 state: Yup.string().required("State is required"),
-                city: Yup.string().required("City is required"),
+                city: Yup.string().required("City is required"), */
                 address: Yup.string().required("Address is required"),
                 language_id: Yup.string().required("Language is required"),
             };
@@ -586,17 +589,17 @@ export default {
         onChangeCountry(value, change) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const response = await this.$getBrother(value);
+                    const response = await this.$getBrotherCode(value, "state");
                     this.listState = [];
                     this.listCity = [];
                     if (value && change) {
-                        this.formUser.state_id = null;
-                        this.formUser.city_id = null;
+                        this.formUser.state = null;
+                        this.formUser.city = null;
                     } else {
-                        this.formUser.state_id = this.selectedUser
+                        this.formUser.state = this.selectedUser
                             ? parseInt(this.selectedUser.state_id)
                             : null;
-                        this.formUser.city_id = this.selectedUser
+                        this.formUser.city = this.selectedUser
                             ? parseInt(this.selectedUser.city_id)
                             : null;
                     }
@@ -616,12 +619,12 @@ export default {
         onChangeState(value, change) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const response = await this.$getBrother(value);
+                    const response = await this.$getBrotherCode(value, "city");
                     this.listCity = [];
                     if (value && change) {
-                        this.formUser.city_id = null;
+                        this.formUser.city = null;
                     } else {
-                        this.formUser.city_id = this.selectedUser
+                        this.formUser.city = this.selectedUser
                             ? parseInt(this.selectedUser.city_id)
                             : null;
                     }

@@ -63,6 +63,24 @@
                 }}</small>
             </div>
         </div>
+        <div v-if="isRelation == 'currency'" class="custom-form mt-3">
+            <div class="custom-form-column">
+                <label>Country</label>
+                <Select
+                    filter
+                    :options="listCountry"
+                    v-model="formEnum.brother_relation_id"
+                    placeholder="Select country"
+                    :class="{ 'p-invalid': errors.brother_relation_id }"
+                    optionLabel="name"
+                    optionValue="id"
+                    style="width: 100%"
+                />
+                <small v-if="errors.brother_relation_id" class="p-error">{{
+                    errors.brother_relation_id
+                }}</small>
+            </div>
+        </div>
         <hr />
         <div class="custom-form mt-4">
             <div class="custom-form-column">
@@ -95,7 +113,7 @@
                         @input="clearError('valor1')"
                         style="width: 100%"
                     />
-                    <label for="valor1">Descripcion</label>
+                    <label for="valor1">Value to display</label>
                 </FloatLabel>
                 <small v-if="errors.valor1" class="p-error">{{
                     errors.valor1
@@ -187,7 +205,7 @@ export default {
                 const { state: responseState } = response.data;
                 this.listState = responseState;
             }
-            if (value == "state") {
+            if (value == "state" || value == "currency") {
                 const comboNames = ["country"];
                 const response = await this.$getEnumsOptions(comboNames);
                 const { country: responseCountry } = response.data;
@@ -253,7 +271,7 @@ export default {
                 dinamicRules.brother_relation_id =
                     Yup.string().required("State is required");
             }
-            if (this.isRelation == "state") {
+            if (this.isRelation == "state" || this.isRelation == "currency") {
                 dinamicRules.brother_relation_id = Yup.string().required(
                     "Country is required"
                 );

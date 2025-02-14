@@ -132,6 +132,9 @@ class ProviderService
         DB::beginTransaction();
         try {
             $providers = $data['providers'];
+            $data['country'] = $data['country'] ?? null;
+            $data['state'] = $data['state'] ?? null;
+            $data['city'] = $data['city'] ?? null;
             $provider = $this->providerRepository->update($id, $data);
             $this->providerServiceRepository->deleteByProvider($id);
             foreach ($providers as $key => $value) {
