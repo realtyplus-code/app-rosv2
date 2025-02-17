@@ -39,29 +39,6 @@ class InsuranceService
             $query->where('insurance_property.property_id', $data['property_id']);
         }
 
-        $query->groupBy([
-            'insurances.id',
-            'insurances.insurance_company',
-            'insurances.policy_number',
-            'insurances.start_date',
-            'insurances.end_date',
-            'insurances.contact_person',
-            'insurances.contact_email',
-            'ec.id',
-            'ec.name',
-            'insurances.position',
-            'insurances.phone',
-            'insurances.code_number',
-            'insurances.code_country',
-            'e_ct.name',
-            'e_ct.id',
-            'insurances.created_at',
-            'insurances.updated_at',
-            'insurances.renewal_indicator',
-            'insurances.renewal_months',
-            'insurances.policy_amount',
-        ]);
-
         return $query->distinct();
     }
 
@@ -70,14 +47,11 @@ class InsuranceService
         DB::beginTransaction();
         try {
             $insurance = $this->insuranceRepository->create($data);
-            if (isset($data['properties']) && count($data['properties']) > 0) {
-                foreach ($data['properties'] as $property) {
-                    $this->insurancePropertyRepository->create([
-                        'insurance_id' => $insurance->id,
-                        'property_id' => $property,
-                    ]);
-                }
-            }
+            $property = $data['properties'];
+            $this->insurancePropertyRepository->create([
+                'insurance_id' => $insurance->id,
+                'property_id' => $property,
+            ]);
             DB::commit();
             return $insurance;
         } catch (\Exception $ex) {
@@ -103,14 +77,11 @@ class InsuranceService
         try {
             $insurance = $this->insuranceRepository->update($id, $data);
             $this->insurancePropertyRepository->deleteByInsurance($id);
-            if (isset($data['properties'])) {
-                foreach ($data['properties'] as $property) {
-                    $this->insurancePropertyRepository->create([
-                        'insurance_id' => $insurance->id,
-                        'property_id' => $property,
-                    ]);
-                }
-            }
+            $property = $data['properties'];
+            $this->insurancePropertyRepository->create([
+                'insurance_id' => $insurance->id,
+                'property_id' => $property,
+            ]);
             DB::commit();
             return $insurance;
         } catch (\Exception $ex) {

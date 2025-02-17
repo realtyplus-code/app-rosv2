@@ -89,6 +89,7 @@
                     optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
+                    :disabled="isViewCurrency"
                 />
                 <small v-if="errors.currency_id" class="p-error">{{
                     errors.currency_id
@@ -285,7 +286,7 @@ export default {
                 responsible_user_id: null,
                 responsible_user_type: null,
                 action_description: null,
-                action_cost: null,
+                action_cost: 0,
                 photos: [],
                 action_type_id: null,
                 status_id: null,
@@ -299,6 +300,7 @@ export default {
             listCurrency: [],
             isLoad: false,
             isTypeUser: false, //true: providers, false: others users
+            isViewCurrency: false,
         };
     },
     components: {},
@@ -363,7 +365,10 @@ export default {
                         "currency"
                     );
                     if (response.data && response.data.length > 0) {
-                        this.formIncident.currency_id = parseInt(response.data[0].id);
+                        this.isViewCurrency = true;
+                        this.formIncident.currency_id = parseInt(
+                            response.data[0].id
+                        );
                     }
                 }
             }

@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="custom-form-column mt-4" v-if="isViewProperty">
-            <MultiSelect
+            <Select
                 :options="listProperty"
                 v-model="formInsurance.properties"
                 filter
@@ -322,9 +322,6 @@ export default {
     mounted() {
         this.$nextTick(async () => {
             if (this.selectedInsurance) {
-                const currentPropertiesName = this.$parseTags(
-                    this.selectedInsurance.property_name
-                );
                 this.formInsurance.id = this.selectedInsurance.id;
                 this.formInsurance.insurance_company =
                     this.selectedInsurance.insurance_company;
@@ -332,8 +329,6 @@ export default {
                     this.selectedInsurance.contact_person;
                 this.formInsurance.contact_email =
                     this.selectedInsurance.contact_email;
-                this.formInsurance.property_id =
-                    this.selectedInsurance.property_id;
                 this.formInsurance.insurance_type_id =
                     this.selectedInsurance.insurance_id;
                 this.formInsurance.start_date = new Date(
@@ -357,9 +352,7 @@ export default {
                     this.selectedInsurance.policy_amount;
                 this.formInsurance.renewal_indicator =
                     this.selectedInsurance.renewal_indicator;
-                this.formInsurance.properties = currentPropertiesName.map(
-                    (item) => item.id
-                );
+                this.formInsurance.properties = this.selectedInsurance.property_id;
             } else {
                 this.setFormUrl();
             }
