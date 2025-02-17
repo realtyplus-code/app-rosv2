@@ -36,7 +36,10 @@
                 <small>{{ characterCount }}/1000</small>
             </div>
         </div>
-        <div class="custom-form" v-if="roleName !== 'provider' && isNotViewRole()">
+        <div
+            class="custom-form"
+            v-if="roleName !== 'provider' && isNotViewRole()"
+        >
             <div class="custom-form-column">
                 <MultiSelect
                     :options="listProviders"
@@ -66,6 +69,7 @@
                     optionValue="id"
                     style="width: 100%"
                     @clear="clearProperty('property_id')"
+                    @change="changeProperty"
                 />
                 <small v-if="errors.property_id" class="p-error">{{
                     errors.property_id
@@ -83,12 +87,13 @@
                     optionLabel="valor1"
                     optionValue="id"
                     style="width: 100%"
+                    :disabled="true"
                 />
                 <small v-if="errors.currency_id" class="p-error">{{
                     errors.currency_id
                 }}</small>
             </div>
-            <div class="custom-form-column"  v-if="isNotViewRole()">
+            <div class="custom-form-column" v-if="isNotViewRole()">
                 <FloatLabel>
                     <InputNumber
                         id="cost"
@@ -299,7 +304,7 @@ export default {
                 id: null,
                 property_id: null,
                 description: null,
-                report_date: null,
+                report_date: new Date(),
                 status_id: null,
                 incident_type_id: null,
                 priority_id: null,
@@ -442,7 +447,7 @@ export default {
                     .max(4, "You can upload up to 4 photos")
                     .required("Photo is required"), */
             };
-            if(!this.isNotViewRole()){
+            if (!this.isNotViewRole()) {
                 delete initialRules.report_date;
                 delete initialRules.priority_id;
                 delete initialRules.payer_id;
@@ -610,6 +615,34 @@ export default {
         },
         isNotViewRole() {
             return !["tenant", "owner", "ros_client"].includes(this.roleName);
+        },
+        async changeProperty(item) {
+            if (item && item.value) {
+                let { data: country } = await this.getCountryByProperty(
+                    item.value
+                );
+                const response = await this.$getBrotherCode(
+                    country.id,
+                    "currency"
+                );
+                if (response.data && response.data.length > 0) {
+                    this.isViewCurrency = true;
+                    this.formIncident.currency_id = parseInt(
+                        response.data[0].id
+                    );
+                }
+            }
+        },
+        async getCountryByProperty(propertyId) {
+            try {
+                const response = await this.$axios.get(
+                    `/properties/countryByProperty/${propertyId}`
+                );
+                return response.data;
+            } catch (error) {
+                this.$readStatusHttp(error);
+                throw error;
+            }
         },
     },
 };

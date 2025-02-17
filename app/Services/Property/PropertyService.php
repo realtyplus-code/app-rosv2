@@ -333,4 +333,16 @@ class PropertyService
             throw $ex;
         }
     }
+
+    public function getCountryByProperty($id)
+    {
+        try {
+            $query = $this->propertyRepository->getCountryByProperty($id);
+            return $query->get(['ec.id', 'ec.name'])->first();
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
+        }
+    }
 }

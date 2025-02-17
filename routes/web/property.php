@@ -19,6 +19,7 @@ Route::prefix('properties')->middleware(['auth:web'])->group(function () {
     Route::post('/photo/delete/', [PropertyController::class, 'destroyPhoto'])->name('properties.destroy.photo');
     Route::post('/document/add', [PropertyController::class, 'addPdf'])->name('properties.add.pdf');
     Route::post('/document/delete', [PropertyController::class, 'destroyPdf'])->name('properties.destroy.pdf');
+    Route::get('/countryByProperty/{id}', [PropertyController::class, 'getCountryByProperty'])->name('properties.country.property');
 });
 
 Route::prefix('properties/only')->middleware(['auth:providers'])->group(function () {

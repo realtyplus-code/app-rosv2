@@ -282,4 +282,15 @@ class PropertyController extends Controller
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
+
+    public function getCountryByProperty($id){
+        try {
+            $currencies = $this->propertyService->getCountryByProperty($id);
+            return Response::sendResponse($currencies, __('messages.controllers.success.records_fetched_successfully'));
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
 }

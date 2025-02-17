@@ -63,7 +63,7 @@
                 }}</small>
             </div>
         </div>
-        <div v-if="isRelation == 'currency'" class="custom-form mt-3">
+        <div v-if="isRelation == 'currency' || isRelation == 'language'" class="custom-form mt-3">
             <div class="custom-form-column">
                 <label>Country</label>
                 <Select
@@ -205,7 +205,7 @@ export default {
                 const { state: responseState } = response.data;
                 this.listState = responseState;
             }
-            if (value == "state" || value == "currency") {
+            if (value == "state" || value == "currency" || value == "language") {
                 const comboNames = ["country"];
                 const response = await this.$getEnumsOptions(comboNames);
                 const { country: responseCountry } = response.data;
@@ -271,7 +271,7 @@ export default {
                 dinamicRules.brother_relation_id =
                     Yup.string().required("State is required");
             }
-            if (this.isRelation == "state" || this.isRelation == "currency") {
+            if (this.isRelation == "state" || this.isRelation == "currency" || this.isRelation == "language") {
                 dinamicRules.brother_relation_id = Yup.string().required(
                     "Country is required"
                 );

@@ -595,10 +595,17 @@ export default {
                     }
 
                     this.placeholderState =
-                        response.data.length > 0
-                            ? "Select state"
-                            : "Data empty";
+                        response.data.length > 0 ? "Select state" : "Data empty";
                     this.listState = response.data;
+
+                    if (change) {
+                        this.formProvider.language_id = null;
+                        const responseCode = await this.$getBrotherCode(value, "language");
+                        if (responseCode.data && responseCode.data.length > 0) {
+                            this.formProvider.language_id = parseInt(responseCode.data[0].id);
+                        }
+                    }
+
                     resolve();
                 } catch (error) {
                     console.error("Error in onChangeCountry:", error);

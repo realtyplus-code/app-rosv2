@@ -52,4 +52,10 @@ class PropertyRepository implements PropertyRepositoryInterface
     {
         return $this->model->where($field, $condition, $value)->get();
     }
+
+    public function getCountryByProperty($id)
+    {
+        return $this->model->leftJoin('enum_options as ec', 'ec.id', '=', 'properties.country')
+            ->where('properties.id', $id);
+    }
 }

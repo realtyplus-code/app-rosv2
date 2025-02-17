@@ -11,4 +11,5 @@ interface PropertyRepositoryInterface
     public function findAll();
     public function all();
     public function findBy($field, $condition ,$value);
+    public function getCountryByProperty($id);
 }
