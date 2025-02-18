@@ -25,7 +25,12 @@
                             ]"
                             :title="property.type_name"
                             style="cursor: pointer"
-                            @click="getViewModuleFilter('property', property.type_name)"
+                            @click="
+                                getViewModuleFilter(
+                                    'property',
+                                    property.type_name
+                                )
+                            "
                         >
                             <i :class="getIconClass(property.type_name)"></i>
                             {{ property.count }}
@@ -34,18 +39,26 @@
                 </div>
             </div>
             <div class="card">
-                <div
-                    class="card-header"
-                    @click="getViewModule('incident')"
-                    style="cursor: pointer"
-                >
-                    <span class="card-title">
+                <div class="card-header" style="cursor: pointer">
+                    <span class="card-title" @click="getViewModule('incident')">
                         <img
                             src="/img/indicators/incidente.png"
                             alt="Incidents"
                         />
                         INCIDENTS
                     </span>
+                    <Button
+                        v-if="getPermissionsByRole('create_incidents')"
+                        icon="pi pi-plus"
+                        rounded
+                        raised
+                        @click="addIncident"
+                        style="
+                            margin-right: 10px;
+                            background-color: #3cb0e7 !important;
+                            border-color: #f76f31;
+                        "
+                    />
                 </div>
                 <div class="card-body">
                     <div v-if="loadingIncidents">Loading...</div>
@@ -60,7 +73,12 @@
                             ]"
                             :title="incident.type_name"
                             style="cursor: pointer"
-                            @click="getViewModuleFilter('incident', incident.type_name)"
+                            @click="
+                                getViewModuleFilter(
+                                    'incident',
+                                    incident.type_name
+                                )
+                            "
                         >
                             <i :class="getIconClass(incident.type_name)"></i>
                             {{ incident.count }}
@@ -70,12 +88,26 @@
             </div>
         </div>
     </div>
+
+    <!-- gestion de incidentes -->
+    <ManagementIncidentComponent
+        v-if="dialogVisible"
+        :dialogVisible="dialogVisible"
+        :selectedIncident="selectedIncident"
+        :role="rol"
+        @hidden="hidden"
+        @reload="reload"
+    />
+
 </template>
 
 <script>
+import ManagementIncidentComponent from "../../incident/management/ManagemenIncidentComponent.vue";
 export default {
-    props: ["rol"],
-    components: {},
+    props: ["rol", "permissions"],
+    components: {
+        ManagementIncidentComponent
+    },
     data() {
         return {
             roleName: this.rol[0],
@@ -85,6 +117,8 @@ export default {
             totalIncidents: 0,
             loadingProperties: true,
             loadingIncidents: true,
+            selectedIncident: null,
+            dialogVisible: false,
         };
     },
     computed: {},
@@ -170,6 +204,23 @@ export default {
                     break;
             }
         },
+        getPermissionsByRole(name) {
+            return this.permissions.some(
+                (permission) => permission.name == name
+            );
+        },
+        addIncident() {
+            this.selectedIncident = null;
+            this.dialogVisible = true;
+        },
+        hidden(status) {
+            this.dialogVisible = status;
+        },
+        reload() {
+            this.getIncidentTypeCount();
+            this.selectedIncident = null;
+            this.dialogVisible = false;
+        },
     },
 };
 </script>
@@ -199,7 +250,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f64949;
+    background-color: #f64949c5;
     border-radius: 10px;
     font-size: 15px;
     border: 1px solid white;

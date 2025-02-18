@@ -3,7 +3,8 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-           <indicator-component :rol="{{ Auth::user()->getRoleNames() }}"></indicator-component>
+            <indicator-component :rol="{{ Auth::user()->getRoleNames() }}"
+                :permissions="{{ Auth::user()->getAllPermissions() }}"></indicator-component>
         </div>
     </div>
 @endsection
