@@ -466,7 +466,7 @@
         v-if="dialogVisiblePdf"
         :dialogVisible="dialogVisiblePdf"
         :selectedRegister="selectedProperty"
-        :limit="1"
+        :limit="4"
         @hidden="hidden"
         @uploadFiles="uploadFiles"
         @deletePdf="deletePdf"

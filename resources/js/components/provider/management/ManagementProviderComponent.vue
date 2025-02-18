@@ -42,6 +42,7 @@
                         :class="{ 'p-invalid': errors.user }"
                         v-model="formProvider.user"
                         @input="clearError('user')"
+                        autocomplete="off"
                     />
                     <label for="user">User</label>
                 </FloatLabel>
@@ -64,6 +65,7 @@
                             v-model="formProvider.password"
                             @input="clearError('password')"
                             toggleMask
+                            autocomplete="off"
                         />
                         <label for="password">Password</label>
                     </FloatLabel>
@@ -317,7 +319,7 @@ export default {
                 code_number: null,
                 code_country: null,
                 email: null,
-                service_cost: null,
+                service_cost: 0,
                 status: null,
                 providers: [],
                 password: null,
@@ -420,6 +422,7 @@ export default {
                 { id: 1, name: "active", valor1: "activo" },
                 { id: 2, name: "inactive", valor1: "inactivo" },
             ];
+            this.formProvider.status = this.listStatus[0].id;
             const comboNames = ["country", "provider_type", "language"];
             const response = await this.$getEnumsOptions(comboNames);
             const {
@@ -595,14 +598,21 @@ export default {
                     }
 
                     this.placeholderState =
-                        response.data.length > 0 ? "Select state" : "Data empty";
+                        response.data.length > 0
+                            ? "Select state"
+                            : "Data empty";
                     this.listState = response.data;
 
                     if (change) {
                         this.formProvider.language_id = null;
-                        const responseCode = await this.$getBrotherCode(value, "language");
+                        const responseCode = await this.$getBrotherCode(
+                            value,
+                            "language"
+                        );
                         if (responseCode.data && responseCode.data.length > 0) {
-                            this.formProvider.language_id = parseInt(responseCode.data[0].id);
+                            this.formProvider.language_id = parseInt(
+                                responseCode.data[0].id
+                            );
                         }
                     }
 

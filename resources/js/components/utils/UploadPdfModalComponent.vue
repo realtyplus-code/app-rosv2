@@ -26,7 +26,9 @@
                     <p class="pdf-name">
                         {{
                             selectedRegister[`document`][index - 1]["name"]
-                                ? selectedRegister[`document`][index - 1]["name"].replace(/\.[^/.]+$/, "")
+                                ? selectedRegister[`document`][index - 1][
+                                      "name"
+                                  ].replace(/\.[^/.]+$/, "")
                                 : ""
                         }}
                     </p>
@@ -51,6 +53,7 @@
                     />
                 </div>
                 <div v-else>
+                    <span style="display: none;">{{ (flagUpload = true) }}</span>
                     <FileUpload
                         :id="`uploadPdf${index === 1 ? '' : index - 1}`"
                         :ref="`fileUpload${index === 1 ? '' : index - 1}`"
@@ -83,6 +86,7 @@
                     severity="success"
                     style="margin-right: 10px"
                     @click="uploadFiles"
+                    :disabled="!flagUpload"
                 />
                 <Button
                     label="Cancel"
@@ -105,6 +109,7 @@ export default {
             files: {},
             errors: {},
             limitDouments: this.limit ?? 0,
+            flagUpload: false,
         };
     },
 

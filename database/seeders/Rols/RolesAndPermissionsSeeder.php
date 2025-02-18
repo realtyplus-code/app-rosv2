@@ -186,7 +186,6 @@ class RolesAndPermissionsSeeder extends Seeder
                 'edit_providers',
                 'list_providers',
                 'list_incidents',
-                'edit_incidents',
                 'list_incidents_actions',
                 'edit_incidents_actions',
                 'read_properties',

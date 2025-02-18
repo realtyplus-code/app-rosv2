@@ -24,7 +24,7 @@ class PropertyService
     protected $fileService;
     private $disk = 'disk_property';
     private $listPhotos = ['photo', 'photo1', 'photo2', 'photo3'];
-    private $listDocuments = ['document'];
+    private $listDocuments = ['document', 'document1', 'document2', 'document3'];
 
     public function __construct(
         PropertyRepositoryInterface $propertyRepository,
@@ -75,7 +75,7 @@ class PropertyService
             $query->where('properties.status', $value);
         }
 
-        if(!empty($id)){
+        if (!empty($id)) {
             $query->where('properties.id', $id);
         }
 
@@ -304,18 +304,25 @@ class PropertyService
 
     public function addPdf($data)
     {
-        foreach ($this->listDocuments as $key => $value) {
-            if (isset($data['pdfs'][$key])) {
-                $originalName = $data['pdfs'][$key]->getClientOriginalName();
-                $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
-                $this->attachmentService->store([
-                    'attachable_id' => $data['property_id'],
-                    'attachable_type' => Property::class,
-                    'file_path' => $filePath,
-                    'file_type' => 'PDF',
-                    'name' => $originalName,
-                ]);
+        try {
+            foreach ($this->listDocuments as $key => $value) {
+                if (isset($data['pdfs'][$key])) {
+                    $originalName = $data['pdfs'][$key]->getClientOriginalName();
+                    $filePath = $this->fileService->saveFile($data['pdfs'][$key], 'pdf', $this->disk);
+                    $this->attachmentService->store([
+                        'attachable_id' => $data['property_id'],
+                        'attachable_type' => Property::class,
+                        'file_path' => $filePath,
+                        'file_type' => 'PDF',
+                        'name' => $originalName,
+                    ]);
+                }
             }
+            return true;
+        } catch (\Exception $ex) {
+            Log::info($ex->getLine());
+            Log::info($ex->getMessage());
+            throw $ex;
         }
     }
 

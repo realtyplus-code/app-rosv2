@@ -31,6 +31,9 @@ class LoginController extends Controller
             'password' => $request->input('password'),
         ];
 
+        // Convertir el login a minúsculas para permitir autenticación sin importar mayúsculas o minúsculas
+        $credentials[$loginType] = strtolower($credentials[$loginType]);
+
         // Intentar autenticación para usuarios
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
