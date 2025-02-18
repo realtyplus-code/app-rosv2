@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(Rols\RolesAndPermissionsSeeder::class);
-        $this->call(Users\UsersSeeder::class);
+       /*  $this->call(Users\UsersSeeder::class);
 
         //Combos
         $this->call(Configuration\CoreMastersTableSeeder::class);
@@ -30,6 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(Configuration\CoreMasterComboLenguajeSeeder::class);
         $this->call(Configuration\CoreMasterComboCurrencySeeder::class);
         $this->call(Configuration\CoreMasterComboActionTypeSeeder::class);
-        $this->call(Configuration\CoreMasterComboActionStatusSeeder::class);
+        $this->call(Configuration\CoreMasterComboActionStatusSeeder::class); */
     }
 }
