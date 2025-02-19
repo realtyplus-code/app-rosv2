@@ -76,6 +76,7 @@
                         optionLabel="name"
                         optionValue="id"
                         style="width: 100%"
+                        :selectionLimit="1"
                     />
                     <label for="language">Language</label>
                 </FloatLabel>
@@ -93,6 +94,7 @@
                         optionLabel="name"
                         optionValue="id"
                         style="width: 100%"
+                        :selectionLimit="1"
                     />
                     <label for="currency">Currency</label>
                 </FloatLabel>

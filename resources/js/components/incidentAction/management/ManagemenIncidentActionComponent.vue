@@ -360,14 +360,14 @@ export default {
                 this.setPhotos();
             } else {
                 if (this.selectedPropertyCountry) {
-                    const response = await this.$getBrotherCode(
+                    const response = await this.$getCountryRelation(
                         this.selectedPropertyCountry,
                         "currency"
                     );
-                    if (response.data && response.data.length > 0) {
+                    if (response.data) {
                         this.isViewCurrency = true;
                         this.formIncident.currency_id = parseInt(
-                            response.data[0].id
+                            response.data.related_id
                         );
                     }
                 }

@@ -511,9 +511,9 @@ export default {
                     this.listState = response.data;
                     if (change) {
                         this.formProvider.language_id = null;
-                        const responseCode = await this.$getBrotherCode(value, "language");
-                        if (responseCode.data && responseCode.data.length > 0) {
-                            this.formProvider.language_id = parseInt(responseCode.data[0].id);
+                        const responseCode = await this.$getCountryRelation(value, "language");
+                        if (responseCode.data) {
+                            this.formProvider.language_id = parseInt(responseCode.data.related_id);
                         }
                     }
                     resolve();

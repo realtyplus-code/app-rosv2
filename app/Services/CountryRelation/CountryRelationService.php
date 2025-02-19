@@ -49,6 +49,13 @@ class CountryRelationService
         }
     }
 
+    public function getRelationByIdAndCode($id, $code)
+    {
+        return CountryRelation::where('country_id', $id)
+            ->where('type', $code)
+            ->first();
+    }
+
     public function storeCountryRelation(array $data)
     {
         DB::beginTransaction();

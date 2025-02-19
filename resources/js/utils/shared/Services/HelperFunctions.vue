@@ -29,11 +29,25 @@ export default {
                     });
             });
         },
-        $getBrotherCode(id, $code) {
+        $getBrotherCode(id, code) {
             const vm = this;
             return new Promise((resolve, reject) => {
                 this.$axios
-                    .get(`/enums/get-brother-code/${id}/${$code}`)
+                    .get(`/enums/get-brother-code/${id}/${code}`)
+                    .then(function (response) {
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        vm.$readStatusHttp(error);
+                        reject(error);
+                    });
+            });
+        },
+        $getCountryRelation(id, code) {
+            const vm = this;
+            return new Promise((resolve, reject) => {
+                this.$axios
+                    .get(`/country-relations/getRelation/${id}/${code}`)
                     .then(function (response) {
                         resolve(response.data);
                     })

@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             __DIR__ . '/../routes/web/occurrence.php',
             __DIR__ . '/../routes/web/occurrence_action.php',
             __DIR__ . '/../routes/web/provider.php',
+            __DIR__ . '/../routes/web/country_relations.php',
         ],
         commands: __DIR__.'/../routes/console.php',
         health: '/up',

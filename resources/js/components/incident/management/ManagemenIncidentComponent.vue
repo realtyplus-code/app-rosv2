@@ -621,14 +621,14 @@ export default {
                 let { data: country } = await this.getCountryByProperty(
                     item.value
                 );
-                const response = await this.$getBrotherCode(
+                const response = await this.$getCountryRelation(
                     country.id,
                     "currency"
                 );
-                if (response.data && response.data.length > 0) {
+                if (response.data) {
                     this.isViewCurrency = true;
                     this.formIncident.currency_id = parseInt(
-                        response.data[0].id
+                        response.data.related_id
                     );
                 }
             }

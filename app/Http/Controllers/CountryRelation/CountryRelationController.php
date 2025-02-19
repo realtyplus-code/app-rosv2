@@ -70,4 +70,14 @@ class CountryRelationController extends Controller
             return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
         }
     }
+
+    public function getRelationByIdAndCode($id, $code)
+    {
+        try {
+            $relation = $this->countryRelationService->getRelationByIdAndCode($id, $code);
+            return Response::sendResponse($relation, __('messages.controllers.success.record_retrieved_successfully'));
+        } catch (\Exception $ex) {
+            return Response::sendError(__('messages.controllers.error.unexpected_error'), 500);
+        }
+    }
 }
