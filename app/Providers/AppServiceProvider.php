@@ -26,6 +26,7 @@ use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
 use App\Repositories\Contracts\UserPropertyHistoryRepository;
 use App\Repositories\IncidentAction\IncidentActionRepository;
 use App\Interfaces\Contract\PropertyHistoryRepositoryInterface;
+use App\Repositories\CountryRelation\CountryRelationRepository;
 use App\Repositories\ProviderService\ProviderServiceRepository;
 use App\Interfaces\UserProperty\UserPropertyRepositoryInterface;
 use App\Interfaces\UserRelation\UserRelationRepositoryInterface;
@@ -33,6 +34,7 @@ use App\Repositories\IncidentProvider\IncidentProviderRepository;
 use App\Interfaces\Contract\UserPropertyHistoryRepositoryInterface;
 use App\Repositories\InsuranceProperty\InsurancePropertyRepository;
 use App\Interfaces\IncidentAction\IncidentActionRepositoryInterface;
+use App\Interfaces\CountryRelation\CountryRelationRepositoryInterface;
 use App\Interfaces\ProviderService\ProviderServiceRepositoryInterface;
 use App\Interfaces\IncidentProvider\IncidentProviderRepositoryInterface;
 use App\Interfaces\InsuranceProperty\InsurancePropertyRepositoryInterface;
@@ -60,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(InsurancePropertyRepositoryInterface::class, InsurancePropertyRepository::class);
         $this->app->bind(UserPropertyHistoryRepositoryInterface::class, UserPropertyHistoryRepository::class);
         $this->app->bind(PropertyHistoryRepositoryInterface::class, PropertyHistoryRepository::class);
+        $this->app->bind(CountryRelationRepositoryInterface::class, CountryRelationRepository::class);
     }
 
     /**
