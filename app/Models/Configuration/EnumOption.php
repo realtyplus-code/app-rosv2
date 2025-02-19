@@ -31,4 +31,9 @@ class EnumOption extends Model
     {
         return $this->belongsTo(EnumOption::class, 'brother_relation_id');
     }
+
+    public function country()
+    {
+        return $this->hasMany(CountryRelation::class, 'country_id');
+    }
 }

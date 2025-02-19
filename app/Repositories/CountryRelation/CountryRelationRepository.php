@@ -32,4 +32,9 @@ class CountryRelationRepository implements CountryRelationRepositoryInterface
         $model->delete();
         return $model;
     }
+
+    public function deleteByCountryId($id)
+    {
+        return $this->model->where('country_id', $id)->delete();
+    }
 }

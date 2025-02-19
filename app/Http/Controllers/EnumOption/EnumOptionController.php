@@ -31,7 +31,7 @@ class EnumOptionController extends Controller
             return renderDataTable(
                 $query,
                 $request,
-                ['parent', 'brother_relation'],
+                ['parent', 'brother_relation', 'country'],
                 [
                     'enum_options.*',
                 ]

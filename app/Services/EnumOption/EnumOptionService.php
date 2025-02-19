@@ -3,18 +3,21 @@
 namespace App\Services\EnumOption;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use App\Models\Configuration\EnumOption;
+use Illuminate\Database\Eloquent\Builder;
 use App\Interfaces\EnumOption\EnumOptionRepositoryInterface;
+use App\Interfaces\CountryRelation\CountryRelationRepositoryInterface;
 
 class EnumOptionService
 {
     protected $enumRepository;
+    protected $countryRepository;
 
-    public function __construct(EnumOptionRepositoryInterface $enumRepository)
+    public function __construct(EnumOptionRepositoryInterface $enumRepository, CountryRelationRepositoryInterface $countryRepository)
     {
         $this->enumRepository = $enumRepository;
+        $this->countryRepository = $countryRepository;
     }
 
     public function getEnumsQuery()
@@ -61,6 +64,9 @@ class EnumOptionService
         try {
             $data['status'] = $data['status'] ?? true;
             $enum = $this->enumRepository->create($data);
+            if (isset($data['relations']) && !empty($data['relations'])) {
+                $this->handleRelations($data['relations'], $enum->id);
+            }
             DB::commit();
             return $enum;
         } catch (\Exception $ex) {
@@ -77,6 +83,10 @@ class EnumOptionService
         try {
             $data['status'] = $data['status'] ?? true;
             $enum = $this->enumRepository->update($id, $data);
+            $this->countryRepository->deleteByCountryId($id);
+            if (isset($data['relations']) && !empty($data['relations'])) {
+                $this->handleRelations($data['relations'], $id);
+            }
             DB::commit();
             return $enum;
         } catch (\Exception $ex) {
@@ -87,10 +97,33 @@ class EnumOptionService
         }
     }
 
+    private function handleRelations(array $relations, $id)
+    {
+        if (isset($relations['currency'])) {
+            foreach ($relations['currency'] as $currency) {
+                $this->countryRepository->create([
+                    'country_id' => $id,
+                    'related_id' => $currency,
+                    'type' => 'currency'
+                ]);
+            }
+        }
+        if (isset($relations['language'])) {
+            foreach ($relations['language'] as $language) {
+                $this->countryRepository->create([
+                    'country_id' => $id,
+                    'related_id' => $language,
+                    'type' => 'language'
+                ]);
+            }
+        }
+    }
+
     public function deleteEnum($id)
     {
         try {
             $this->enumRepository->delete($id);
+            $this->countryRepository->deleteByCountryId($id);
             return true;
         } catch (\Exception $ex) {
             Log::info($ex->getLine());

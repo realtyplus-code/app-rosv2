@@ -63,6 +63,44 @@
                 }}</small>
             </div>
         </div>
+        <div v-if="isRelation == 'country'" class="custom-form mt-3">
+            <hr />
+            <label style="margin-left: 6px">Relations</label>
+            <div class="custom-form-column mt-4">
+                <FloatLabel>
+                    <MultiSelect
+                        filter
+                        :options="listLanguage"
+                        v-model="formCountry.language"
+                        :class="{ 'p-invalid': errors.language }"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label for="language">Language</label>
+                </FloatLabel>
+                <small v-if="errors.language" class="p-error">{{
+                    errors.language
+                }}</small>
+            </div>
+            <div class="custom-form-column mt-4">
+                <FloatLabel>
+                    <MultiSelect
+                        filter
+                        :options="listCurrency"
+                        v-model="formCountry.currency"
+                        :class="{ 'p-invalid': errors.currency }"
+                        optionLabel="name"
+                        optionValue="id"
+                        style="width: 100%"
+                    />
+                    <label for="currency">Currency</label>
+                </FloatLabel>
+                <small v-if="errors.currency" class="p-error">{{
+                    errors.currency
+                }}</small>
+            </div>
+        </div>
         <hr />
         <div class="custom-form mt-4">
             <div class="custom-form-column">
@@ -176,6 +214,12 @@ export default {
             isRelation: null,
             listState: [],
             listCountry: [],
+            listLanguage: [],
+            listCurrency: [],
+            formCountry: {
+                language: [],
+                currency: [],
+            },
         };
     },
     components: {},
@@ -193,6 +237,16 @@ export default {
                 const { country: responseCountry } = response.data;
                 this.listCountry = responseCountry;
             }
+            if (value == "country") {
+                const comboNames = ["language", "currency"];
+                const response = await this.$getEnumsOptions(comboNames);
+                const {
+                    language: responseLanguage,
+                    currency: responseCurrency,
+                } = response.data;
+                this.listLanguage = responseLanguage;
+                this.listCurrency = responseCurrency;
+            }
         },
     },
     mounted() {
@@ -204,6 +258,15 @@ export default {
             this.formEnum.brother_relation_id =
                 this.selectedEnum.brother_relation_id;
             this.formEnum.status = parseInt(this.selectedEnum.status);
+            if (this.selectedEnum.country) {
+                this.selectedEnum.country.forEach((relation) => {
+                    if (relation.type === "language") {
+                        this.formCountry.language.push(relation.related_id);
+                    } else if (relation.type === "currency") {
+                        this.formCountry.currency.push(relation.related_id);
+                    }
+                });
+            }
         }
         this.initEnumBrother(this.formEnum.parent_id);
     },
@@ -258,6 +321,10 @@ export default {
                     "Country is required"
                 );
             }
+            if (this.isRelation == "country") {
+                dinamicRules.language = Yup.array();
+                dinamicRules.currency = Yup.array();
+            }
             const schema = Yup.object().shape({
                 ...initialRules,
                 ...dinamicRules,
@@ -278,6 +345,9 @@ export default {
         async saveEnum() {
             const isValid = await this.validateForm();
             if (isValid) {
+                if (this.isRelation == "country") {
+                    this.formEnum.relations = this.formCountry;
+                }
                 this.$axios
                     .post("/enums/store", this.formEnum)
                     .then((response) => {
@@ -292,6 +362,9 @@ export default {
         async updateEnum() {
             const isValid = await this.validateForm();
             if (isValid) {
+                if (this.isRelation == "country") {
+                    this.formEnum.relations = this.formCountry;
+                }
                 this.$axios
                     .post(
                         "/enums/update/" + this.selectedEnum.id,

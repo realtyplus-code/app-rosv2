@@ -16,4 +16,9 @@ class CountryRelation extends Model
         'related_id',
         'type',
     ];
+
+    public function country()
+    {
+        return $this->belongsTo(EnumOption::class, 'country_id');
+    }
 }
