@@ -72,7 +72,7 @@ class IncidentActionService
                 $query->where('eat.name', '!=', 'closure');
                 break;
             case 'provider':
-                $query->where('providers.id', $userId);
+                //$query->where('incident_actions.id', $userId);
                 break;
             case 'ros_client_manager':
                 $query->leftJoin('properties', 'properties.id', '=', 'incidents.property_id')
