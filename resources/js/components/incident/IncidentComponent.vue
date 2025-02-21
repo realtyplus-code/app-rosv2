@@ -698,6 +698,9 @@ export default {
             );
         },
         hasNotCurrentUserTag(providerName) {
+            if (this.role !== "provider") {
+                return false;
+            }
             if (!providerName || providerName.length === 0) {
                 return true;
             }
