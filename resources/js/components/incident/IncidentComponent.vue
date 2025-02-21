@@ -698,6 +698,9 @@ export default {
             );
         },
         hasNotCurrentUserTag(providerName) {
+            if (!providerName || providerName.length === 0) {
+                return true;
+            }
             return this.$parseTags(providerName).some((tag) =>
                 tag.tag.includes("not_current_user")
             );
