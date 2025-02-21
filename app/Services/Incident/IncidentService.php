@@ -113,6 +113,12 @@ class IncidentService
                         ->from('incident_provider')
                         ->where('incident_provider.provider_id', $userId)
                         ->whereRaw('incident_provider.incident_id = incidents.id');
+                })
+                ->orWhereExists(function ($subQuery) use ($userId) {
+                    $subQuery->select(DB::raw(1))
+                        ->from('incident_actions')
+                        ->where('incident_actions.responsible_user_id', $userId)
+                        ->whereRaw('incident_actions.incident_id = incidents.id');
                 });
                 break;
             case 'ros_client':

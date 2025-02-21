@@ -156,7 +156,9 @@
                     style="min-width: 180px"
                 >
                     <template #body="{ data }">
-                        {{ data.reported_by_name }}
+                        <div v-if="!isRowProviderValidate(data)">
+                            {{ data.reported_by_name }}
+                        </div>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -174,7 +176,9 @@
                     style="min-width: 180px"
                 >
                     <template #body="{ data }">
-                        {{ data.type_name }}
+                        <div v-if="!isRowProviderValidate(data)">
+                            {{ data.type_name }}
+                        </div>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -192,7 +196,9 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.priority_name }}
+                        <div v-if="!isRowProviderValidate(data)">
+                            {{ data.priority_name }}
+                        </div>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -210,7 +216,9 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.payer_name }}
+                        <div v-if="!isRowProviderValidate(data)">
+                            {{ data.payer_name }}
+                        </div>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -228,7 +236,9 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{ data.currency_name }}
+                        <div v-if="!isRowProviderValidate(data)">
+                            {{ data.currency_name }}
+                        </div>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -246,12 +256,14 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        {{
-                            this.$formatCurrency(
-                                data.cost,
-                                data.currency_name ?? "USD"
-                            )
-                        }}
+                        <div v-if="!isRowProviderValidate(data)">
+                            {{
+                                this.$formatCurrency(
+                                    data.cost,
+                                    data.currency_name ?? "USD"
+                                )
+                            }}
+                        </div>
                     </template>
                     <template #filter="{ filterModel }">
                         <InputText
@@ -269,41 +281,47 @@
                     style="min-width: 150px"
                 >
                     <template #body="{ data }">
-                        <div class="size-tags">
-                            <Tag
-                                v-for="index in $parseTags(data.provider_name)"
-                                :key="index.id"
-                                :value="`${index.tag}`"
-                                class="size-tag"
-                            />
+                        <div v-if="!isRowProviderValidate(data)">
+                            <div class="size-tags">
+                                <Tag
+                                    v-for="index in $parseTags(
+                                        data.provider_name
+                                    )"
+                                    :key="index.id"
+                                    :value="`${index.tag}`"
+                                    class="size-tag"
+                                />
+                            </div>
                         </div>
                     </template>
                 </Column>
                 <Column header="Photo">
                     <template #body="{ data }">
-                        <div style="text-align: center">
-                            <Galleria
-                                :key="galleryKey"
-                                :value="$getImages(data)"
-                                :numVisible="4"
-                                style="width: 900px"
-                                containerClass="custom-galleria"
-                                :showThumbnails="true"
-                                showIndicators
-                                circular
-                                autoPlay
-                                :transitionInterval="5000"
-                            >
-                                <template #item="{ item }">
-                                    <Image
-                                        :src="item"
-                                        class="w-full h-full object-cover cursor-pointer"
-                                        height="100px"
-                                        width="150px"
-                                        preview
-                                    />
-                                </template>
-                            </Galleria>
+                        <div v-if="!isRowProviderValidate(data)">
+                            <div style="text-align: center">
+                                <Galleria
+                                    :key="galleryKey"
+                                    :value="$getImages(data)"
+                                    :numVisible="4"
+                                    style="width: 900px"
+                                    containerClass="custom-galleria"
+                                    :showThumbnails="true"
+                                    showIndicators
+                                    circular
+                                    autoPlay
+                                    :transitionInterval="5000"
+                                >
+                                    <template #item="{ item }">
+                                        <Image
+                                            :src="item"
+                                            class="w-full h-full object-cover cursor-pointer"
+                                            height="100px"
+                                            width="150px"
+                                            preview
+                                        />
+                                    </template>
+                                </Galleria>
+                            </div>
                         </div>
                     </template>
                 </Column>
@@ -679,8 +697,20 @@ export default {
                 (permission) => permission.name == name
             );
         },
+        hasNotCurrentUserTag(providerName) {
+            return this.$parseTags(providerName).some((tag) =>
+                tag.tag.includes("not_current_user")
+            );
+        },
+        isRowProviderValidate(data) {
+            return this.hasNotCurrentUserTag(data.provider_name);
+        },
     },
 };
 </script>
 
-<style></style>
+<style>
+.row-red {
+    background-color: red !important;
+}
+</style>

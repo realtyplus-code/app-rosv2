@@ -62,9 +62,15 @@ class IncidentController extends Controller
                 'e_cur.name as currency_name',
                 'incidents.cost',
                 'incidents.created_at',
-                'incidents.updated_at',
-                DB::raw('GROUP_CONCAT(DISTINCT CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name'),
+                'incidents.updated_at'
             ];
+
+            if($role == 'provider') {
+                $columns[] = DB::raw('GROUP_CONCAT(DISTINCT CONCAT(providers.id, ":", providers.name, IF(providers.id != ' . Auth::id() . ', " (not_current_user)", "")) ORDER BY providers.name ASC SEPARATOR ";") as provider_name');
+            } else {
+                $columns[] = DB::raw('GROUP_CONCAT(DISTINCT CONCAT(providers.id, ":", providers.name) ORDER BY providers.name ASC SEPARATOR ";") as provider_name');
+            }
+
             if ($isNotOwnerOrTenant) {
                 $columns[] = DB::raw('COUNT(incident_actions.id) as incidents');
             } else {
