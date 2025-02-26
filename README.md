@@ -7,60 +7,93 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Sobre el Proyecto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este proyecto es una aplicación web construida con Laravel y Vue.js. Utiliza varias tecnologías modernas para proporcionar una experiencia de desarrollo robusta y eficiente.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Tecnologías Utilizadas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Laravel
+- Vue.js
+- Vite
+- Bootstrap
+- PrimeVue
+- Axios
+- SweetAlert2
+- Chart.js
 
-## Learning Laravel
+## Rutas del Proyecto
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- `/`: Página principal
+- `/login`: Página de inicio de sesión
+- `/register`: Página de registro
+- `/dashboard`: Panel de usuario
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Cómo Clonar el Proyecto
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Para clonar el proyecto, ejecuta el siguiente comando en tu terminal:
 
-## Laravel Sponsors
+```bash
+git clone https://github.com/tu-usuario/tu-repositorio.git
+cd tu-repositorio
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Cómo Correr el Proyecto
 
-### Premium Partners
+1. Instala las dependencias de PHP:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+composer install
+```
 
-## Contributing
+2. Instala las dependencias de Node.js:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+npm install
+```
 
-## Code of Conduct
+3. Copia el archivo de entorno y genera la clave de la aplicación:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Security Vulnerabilities
+4. Inicia el servidor de desarrollo:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan serve
+npm run dev
+```
 
-## License
+## Migraciones y Seeders
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Para ejecutar las migraciones y seeders, utiliza los siguientes comandos:
+
+1. Ejecuta las migraciones:
+
+```bash
+php artisan migrate
+```
+
+2. Ejecuta los seeders:
+
+```bash
+php artisan db:seed
+```
+
+## Contribuyendo
+
+Gracias por considerar contribuir a este proyecto. Las guías de contribución se pueden encontrar en la documentación del proyecto.
+
+## Código de Conducta
+
+Para asegurar que la comunidad sea acogedora para todos, por favor revisa y sigue el [Código de Conducta](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Vulnerabilidades de Seguridad
+
+Si descubres una vulnerabilidad de seguridad, por favor envía un correo electrónico a [tu-email@dominio.com](mailto:tu-email@dominio.com). Todas las vulnerabilidades de seguridad serán atendidas de inmediato.
+
+## Licencia
+
+Este proyecto es software de código abierto licenciado bajo la [licencia MIT](https://opensource.org/licenses/MIT).
